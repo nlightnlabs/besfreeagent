@@ -38,6 +38,8 @@ const Home = (props) => {
     requestTypes,
     setRequestTypes,
     icons,
+    apps,
+    setApps,
     selectedApp,
     setSelectedApp
   } = useContext(Context)
@@ -52,7 +54,6 @@ const Home = (props) => {
   const [formData, setFormData] = useState({})
   const [newsData, setNewsData] = useState([])
   const [requests, setRequests] = useState([])
-  const [apps,setApps] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
   const [requestPageName, setRequestPageName] = useState("")
 
@@ -83,12 +84,6 @@ const Home = (props) => {
 
   const getRequests = async (req, res)=>{
 
-    const params = {
-      tableName: "requests",
-      conditionalField: "requester_user_id",
-      condition: appData.user_info.id
-  }
-
     try{
         const response = await getTable("requests")
         setRequests(response.data)
@@ -116,8 +111,6 @@ const handleSearch = async (e)=>{
   const searchResults = search(searchTerms)
 
 }
-
-
 
   const goToCatalog =(e)=>{
     const nextPage = "Catalog"
