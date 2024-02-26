@@ -43,8 +43,8 @@ function App() {
                 });
                 window.FAClient = FAClient;
 
-                FAClient.listEntityValues(
-                  {entity:"web_app"
+                FAClient.listEntityValues({
+                  entity:"web_app"
                 },(response)=>{
                   console.log("Free agent connection successfully.  Web apps: ",response)
                   setFATest(response)
