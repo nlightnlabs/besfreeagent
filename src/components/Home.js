@@ -365,9 +365,9 @@ return(
             <div className="d-flex justify-content-center flex-wrap">
             {
               apps.map((app,index)=>(
-                <div id={app.name} className="d-flex flex-column m-3" style={{height: 50, width: 50, zIndex:100, cursor: "pointer"}} key={index}>
-                    <img  style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name===app.icon).image:null} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
-                    <div style={{fontSize: 12, color: "gray"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
+                <div id={app.name} className="d-flex flex-column justify-content-center m-3" style={{height: 50, width: "50", zIndex:100, cursor: "pointer"}} key={index}>
+                    <img  style={iconStyle} src={app.icon} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
+                    <div className="text-center" style={{fontSize: 12, color: "gray"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
                 </div>
               ))
             }
