@@ -33,13 +33,14 @@ function App() {
             document.body.appendChild(script);
 
             //Initialize the connection to the FreeAgent this step takes away the loading spinner
+            setTimeout(()=>{
                 const FAAppletClient = window.FAAppletClient;
-
                 const FAClient = new FAAppletClient({
                     appletId: 'nlightnlabs-bes-home',
                 });
                 window.FAClient = FAClient;
-
+            },500)
+                
             return () => {
                 document.body.removeChild(script);
             };
@@ -78,7 +79,7 @@ function App() {
   return (
     <div style={pageStyle}>
         <Header/>
-        {pageData.find(item=>item.name===pageName).component}
+        {window.FAClient && pageData.find(item=>item.name===pageName).component}
     </div>
   );
 }
