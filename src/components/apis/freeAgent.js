@@ -159,7 +159,7 @@ export const deleteFARecord = async (appName, recordId) => {
 }
 
   //Standard function to get a user's data from FreeAgent
-  export const getCurrentUserData = () => {
+  export const getCurrentFAUserData = () => {
     const FAClient = window.FAClient
     return new Promise((resolve, reject) => {
         FAClient.getUserInfo((response) => {
@@ -174,7 +174,7 @@ export const deleteFARecord = async (appName, recordId) => {
 }
 
   //Standard function to get a user's data from FreeAgent
-  export const getAllUserData = () => {
+  export const getAllFAUserData = () => {
     const FAClient = window.FAClient
 
     return new Promise((resolve, reject) => {

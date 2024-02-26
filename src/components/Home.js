@@ -272,7 +272,7 @@ return(
     <div className={pageClass}>
 
     {/* Search bar and shop menu */}
-    {/* <div className="d-flex justify-content-center mb-3">
+    <div className="d-flex justify-content-center mb-3">
         <div className="d-flex justify-content-between" style={{width: "50%"}}>
 
           <div className="d-flex me-3 flex-column" onClick={(e)=>goToCatalog(e)}>
@@ -297,11 +297,11 @@ return(
                 <div style={{fontSize: 14, color: "gray"}}>Search</div>
             </div>
         </div>
-    </div> */}
+    </div>
         
     {/* News Banner */}
     
-    {/* <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
+    <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
       <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
       style={{ height: "auto", width: "100%", overflowY: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
           {announcements.length > 0 && (
@@ -314,7 +314,7 @@ return(
               />
           )}
       </div>
-  </div> */}
+  </div>
 
     {/* Content section */}
     <div className="d-flex justify-content-center">
@@ -343,7 +343,7 @@ return(
   
 
         {/* Request status panel */}
-          {/* <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
+          <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
           style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>My Requests</div>
             <div style={{overflowY: "auto"}}>
@@ -357,10 +357,10 @@ return(
                   appData = {{user: appData.user_info}}
               />
               </div>
-          </div> */}
+          </div>
 
          {/* Work on Something Panel */}
-        {/* <div className="d-flex flex-column p-2 border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
+        <div className="d-flex flex-column p-2 border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>Work on Something</div>
             <div className="d-flex justify-content-center flex-wrap">
             {
@@ -372,7 +372,7 @@ return(
               ))
             }
             </div>
-        </div> */}
+        </div>
             
         </div>
         

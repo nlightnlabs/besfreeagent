@@ -4,7 +4,7 @@ export const Context = createContext(null);
 
 export const ContextProvider = ({children}) =>{
 
-    const [user, setUser] = useState("testuser@nlightnlabs.com")
+    const [user, setUser] = useState({})
     const [userLoggedIn, setUserLoggedIn] = useState(true);
     const [users, setUsers] = useState([])
     const [page, setPage] = useState({});
