@@ -43,14 +43,15 @@ const Home = (props) => {
     setSelectedApp
   } = useContext(Context)
 
-  console.log("environment", window.environment)
-  console.log("FAClient", window.FAClient)
+  
 
   useEffect(()=>{
-      getAppIcons()
-      getAnnouncements()
-      getApps()
-      getRequests()
+    setTimeout(async ()=>{
+      await getAppIcons()
+      await getAnnouncements()
+      await getApps()
+      await getRequests()
+    },1000)
 },[])
 
   const [appIcons, setAppIcons] = useState([])
