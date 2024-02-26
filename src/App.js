@@ -24,8 +24,6 @@ function App() {
         environment = "nlightn"
     }
     window.environment = environment
-
-    const[faTest, setFATest] = useState([])
     
     const useExternalScript = (src) => {
         useEffect(() => {
@@ -42,14 +40,6 @@ function App() {
                     appletId: 'nlightnlabs-bes-home',
                 });
                 window.FAClient = FAClient;
-
-                FAClient.listEntityValues({
-                  entity:"web_app"
-                },(response)=>{
-                  console.log("Free agent connection successfully.  Web apps: ",response)
-                  setFATest(response)
-                })
-
             }, 500);
 
             return () => {
@@ -66,31 +56,7 @@ function App() {
 
   
   const {
-    user,
-    setUser,
-    userLoggedIn,
-    setUserLoggedIn,
-    page,
-    setPage,
-    pages,
-    setPages,
     pageName,
-    setPageName,
-    requestType,
-    setRequestType,
-    requestTypes,
-    setRequestTypes,
-    appData,
-    setAppData,
-    attachments,
-    setAttachments,
-    pageList,
-    setPageList,
-    icons,
-    apps,
-    setApps,
-    selectedApp,
-    setSelectedApp
   } = useContext(Context)
 
 
@@ -102,46 +68,6 @@ function App() {
     {name: "Annoncement", component: <Article/>, data: "news_article", request_type: false, description: "Description for this request", icon:`${appIcons}/Records_icon.png`},
   ]
 
-
-  const getPageData = async(req, res)=>{
-    try{
-      setPages(pageData)
-      setPage(pageData.filter(x=>x.name===pageName)[0])
-    }catch(error){
-      console.log(error)
-    }
-  }
-
-  const getRequestTypes = ()=>{
-    let list = []
-    pageData.forEach(item=>{
-      item.request_type && list.push(item)
-    })
-    return list
-  }
-
-  const getUserInfo = async(req, res)=>{
-    const params ={
-      tableName: "users",
-      conditionalField: "email",
-      condition: user
-    }
-    const response = await getRecord(params)
-    alert(response)
-    setUser(response)
-  }
-
-  const getApps = async(req, res)=>{
-    const response = await getTable("apps")
-    setApps(response.data)
-  }
-
- useEffect(()=>{
-    getPageData()
-    setRequestTypes(getRequestTypes()) 
-    getUserInfo()
-    getApps()
-  },[])
  
   const pageStyle={
     backgroundSize: "cover",

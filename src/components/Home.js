@@ -391,7 +391,7 @@ return(
         <div className="d-flex flex-column p-2 border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>Work on Something</div>
             <div className="d-flex justify-content-center flex-wrap">
-            {
+            {apps.length > 0 &&
               apps.map((app,index)=>(
                 <div id={app.name} className="d-flex flex-column m-3" style={{height: 50, width: 50, zIndex:100, cursor: "pointer"}} key={index}>
                     <img  style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name===app.icon).image:null} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
