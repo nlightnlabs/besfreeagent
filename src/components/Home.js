@@ -345,7 +345,7 @@ return(
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:contentContainerHeight, minHeight:"300px"}}>
         
          {/* Request Something Panel*/}
-          {/* <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
+          <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
           style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>Request Something</div>
             <div style={{overflowY: "auto"}}>
@@ -362,7 +362,7 @@ return(
                 setPageName={setPageName}
               />
             </div>
-          </div> */}
+          </div>
   
 
         {/* Request status panel */}

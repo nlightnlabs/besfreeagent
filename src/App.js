@@ -2,15 +2,12 @@ import React, {useState, useContext, useEffect} from 'react';
 import {Context } from './components/Context.js';
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
-import {getRecord, getTable} from './components/apis/axios.js'
-import {appIcons} from './components/apis/icons.js'
 import Home from './components/Home.js';
 import GenAIStudio from './components/GenAIStudio.js'
 import Records from './components/Records.js'
 import Catalog from './components/Catalog.js'
 import Article from './components/Article.js';
 import Header from './components/Header.js'
-import * as crud from "./components/apis/crud.js"
 
 function App() {
 
