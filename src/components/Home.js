@@ -47,19 +47,17 @@ const Home = (props) => {
 
   useEffect(()=>{
     setTimeout(async ()=>{
-      await getAppIcons()
-      await getAnnouncements()
-      await getApps()
-      await getRequests()
+      getAppIcons()
+      getAnnouncements()
+      getApps()
+      getRequests()
     },1000)
 },[])
 
   const [appIcons, setAppIcons] = useState([])
-  const [formData, setFormData] = useState({})
   const [announcements, setAnnouncements] = useState([])
   const [requests, setRequests] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
-  const [requestPageName, setRequestPageName] = useState("")
 
   const getAppIcons = async (req, res)=>{
     const environment = window.environment
@@ -71,7 +69,7 @@ const Home = (props) => {
     }
 
     try{
-      const response = await crud.getData(appName)
+        const response = await crud.getData(appName)
         console.log("icons: ",response)
         setAppIcons(response)
     }catch(error){
@@ -80,7 +78,6 @@ const Home = (props) => {
     }
   }
 
-  // const [currentImageNumber, setCurrentImageNumber] = useState(0);
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
   
   const getAnnouncements = async (req, res)=>{
@@ -192,7 +189,6 @@ const handleSearch = async (e)=>{
       setPageList([...pageList,nextPage])
       setPageName(nextPage)
     }
-   
   }
 
   const handleSelectedArticle =(articleId)=>{
@@ -351,8 +347,9 @@ return(
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:contentContainerHeight, minHeight:"300px"}}>
         
          {/* Request Something Panel*/}
-        <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
-        style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
+        {apps.length > 0 && 
+          <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
+          style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>Request Something</div>
             <div style={{overflowY: "auto"}}>
               <RequestIntakeHome
@@ -368,30 +365,33 @@ return(
                 setPageName={setPageName}
               />
             </div>
-        </div>
+          </div>
+        }
 
         {/* Request status panel */}
-        <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
-        style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
-          <div style={sectionTitleStyle}>My Requests</div>
-          <div style={{overflowY: "auto"}}>
-            <StatusListBox
-                title="My Requests"
-                data={requests}
-                colors = {colors}
-                buttonLabel = "New Request"
-                listType = "status"
-                updateParentStates = {{setPageName, setPage, setPageList, setSelectedApp, pages, pageList}}
-                appData = {{user: appData.user_info}}
-            />
-            </div>
-        </div>
+        {requests.length > 0 &&
+          <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
+          style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
+            <div style={sectionTitleStyle}>My Requests</div>
+            <div style={{overflowY: "auto"}}>
+              <StatusListBox
+                  title="My Requests"
+                  data={requests}
+                  colors = {colors}
+                  buttonLabel = "New Request"
+                  listType = "status"
+                  updateParentStates = {{setPageName, setPage, setPageList, setSelectedApp, pages, pageList}}
+                  appData = {{user: appData.user_info}}
+              />
+              </div>
+          </div>
+        }
 
          {/* Work on Something Panel */}
         <div className="d-flex flex-column p-2 border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>Work on Something</div>
             <div className="d-flex justify-content-center flex-wrap">
-            {apps.length > 0 &&
+            {appIcons.length > 0 && apps.length > 0 &&
               apps.map((app,index)=>(
                 <div id={app.name} className="d-flex flex-column m-3" style={{height: 50, width: 50, zIndex:100, cursor: "pointer"}} key={index}>
                     <img  style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name===app.icon).image:null} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
