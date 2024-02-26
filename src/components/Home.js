@@ -43,15 +43,13 @@ const Home = (props) => {
     setSelectedApp
   } = useContext(Context)
 
-  const environment = window.environment
-  const FAClient = window.FAClient
 
-  
+
   useEffect(()=>{
-    getAppIcons()
-    getAnnouncements()
-    getApps()
-    getRequests()
+      getAppIcons()
+      getAnnouncements()
+      getApps()
+      getRequests()
 },[])
 
   const [appIcons, setAppIcons] = useState([])
@@ -62,6 +60,7 @@ const Home = (props) => {
   const [requestPageName, setRequestPageName] = useState("")
 
   const getAppIcons = async (req, res)=>{
+    const environment = window.environment
     let appName = ""
     if(environment ==="freeagent"){
       appName= "icon"
@@ -83,6 +82,7 @@ const Home = (props) => {
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
   
   const getAnnouncements = async (req, res)=>{
+    const environment = window.environment
     let appName = ""
     if(environment ==="freeagent"){
       appName= "announcement"
@@ -101,6 +101,7 @@ const Home = (props) => {
   }
 
   const getApps = async (req, res)=>{
+    const environment = window.environment
     let appName = ""
     if(environment ==="freeagent"){
       appName= "web_app"
@@ -119,7 +120,7 @@ const Home = (props) => {
   }
 
   const getRequests = async (req, res)=>{
-
+    const environment = window.environment
     let appName = ""
     if(environment ==="freeagent"){
       appName= "custom_app_52"
@@ -171,7 +172,8 @@ const handleSearch = async (e)=>{
   }
 
   const handleSelectedApp =(e,app)=>{
-
+    const environment = window.environment
+    
     const parentId = e.currentTarget.parentElement.id; 
     setSelectedApp(parentId)
     console.log(parentId)
