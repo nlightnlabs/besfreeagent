@@ -9,7 +9,7 @@ export const getFAAllRecords = async (appName) => {
             FAClient.listEntityValues({
                 entity: appName,
             }, (response) => {
-                console.log('Connection successful: ', response);
+                // console.log('Connection successful: ', response);
                 if (response) {
                     resolve(response);
                 } else {
