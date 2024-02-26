@@ -37,7 +37,7 @@ function App() {
                 const FAAppletClient = window.FAAppletClient;
 
                 const FAClient = new FAAppletClient({
-                    appletId: 'nlightn_iframe_template',
+                    appletId: 'nlightnlabs-bes-home',
                 });
                 window.FAClient = FAClient;
 
@@ -51,24 +51,25 @@ function App() {
     //script to itnegrate FreeAgent library
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
 
+    // Test free agent data
+    const testData = async ()=>{
+      let appName=""
+      if(environment == "freeagent"){
+        appName="custom_app_35"
+      }else{
+        appName="users"
+      }
+      const response = await crud.getData(appName)
+      console.log(response)
+    }
+
+    useEffect(()=>{
+      setTimeout(()=>{testData()},1000)
+    },[])
+
 
 // ********************************************************APP SPECIFIC CODE STARTS HERE******************************************************************************
-// Test free agent data
 
-const testData = async ()=>{
-  let appName=""
-  if(environment == "freeagent"){
-    appName="custom_app_35"
-  }else{
-    appName="users"
-  }
-  const response = await crud.getData(appName)
-  console.log(response)
-}
-
-useEffect(()=>{
-  setTimeout(()=>{testData()},1000)
-},[])
   
   const {
     user,
