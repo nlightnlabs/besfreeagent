@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {Context } from './components/Context';
+import {Context } from './components/Context.js';
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import {getRecord, getTable} from './components/apis/axios.js'
@@ -9,86 +9,67 @@ import GenAIStudio from './components/GenAIStudio.js'
 import Records from './components/Records.js'
 import Catalog from './components/Catalog.js'
 import NewsArticle from './components/NewsArticle.js';
-
+import Header from './components/Header.js'
+import * as crud from "./components/apis/crud.js"
 
 function App() {
 
+  // ********************************************************************FREE AGENT CONNECTION***********************************************************
+    
+    // IMPORTANT:  Be sure to import crud functions file where data needs to be added, updated, or deleted and include freeagent api file in api folder
 
+    // Set the environment to either freeagent or nlightn
+    let environment = "freeagent"
+    if(process.env.NODE_ENV ==="development"){
+        environment = "nlightn"
+    }
+    window.environment = environment
+    
+    const useExternalScript = (src) => {
+        useEffect(() => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            document.body.appendChild(script);
 
-   //Set up local states
-   const [purchaseReqs, setPurchaseReqs] = useState(null);
+            //Initialize the connection to the FreeAgent this step takes away the loading spinner
+            setTimeout(() => {
+                const FAAppletClient = window.FAAppletClient;
 
-   const useExternalScript = (src) => {
-       useEffect(() => {
-       const script = document.createElement('script');
-       script.src = src;
-       script.async = true;
-       document.body.appendChild(script);
+                const FAClient = new FAAppletClient({
+                    appletId: 'nlightn_iframe_template',
+                });
+                window.FAClient = FAClient;
 
-       setTimeout(() => {
-           initializeFreeAgentConnection();
-       }, 500);
+            }, 500);
 
-       return () => {
-               document.body.removeChild(script);
-           };
-           }, [src]);
-   };
+            return () => {
+                document.body.removeChild(script);
+            };
+        }, [src]);
+    };
     //script to itnegrate FreeAgent library
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
-   
-   //INPUT FROM FREEAGENT Specifiy App to bring in
-   const PURCHASE_REQ_APP = 'custom_app_53';
-   const initializeFreeAgentConnection = () => {
-       
-      const FAAppletClient = window.FAAppletClient;
-       
-       //Initialize the connection to the FreeAgent this step takes away the loading spinner
-       const FAClient = new FAAppletClient({
-           appletId: 'nlightnlabs-bes-home',
-       });
 
-       //Bridget to access freeagent apps
-       FAClient.listEntityValues({
-           entity: PURCHASE_REQ_APP,
-           limit: 100,
-          //  fields: [
-          //      "request_date",
-          //      "request_date",
-          //  ]
-       }, (purchaseReqs) => {
-               console.log('initializeFreeAgentConnection Success!', purchaseReqs);
-           if (purchaseReqs) {
-               setPurchaseReqs(purchaseReqs);
-           }
-           });
 
-        //OUTPUT 
-       //Function to create a new record/entity in FA app
-       FAClient.createEntity({
-           entity:"requests",
-           field_values: {
-               request_type: "",
-               subject: "",
-               requester: "",
-           }
-       })
+// ********************************************************APP SPECIFIC CODE STARTS HERE******************************************************************************
+// Test free agent data
 
-       //Function to update or delete a record/entity in FA app
-       FAClient.updateEntity({
-           entity:"requests", // app name
-           id:"", //What record to update
-           field_values: {
-               request_type: "",
-               subject: "",
-               requester: "",
-               deleted: false //ONLY USE IF need to delete
-           }
-       })
-   };
+const testData = async ()=>{
+  let appName=""
+  if(environment == "freeagent"){
+    appName="custom_app_35"
+  }else{
+    appName="users"
+  }
+  const response = await crud.getData(appName)
+  console.log(response)
+}
 
-    
-
+useEffect(()=>{
+  setTimeout(()=>{testData()},1000)
+},[])
+  
   const {
     user,
     setUser,
@@ -177,9 +158,8 @@ function App() {
 
   return (
     <div style={pageStyle}>
-
+        <Header/>
         {pageData.find(item=>item.name===pageName).component}
-
     </div>
   );
 }

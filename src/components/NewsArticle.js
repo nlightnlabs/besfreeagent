@@ -1,5 +1,5 @@
 
-import { getRecord } from './apis/axios'
+import { getRecord } from './apis/axios.js'
 import React, {useState, useContext, useEffect, useRef} from 'react'
 import {Context} from "./Context.js"
 import "bootstrap/dist/css/bootstrap.min.css"

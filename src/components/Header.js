@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
-import {ContextProvider, Context } from './Context';
+import {ContextProvider, Context } from './Context.js';
 import "bootstrap/dist/css/bootstrap.min.css"
 import {getTable} from './apis/axios.js'
 import { toProperCase } from './functions/formatValue.js';
@@ -81,49 +81,49 @@ const Header = () => {
     cursor: "pointer"
     }
 
-  const handleMenuOption=(elem)=>{
+  // const handleMenuOption=(elem)=>{
   
 
-    if(elem == "settingsButton"){
-      let nextPage = "Settings"
-      setPageList([nextPage])
-      setPage(pages.filter(x=>x.name===nextPage)[0])
-      setPageName(nextPage)
-    }
-    if(elem == "allRequestsButton"){
-      let nextPage = "Requests"
-      setPageList([...pageList,nextPage])
-      setPage(pages.filter(x=>x.name===nextPage)[0])
-      setPageName(nextPage)
-    }
-    if(elem == "updateButton"){
-      let nextPage = "User Info"
-      setPageList([...pageList,nextPage])      
-      setPage(pages.filter(x=>x.name===nextPage)[0])
-      setPageName(nextPage)
-    }
-    if(elem == "homeButton"){
-      let nextPage = "Home"
-      setPageList([...pageList,nextPage]) 
-      console.log(pages.filter(x=>x.name===nextPage)[0])
-      setPage(pages.filter(x=>x.name===nextPage)[0])
-      setPageName(nextPage)
-    }
-    if(elem == "signOutButton"){
-      localStorage.removeItem('user');
-      let nextPage = "Log In"
-      setPageList([nextPage])
-      setPage(pages.filter(x=>x.name===nextPage)[0])
-      setUserData({
-        first_name: "",
-        email: "",
-      })
-      setUser({})
-      setAppData({})
-      setUserLoggedIn(false)
-      setPageName(nextPage)
-    }
-  }
+  //   if(elem == "settingsButton"){
+  //     let nextPage = "Settings"
+  //     setPageList([nextPage])
+  //     setPage(pages.filter(x=>x.name===nextPage)[0])
+  //     setPageName(nextPage)
+  //   }
+  //   if(elem == "allRequestsButton"){
+  //     let nextPage = "Requests"
+  //     setPageList([...pageList,nextPage])
+  //     setPage(pages.filter(x=>x.name===nextPage)[0])
+  //     setPageName(nextPage)
+  //   }
+  //   if(elem == "updateButton"){
+  //     let nextPage = "User Info"
+  //     setPageList([...pageList,nextPage])      
+  //     setPage(pages.filter(x=>x.name===nextPage)[0])
+  //     setPageName(nextPage)
+  //   }
+  //   if(elem == "homeButton"){
+  //     let nextPage = "Home"
+  //     setPageList([...pageList,nextPage]) 
+  //     console.log(pages.filter(x=>x.name===nextPage)[0])
+  //     setPage(pages.filter(x=>x.name===nextPage)[0])
+  //     setPageName(nextPage)
+  //   }
+  //   if(elem == "signOutButton"){
+  //     localStorage.removeItem('user');
+  //     let nextPage = "Log In"
+  //     setPageList([nextPage])
+  //     setPage(pages.filter(x=>x.name===nextPage)[0])
+  //     setUserData({
+  //       first_name: "",
+  //       email: "",
+  //     })
+  //     setUser({})
+  //     setAppData({})
+  //     setUserLoggedIn(false)
+  //     setPageName(nextPage)
+  //   }
+  // }
 
   const handleAppOption=(app)=>{
       setSelectedApp(app.name)
@@ -174,12 +174,7 @@ const Header = () => {
 
   return (
     <div ref={topBarRef} className="d-flex bg-white justify-content-end" style={topBarStyle}>
-      {userLoggedIn && 
-      <div className="d-flex flex-column p-2">
-        <span className="text-secondary" style={{fontSize:12}}>Hello</span>
-        <span className="text-primary fw-bold" style={{fontSize:16}}>{userData.first_name}</span>
-      </div>}
-      <div className="p-1"><img id="homeButton" src={homeIcon} style={iconStyle} onClick={(e)=>handleMenuOption(e.target.id)}></img></div>
+      <div className="p-1"><img id="homeButton" src={homeIcon} style={iconStyle} onClick={(e)=>setPageName("Home")}></img></div>
       <div className="p-1"><img id="menuButton" src={menuIcon} style={iconStyle} onClick={(e)=>setShowUserOptions(!showUserOptions)}></img></div>
 
       {showUserOptions &&
@@ -190,12 +185,6 @@ const Header = () => {
         <div className="d-flex flex-column flex-wrap mb-3 border-bottom">
             <div style={{fontSize: 12}}>Signed in:</div>
             <div className="fw-bold text-primary p-1" style={{fontSize: 12}}>{userData.full_name}</div>
-        </div>
-
-        <div className="d-flex flex-column flex-wrap mb-3 border-top-1">
-            <button id="settingsButton" name="settingsButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Settings</button>
-            <button id ="updateButton" name="updateButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Update Profile</button>
-            <button id="signOutButton" name="signOutButton" className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleMenuOption(e.target.id)}>Sign out</button>
         </div>
 
         <div className="d-flex flex-column flex-wrap mb-3 border-top-1 ">

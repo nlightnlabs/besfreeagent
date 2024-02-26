@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { askGPT } from './apis/axios'
+import { askGPT } from './apis/axios.js'
 import {appIcons, generalIcons} from './apis/icons.js'
 import Spinner from './Spinner.js'
 

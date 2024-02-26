@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { askGPT } from './apis/axios'
-import {toProperCase} from './functions/formatValue'
+import { askGPT } from './apis/axios.js'
+import {toProperCase} from './functions/formatValue.js'
 import axios,{getList} from './apis/axios.js'
-import Spinner from './Spinner'
+import Spinner from './Spinner.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
 
 import { Document, Page, pdfjs } from 'react-pdf';
-import MultiInput from './MultiInput';
+import MultiInput from './MultiInput.js';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const GenAICreateContract = (props) => {

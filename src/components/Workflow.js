@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, createRef} from 'react'
-import FloatingDiv from './FloatingDiv'
+import FloatingDiv from './FloatingDiv.js'
 import {getRecords} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 

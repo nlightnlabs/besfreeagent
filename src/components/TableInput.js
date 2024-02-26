@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useRef, createRef} from 'react'
 import "bootstrap/dist/css/bootstrap.min.css"
 import MultiInput from './MultiInput.js';
-import { generalIcons } from './apis/icons';
-import { toProperCase } from './functions/formatValue';
+import { generalIcons } from './apis/icons.js';
+import { toProperCase } from './functions/formatValue.js';
 
 const TableInput = (props) => {
 

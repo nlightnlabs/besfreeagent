@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
-import Workflow from './Workflow'
+import Workflow from './Workflow.js'
 import DataEntryFrom from './DataEntryForm.js'
-import Activities from './Activities'
-import { generalIcons } from './apis/icons'
+import Activities from './Activities.js'
+import { generalIcons } from './apis/icons.js'
 import {deleteRecord, getRecord, getRecords, getData, getTable, updateRecord} from './apis/axios.js'
 import Draggable from 'react-draggable'
 import "bootstrap/dist/css/bootstrap.min.css"

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, useContext} from 'react'
-import {Context } from './Context';
+import {Context } from './Context.js';
 import {appIcons} from './apis/icons.js'
 import GenAIGenerateImage from './GenAIGenerateImage.js'
 import GenAIAskQuestion from './GenAIAskQuestion.js'

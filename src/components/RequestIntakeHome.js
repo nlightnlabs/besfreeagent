@@ -1,7 +1,7 @@
 import React, {useState, useContext, useEffect, useRef, useLayoutEffect} from 'react'
 import {getTable} from './apis/axios.js'
 import {appIcons} from './apis/icons.js'
-import RequestIntakeForm from './RequestIntakeForm';
+import RequestIntakeForm from './RequestIntakeForm.js';
 import Draggable from 'react-draggable';
 
 import "bootstrap/dist/css/bootstrap.min.css";

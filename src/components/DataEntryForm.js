@@ -2,11 +2,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, {useState, useEffect, useRef, createRef} from 'react'
 import { toProperCase } from './functions/formatValue.js';
 import MultiInput from './MultiInput.js';
-import {generalIcons} from './apis/icons'
+import {generalIcons} from './apis/icons.js'
 import axios,{updateRecord, getRecord, getRecords, getValue, getList, updateActivityLog} from './apis/axios.js'
 import Attachments from './Attachments.js';
 import TableInput from './TableInput.js';
-import { rootPath } from './apis/fileServer'
+import { rootPath } from './apis/fileServer.js'
 
 
 const DataEntryForm = (props) => {
