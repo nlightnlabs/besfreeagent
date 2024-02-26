@@ -46,12 +46,10 @@ const Home = (props) => {
   
 
   useEffect(()=>{
-    setTimeout(async ()=>{
       getAppIcons()
       getAnnouncements()
       getApps()
       getRequests()
-    },1000)
 },[])
 
   const [appIcons, setAppIcons] = useState([])
