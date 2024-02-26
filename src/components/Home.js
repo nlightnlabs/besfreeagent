@@ -15,9 +15,11 @@ const Home = (props) => {
   const {
     user,
     setUser,
-    userLoggedIn,
-    setUserLoggedIn,
+    users,
+    setUsers,
     page,
+    appIcons,
+    setAppIcons,
     setPage,
     pages,
     setPages,
@@ -27,16 +29,10 @@ const Home = (props) => {
     setRequestType,
     appData,
     setAppData,
-    attachments,
-    setAttachments,
     pageList,
     setPageList,
     tableName,
     setTableName,
-    users,
-    setUsers,
-    requestTypes,
-    setRequestTypes,
     apps,
     setApps,
     selectedApp,
@@ -46,35 +42,16 @@ const Home = (props) => {
   
 
   useEffect(()=>{
-      getAppIcons()
       getAnnouncements()
       getApps()
       getRequests()
 },[])
 
-  const [appIcons, setAppIcons] = useState([])
   const [announcements, setAnnouncements] = useState([])
   const [requests, setRequests] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
 
-  const getAppIcons = async (req, res)=>{
-    const environment = window.environment
-    let appName = ""
-    if(environment ==="freeagent"){
-      appName= "icon"
-    }else{
-      appName="icons"
-    }
-
-    try{
-        const response = await crud.getData(appName)
-        console.log("icons: ",response)
-        setAppIcons(response)
-    }catch(error){
-        console.log(error)
-        setAppIcons([])
-    }
-  }
+ 
 
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
   

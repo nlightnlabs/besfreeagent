@@ -65,4 +65,22 @@ export const deleteRecord = async (appName, selectedRecordId) => {
     }
 }
 
+export const getUserData = async (appName) => {
+
+    const environment = window.environment
+
+    let user = null
+    let users = []
+
+    if(environment==="freeagent"){
+        user = await freeAgentApi.getUserInfo();
+        users = await freeAgentApi.getTeamMembers();
+    }else{
+        response = await nlightnApi.getTable("users")
+        users = response.data
+        user = users[0]
+    }
+    return {user, users}
+};
+
 

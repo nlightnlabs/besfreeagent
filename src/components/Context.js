@@ -6,6 +6,7 @@ export const ContextProvider = ({children}) =>{
 
     const [user, setUser] = useState("testuser@nlightnlabs.com")
     const [userLoggedIn, setUserLoggedIn] = useState(true);
+    const [users, setUsers] = useState([])
     const [page, setPage] = useState({});
     const [pageName, setPageName] = useState("Home");
     const [pages, setPages] = useState([])
@@ -16,10 +17,9 @@ export const ContextProvider = ({children}) =>{
     const [initialFormData, setInitialFormData] = useState({})
     const [tableName, setTableName] = useState("requests")
     const [tables, setTables] = useState([])
-    const icons = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/spendFlow/intake/icons"
-    const generalIcons = "https://nlightnlabs01.s3.us-west-1.amazonaws.com/icons"
     const [apps, setApps] = useState([])
     const [selectedApp, setSelectedApp] = useState("")
+    const [appIcons, setAppIcons] = useState([])
     const [currency, setCurrency] = useState("United States Dollar")
     const [currencySymbol, setCurrencySymbol] = useState("$")
     const [language, setLanguage] = useState("English")
@@ -29,8 +29,16 @@ export const ContextProvider = ({children}) =>{
     const globalStates = {
         user,
         setUser,
+        users,
+        setUsers,
         userLoggedIn,
         setUserLoggedIn,
+        appIcons,
+        setAppIcons,
+        apps,
+        setApps,
+        selectedApp,
+        setSelectedApp,
         page,
         setPage,
         pages,
@@ -49,16 +57,10 @@ export const ContextProvider = ({children}) =>{
         setRequestTypes,
         initialFormData,
         setInitialFormData,
-        icons,
-        generalIcons,
         tableName,
         setTableName,
         tables,
         setTables,
-        apps,
-        setApps,
-        selectedApp,
-        setSelectedApp,
         currency,
         setCurrency,
         language,

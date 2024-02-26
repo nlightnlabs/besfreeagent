@@ -8,6 +8,7 @@ import Records from './components/Records.js'
 import Catalog from './components/Catalog.js'
 import Article from './components/Article.js';
 import Header from './components/Header.js'
+import * as crud from './components/apis/crud.js'
 
 function App() {
 
@@ -56,20 +57,28 @@ function App() {
 
   
   const {
+    user,
+    setUser,
+    users,
+    setUsers,
+    appIcons,
+    setAppIcons,
     pageName,
+    setPageName,
+    appData,
+    setAppData
   } = useContext(Context)
 
   const [displayPage, setDisplayPage] = useState(false)
 
   let pageData=[
-    {name: "Home", component: <Home/>, data: "home", request_type: false, description: "Description for this request", icon:`${appIcons}/home_icon.png`},
-    {name: "GenAIStudio", component: <GenAIStudio/>, data: "gen_ai_stuid", request_type: false, description: "Description for this request", icon:`${appIcons}/GenAIStudio_icon.png`},
-    {name: "Catalog", component: <Catalog/>, data: "catalog", request_type: false, description: "Description for this request", icon:`${appIcons}/Catalog_icon.png`},
-    {name: "Records", component: <Records/>, data: "records", request_type: false, description: "Description for this request", icon:`${appIcons}/Records_icon.png`},
-    {name: "Annoncement", component: <Article/>, data: "news_article", request_type: false, description: "Description for this request", icon:`${appIcons}/Records_icon.png`},
+    {name: "Home", component: <Home/>, data: "home", request_type: false, description: "Description for this request", icon:null},
+    {name: "GenAIStudio", component: <GenAIStudio/>, data: "gen_ai_stuid", request_type: false, description: "Description for this request", icon:null},
+    {name: "Catalog", component: <Catalog/>, data: "catalog", request_type: false, description: "Description for this request", icon:null},
+    {name: "Records", component: <Records/>, data: "records", request_type: false, description: "Description for this request", icon: null},
+    {name: "Annoncement", component: <Article/>, data: "news_article", request_type: false, description: "Description for this request", icon: null},
   ]
 
- 
   const pageStyle={
     backgroundSize: "cover",
     backgroundImage: "linear-gradient(0deg, rgb(220, 230, 255), rgb(245, 250, 255), white)",
@@ -78,8 +87,36 @@ function App() {
     overflow: "hidden"
   }
 
+  const getUserData = async ()=>{
+    const response = await crud.getUserData()
+    console.log("users: ",response)
+    setUser(response.user)
+    setUsers(response.users)
+  }
+
+  const getAppIcons = async (req, res)=>{
+    const environment = window.environment
+    let appName = ""
+    if(environment ==="freeagent"){
+      appName= "icon"
+    }else{
+      appName="icons"
+    }
+
+    try{
+        const response = await crud.getData(appName)
+        console.log("app icons: ",response)
+        setAppIcons(response)
+    }catch(error){
+        console.log(error)
+        setAppIcons([])
+    }
+  }
+
   useEffect(()=>{
     if(FAClient !==null){
+      getUserData()
+      getAppIcons()
       setDisplayPage(true)
     }
 },[FAClient])
