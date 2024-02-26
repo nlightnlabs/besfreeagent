@@ -51,7 +51,6 @@ const Records = (props) => {
   const [showCharts, setShowCharts] = useState(true)
   const [chartProps, setChartProps] = useState([])
 
-  console.log(apps)
   const formName = apps.find(item=>item.name===selectedApp).edit_form_name || ""
 
   const chartsSectionRef = useRef(null)

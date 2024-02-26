@@ -8,7 +8,7 @@ import Home from './components/Home.js';
 import GenAIStudio from './components/GenAIStudio.js'
 import Records from './components/Records.js'
 import Catalog from './components/Catalog.js'
-import NewsArticle from './components/NewsArticle.js';
+import Article from './components/Article.js';
 import Header from './components/Header.js'
 import * as crud from "./components/apis/crud.js"
 
@@ -51,22 +51,6 @@ function App() {
     //script to itnegrate FreeAgent library
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
 
-    // Test free agent data
-    const testData = async ()=>{
-      let appName=""
-      if(environment == "freeagent"){
-        appName="custom_app_35"
-      }else{
-        appName="users"
-      }
-      const response = await crud.getData(appName)
-      console.log(response)
-    }
-
-    useEffect(()=>{
-      setTimeout(()=>{testData()},1000)
-    },[])
-
 
 
 // ********************************************************APP SPECIFIC CODE STARTS HERE******************************************************************************
@@ -106,7 +90,7 @@ function App() {
     {name: "GenAIStudio", component: <GenAIStudio/>, data: "gen_ai_stuid", request_type: false, description: "Description for this request", icon:`${appIcons}/GenAIStudio_icon.png`},
     {name: "Catalog", component: <Catalog/>, data: "catalog", request_type: false, description: "Description for this request", icon:`${appIcons}/Catalog_icon.png`},
     {name: "Records", component: <Records/>, data: "records", request_type: false, description: "Description for this request", icon:`${appIcons}/Records_icon.png`},
-    {name: "News Article", component: <NewsArticle/>, data: "news_article", request_type: false, description: "Description for this request", icon:`${appIcons}/Records_icon.png`},
+    {name: "Annoncement", component: <Article/>, data: "news_article", request_type: false, description: "Description for this request", icon:`${appIcons}/Records_icon.png`},
   ]
 
 

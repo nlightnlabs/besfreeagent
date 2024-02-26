@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import {UTCToLocalDate} from "./functions/formatValue.js"
 
-const NewsArticle = () => {
+const Article = () => {
     const {
         appData,
       } = useContext(Context)
@@ -111,4 +111,4 @@ const NewsArticle = () => {
   )
 }
 
-export default NewsArticle
+export default Article

@@ -2,7 +2,6 @@ import React, {useState, useContext, useEffect, useRef, useLayoutEffect} from 'r
 import {Context} from "./Context.js"
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
-import { appIcons } from './apis/icons.js';
 import MultiInput from './MultiInput.js';
 import { getTable, getRecords, search } from './apis/axios.js';
 import StatusListBox from './StatusListBox.js';
@@ -38,7 +37,6 @@ const Home = (props) => {
     setUsers,
     requestTypes,
     setRequestTypes,
-    icons,
     apps,
     setApps,
     selectedApp,
@@ -50,29 +48,55 @@ const Home = (props) => {
 
   
   useEffect(()=>{
-    getNewsData()
+    getAppIcons()
+    getAnnouncements()
     getApps()
     getRequests()
 },[])
 
+  const [appIcons, setAppIcons] = useState([])
   const [formData, setFormData] = useState({})
-  const [newsData, setNewsData] = useState([])
+  const [announcements, setAnnouncements] = useState([])
   const [requests, setRequests] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
   const [requestPageName, setRequestPageName] = useState("")
 
-  // const [currentImageNumber, setCurrentImageNumber] = useState(0);
-  const [highlightedNews, setHighlightedNews] = useState({});
-  
-  const getNewsData = async (req, res)=>{
+  const getAppIcons = async (req, res)=>{
+    let appName = ""
+    if(environment ==="freeagent"){
+      appName= "icon"
+    }else{
+      appName="icons"
+    }
+
     try{
-        const response = await getTable("news")
-          // console.log(response)
-          setNewsData(await response.data)
-          setHighlightedNews(response.data[0]);
+      const response = await crud.getData(appName)
+        console.log("icons: ",response)
+        setAppIcons(response)
     }catch(error){
-        // console.log(error)
-        setNewsData([])
+        console.log(error)
+        setAppIcons([])
+    }
+  }
+
+  // const [currentImageNumber, setCurrentImageNumber] = useState(0);
+  const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
+  
+  const getAnnouncements = async (req, res)=>{
+    let appName = ""
+    if(environment ==="freeagent"){
+      appName= "announcement"
+    }else{
+      appName="announcements"
+    }
+    try{
+      const response = await crud.getData(appName)
+        console.log("announcements: ",response)
+        setAnnouncements(response)
+        setHlightedAnnouncement(response[0]);
+    }catch(error){
+      console.log(error)
+      setAnnouncements([])
     }
   }
 
@@ -96,12 +120,19 @@ const Home = (props) => {
 
   const getRequests = async (req, res)=>{
 
+    let appName = ""
+    if(environment ==="freeagent"){
+      appName= "custom_app_52"
+    }else{
+      appName="requests"
+    }
     try{
-        const response = await getTable("requests")
-        setRequests(response.data)
-
+      const response = await crud.getData(appName)
+        console.log("requests: ",response)
+        setRequests(response)
     }catch(error){
         console.log(error)
+        setRequests([])
     }
   }
 
@@ -143,6 +174,7 @@ const handleSearch = async (e)=>{
 
     const parentId = e.currentTarget.parentElement.id; 
     setSelectedApp(parentId)
+    console.log(parentId)
     
     if(environment == "freeagent"){
       const appHomePage = apps.find(i=>i.name === parentId).home_page_link
@@ -158,12 +190,11 @@ const handleSearch = async (e)=>{
    
   }
 
-
   const handleSelectedArticle =(articleId)=>{
     
     if (articleId>0){
       setAppData({...appData,...{["selected_article_id"]:articleId}})
-      const nextPage = "News Article"
+      const nextPage = "Announcement"
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageList([...pageList,nextPage])
       setPageName(nextPage)
@@ -174,12 +205,12 @@ const handleSearch = async (e)=>{
  // Effect to rotate images at equal intervals
  useEffect(() => {
     let intervalId;
-    if (newsData.length > 0) {
+    if (announcements.length > 0) {
       let index = 0;
   
       const rotateImages = () => {
-        index = (index + 1) % newsData.length; // Increment index and reset to 0 when reaching the end  
-        setHighlightedNews(newsData[index]);
+        index = (index + 1) % announcements.length; // Increment index and reset to 0 when reaching the end  
+        setHlightedAnnouncement(announcements[index]);
       };
 
       // Set an interval to rotate images at 3-second intervals
@@ -188,7 +219,7 @@ const handleSearch = async (e)=>{
 
     // Clean up the interval when the component unmounts or when newsData changes
     return () => clearInterval(intervalId);
-  }, [newsData]);
+  }, [announcements]);
 
   const sectionTitleStyle={
     fontSize: 20,
@@ -208,7 +239,7 @@ const handleSearch = async (e)=>{
   const [contentWidth, setContentWidth] = useState("100%")
   useEffect(()=>{
     setBannerWidth(bannerRef.current.clientWidth)
-  },[bannerRef, newsData])
+  },[bannerRef, announcements])
 
   useEffect(()=>{
     setContentWidth(bannerWidth)
@@ -216,8 +247,6 @@ const handleSearch = async (e)=>{
 
   const [imageClass, setImageClass] = useState("animate__animated animate__fadeIn animate__duration-0.5s")
   const [pageClass, setPageClass] = useState("flex-container animate__animated animate__fadeIn animate__duration-0.5s")
-
-
 
   // This segment auto sizes the content height according to the window height
   const contentContainerRef = useRef();
@@ -263,25 +292,6 @@ const handleSearch = async (e)=>{
   }, [windowHeight, contentContainerRef]);
 
  
-
-
-  const pageStyle = `
-    .RequestIntakeModalStyle {
-      position: fixed, 
-      top: 50%,
-      left: 50%,
-      height: 80vh, 
-      width: 50vw,
-      transform: translate(-50%, -50%),
-      top: 30vh,
-      fontSize: 24px,
-      fontWeight: bold,
-      zIndex: 999,
-      cursor: grab,
-    }
-  `
-  
-
 return(
     <div className={pageClass}>
 
@@ -290,11 +300,11 @@ return(
         {<div className="d-flex justify-content-between" style={{width: "50%"}}>
 
           <div className="d-flex me-3 flex-column" onClick={(e)=>goToCatalog(e)}>
-                <img style={iconStyle} src={`${appIcons}/shopping_icon.png`}></img>
+                <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="shopping").image:null}></img>
                 <div style={{fontSize: 14, color: "gray"}}>Shop</div>
             </div>
             <div className="d-flex me-3 flex-column" onClick={(e)=>gotToGenAI(e)}>
-                <img style={iconStyle} src={`${appIcons}/genAI_icon.png`}></img>
+                <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="gen_ai").image:null}></img>
                 <div style={{fontSize: 14, color: "gray"}}>GenAI</div>
             </div>
 
@@ -307,7 +317,7 @@ return(
                 onChange={(e)=>setSearchTerms(e.target.value)}
             />
             <div className="d-flex me-3 flex-column" onClick={(e)=>gotToGenAI(e)}>
-                <img src={`${appIcons}/search_icon.png`} style={{...iconStyle,...{height:75}}} onClick={(e)=>handleSearch(e)}></img> 
+                <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="search").image:null}></img> 
                 <div style={{fontSize: 14, color: "gray"}}>Search</div>
             </div>
         </div>}
@@ -318,13 +328,13 @@ return(
     <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
       <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
       style={{ height: "auto", width: "100%", overflowY: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
-          {newsData.length > 0 && (
+          {announcements.length > 0 && (
               <img
-                  src={highlightedNews.image_url}
-                  alt={highlightedNews.headline}
+                  src={highlightedAnnouncement.cover_image}
+                  alt={highlightedAnnouncement.headline}
                   className={imageClass}
                   style={{ width: "100%", height: "auto", margin: "auto"}}
-                  onClick={(e)=>handleSelectedArticle(highlightedNews.id)}
+                  onClick={(e)=>handleSelectedArticle(highlightedAnnouncement.id)}
               />
           )}
       </div>
@@ -379,7 +389,7 @@ return(
             {
               apps.map((app,index)=>(
                 <div id={app.name} className="d-flex flex-column m-3" style={{height: 50, width: 50, zIndex:100, cursor: "pointer"}} key={index}>
-                    <img  src={`${appIcons}/${app.icon_url}`} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
+                    <img  style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name===app.icon).image:null} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
                     <div style={{fontSize: 12, color: "gray"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
                 </div>
               ))
