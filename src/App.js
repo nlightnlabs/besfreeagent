@@ -24,6 +24,8 @@ function App() {
         environment = "nlightn"
     }
     window.environment = environment
+
+    const[faTest, setFATest] = useState([])
     
     const useExternalScript = (src) => {
         useEffect(() => {
@@ -40,6 +42,13 @@ function App() {
                     appletId: 'nlightnlabs-bes-home',
                 });
                 window.FAClient = FAClient;
+
+                FAClient.listEntityValues(
+                  {entity:"web_app"
+                },(response)=>{
+                  console.log("Free agent connection successfully.  Web apps: ",response)
+                  setFATest(response)
+                })
 
             }, 500);
 
