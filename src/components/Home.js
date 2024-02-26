@@ -45,6 +45,9 @@ const Home = (props) => {
     setSelectedApp
   } = useContext(Context)
 
+  const environment = window.environment
+  const FAClient = window.FAClient
+
   
   useEffect(()=>{
     getNewsData()
@@ -74,12 +77,20 @@ const Home = (props) => {
   }
 
   const getApps = async (req, res)=>{
+    let appName = ""
+    if(environment ==="freeagent"){
+      appName= "web_app"
+    }else{
+      appName="apps"
+    }
+
     try{
-        const response = await getTable("apps")
-          setApps(response.data)
+      const response = await crud.getData(appName)
+        console.log("apps: ",response)
+        setApps(response)
     }catch(error){
-        // console.log(error)
-        setApps([])
+      console.log(error)
+      setApps([])
     }
   }
 
@@ -113,10 +124,6 @@ const handleSearch = async (e)=>{
 
 }
 
-  const FANavigate = ()=>{
-    const FAClient = window.FAClient
-    FAClient.navigateTo('/entity/custom_app_15/view/all')
-  }
 
   const goToCatalog =(e)=>{
     const nextPage = "Catalog"
@@ -133,16 +140,22 @@ const handleSearch = async (e)=>{
   }
 
   const handleSelectedApp =(e,app)=>{
-    
+
     const parentId = e.currentTarget.parentElement.id; 
     setSelectedApp(parentId)
-
-    setTableName(apps.filter(row=>row.name==parentId)[0].db_table)
-
-    const nextPage = app.default_component
-    setPage(pages.filter(x=>x.name===nextPage)[0])
-    setPageList([...pageList,nextPage])
-    setPageName(nextPage)
+    
+    if(environment == "freeagent"){
+      const appHomePage = apps.find(i=>i.name === parentId).home_page_link
+      console.log(appHomePage)
+      FAClient.navigateTo(appHomePage)
+    }else{
+      setTableName(apps.filter(row=>row.name==parentId)[0].db_table)
+      const nextPage = app.default_component
+      setPage(pages.filter(x=>x.name===nextPage)[0])
+      setPageList([...pageList,nextPage])
+      setPageName(nextPage)
+    }
+   
   }
 
 
@@ -275,8 +288,6 @@ return(
     {/* Search bar and shop menu */}
     <div className="d-flex justify-content-center mb-3">
         {<div className="d-flex justify-content-between" style={{width: "50%"}}>
-          
-          <button className="btn btn-primary" onClick={()=>FANavigate()}>FA Navigate</button>
 
           <div className="d-flex me-3 flex-column" onClick={(e)=>goToCatalog(e)}>
                 <img style={iconStyle} src={`${appIcons}/shopping_icon.png`}></img>
