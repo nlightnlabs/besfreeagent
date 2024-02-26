@@ -295,8 +295,8 @@ return(
     <div className={pageClass}>
 
     {/* Search bar and shop menu */}
-    <div className="d-flex justify-content-center mb-3">
-        {<div className="d-flex justify-content-between" style={{width: "50%"}}>
+    {/* <div className="d-flex justify-content-center mb-3">
+        <div className="d-flex justify-content-between" style={{width: "50%"}}>
 
           <div className="d-flex me-3 flex-column" onClick={(e)=>goToCatalog(e)}>
                 <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="shopping").image:null}></img>
@@ -319,12 +319,12 @@ return(
                 <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="search").image:null}></img> 
                 <div style={{fontSize: 14, color: "gray"}}>Search</div>
             </div>
-        </div>}
-    </div>
+        </div>
+    </div> */}
         
     {/* News Banner */}
     
-    <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
+    {/* <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
       <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
       style={{ height: "auto", width: "100%", overflowY: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
           {announcements.length > 0 && (
@@ -337,15 +337,15 @@ return(
               />
           )}
       </div>
-  </div>
+  </div> */}
 
     {/* Content section */}
     <div className="d-flex justify-content-center">
-    {
+    
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:contentContainerHeight, minHeight:"300px"}}>
         
          {/* Request Something Panel*/}
-          <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
+          {/* <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
           style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>Request Something</div>
             <div style={{overflowY: "auto"}}>
@@ -362,11 +362,11 @@ return(
                 setPageName={setPageName}
               />
             </div>
-          </div>
+          </div> */}
   
 
         {/* Request status panel */}
-          <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
+          {/* <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
           style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>My Requests</div>
             <div style={{overflowY: "auto"}}>
@@ -380,10 +380,10 @@ return(
                   appData = {{user: appData.user_info}}
               />
               </div>
-          </div>
+          </div> */}
 
          {/* Work on Something Panel */}
-        <div className="d-flex flex-column p-2 border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
+        {/* <div className="d-flex flex-column p-2 border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
             <div style={sectionTitleStyle}>Work on Something</div>
             <div className="d-flex justify-content-center flex-wrap">
             {
@@ -395,10 +395,10 @@ return(
               ))
             }
             </div>
-        </div>
+        </div> */}
             
         </div>
-        }
+        
     </div>
 
 </div>
