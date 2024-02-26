@@ -24,6 +24,8 @@ function App() {
         environment = "nlightn"
     }
     window.environment = environment
+
+    const [FAClient, setFAClient] = useState(null)
     
     const useExternalScript = (src) => {
         useEffect(() => {
@@ -31,14 +33,16 @@ function App() {
             script.src = src;
             script.async = true;
             document.body.appendChild(script);
+            
 
             //Initialize the connection to the FreeAgent this step takes away the loading spinner
             setTimeout(()=>{
                 const FAAppletClient = window.FAAppletClient;
-                const FAClient = new FAAppletClient({
+                let faClient = new FAAppletClient({
                     appletId: 'nlightnlabs-bes-home',
                 });
-                window.FAClient = FAClient;
+                window.FAClient = faClient;
+                setFAClient(faClient)
             },500)
                 
             return () => {
@@ -58,6 +62,7 @@ function App() {
     pageName,
   } = useContext(Context)
 
+  const [displayPage, setDisplayPage] = useState(false)
 
   let pageData=[
     {name: "Home", component: <Home/>, data: "home", request_type: false, description: "Description for this request", icon:`${appIcons}/home_icon.png`},
@@ -76,10 +81,16 @@ function App() {
     overflow: "hidden"
   }
 
+  useEffect(()=>{
+    if(FAClient !==null){
+      setDisplayPage(true)
+    }
+},[FAClient])
+
   return (
     <div style={pageStyle}>
-        <Header/>
-        {window.FAClient && pageData.find(item=>item.name===pageName).component}
+        {displayPage && <Header/>}
+        {displayPage && pageData.find(item=>item.name===pageName).component}
     </div>
   );
 }
