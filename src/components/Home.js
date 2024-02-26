@@ -8,6 +8,7 @@ import { getTable, getRecords, search } from './apis/axios.js';
 import StatusListBox from './StatusListBox.js';
 import Draggable from 'react-draggable'
 import RequestIntakeHome from './RequestIntakeHome.js';
+import * as crud from "./apis/crud.js"
 
 
 const Home = (props) => {
@@ -111,6 +112,11 @@ const handleSearch = async (e)=>{
   const searchResults = search(searchTerms)
 
 }
+
+  const FANavigate = ()=>{
+    const FAClient = window.FAClient
+    FAClient.navigateTo('/entity/custom_app_15/view/all')
+  }
 
   const goToCatalog =(e)=>{
     const nextPage = "Catalog"
@@ -269,6 +275,8 @@ return(
     {/* Search bar and shop menu */}
     <div className="d-flex justify-content-center mb-3">
         {<div className="d-flex justify-content-between" style={{width: "50%"}}>
+          
+          <button className="btn btn-primary" onClick={()=>FANavigate()}>FA Navigate</button>
 
           <div className="d-flex me-3 flex-column" onClick={(e)=>goToCatalog(e)}>
                 <img style={iconStyle} src={`${appIcons}/shopping_icon.png`}></img>

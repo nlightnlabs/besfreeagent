@@ -189,3 +189,7 @@ export const deleteFARecord = async (appName, recordId) => {
     });
 }
 
+export const navigaTo = (url)=>{
+    const FAClient = window.FAClient
+    FAClient.navigateTo(url)
+}
