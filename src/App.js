@@ -33,14 +33,12 @@ function App() {
             document.body.appendChild(script);
 
             //Initialize the connection to the FreeAgent this step takes away the loading spinner
-            setTimeout(() => {
                 const FAAppletClient = window.FAAppletClient;
 
                 const FAClient = new FAAppletClient({
                     appletId: 'nlightnlabs-bes-home',
                 });
                 window.FAClient = FAClient;
-            }, 500);
 
             return () => {
                 document.body.removeChild(script);
