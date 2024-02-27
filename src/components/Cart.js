@@ -34,8 +34,6 @@ const Cart = (props)=>{
     const setShowOrderForm = props.setShowOrderForm
 
    
-
-  
     const handleRemoveItem = (item)=>{
       console.log(item)
         let updatedCart = cart.filter(record => record.id !== item.id);

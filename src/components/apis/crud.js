@@ -65,7 +65,7 @@ export const deleteRecord = async (appName, selectedRecordId) => {
     }
 }
 
-export const getUserData = async (appName) => {
+export const getUserData = async () => {
 
     const environment = window.environment
 

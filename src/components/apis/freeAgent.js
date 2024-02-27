@@ -161,6 +161,7 @@ export const deleteFARecord = async (appName, recordId) => {
   //Standard function to get a user's data from FreeAgent
   export const getCurrentFAUserData = () => {
     const FAClient = window.FAClient
+    console.log("environment", FAClient)
     return new Promise((resolve, reject) => {
         FAClient.getUserInfo((response) => {
             console.log('User info: ', response);
@@ -176,6 +177,7 @@ export const deleteFARecord = async (appName, recordId) => {
   //Standard function to get a user's data from FreeAgent
   export const getAllFAUserData = () => {
     const FAClient = window.FAClient
+    console.log("environment", FAClient)
 
     return new Promise((resolve, reject) => {
         FAClient.getTeamMembers((response) => {
@@ -189,7 +191,7 @@ export const deleteFARecord = async (appName, recordId) => {
     });
 }
 
-export const navigaTo = (url)=>{
+export const navigateTo = (url)=>{
     const FAClient = window.FAClient
     FAClient.navigateTo(url)
 }
