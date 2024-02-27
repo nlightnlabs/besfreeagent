@@ -162,16 +162,7 @@ export const deleteFARecord = async (appName, recordId) => {
   export const getCurrentFAUserData = async () => {
     const FAClient = window.FAClient    
     try{
-        const response = await FAClient.getUserInfo({
-            fields: [
-                "first_name",
-                "last_name",
-                "title",
-                "email",
-                "team",
-                "role",
-            ] 
-        })
+        const response = await FAClient.getUserInfo()    
         console.log("FA client reponse for current user: ", response)
         return response
     }catch(error){

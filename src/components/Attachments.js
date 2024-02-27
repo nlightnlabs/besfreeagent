@@ -24,8 +24,6 @@ const Attachments = (props) => {
     }
 
     const getAttachmentData=(attachmentString)=>{
-      console.log(attachmentString)
-      console.log(typeof attachmentString)
         try{
           if(attachmentString.length>0){
             setAttachments(JSON.parse(attachmentString))

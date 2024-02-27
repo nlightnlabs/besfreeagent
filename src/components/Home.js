@@ -15,9 +15,15 @@ const Home = (props) => {
     setUser,
     users,
     setUsers,
-    page,
+    userLoggedIn,
+    setUserLoggedIn,
     appIcons,
     setAppIcons,
+    apps,
+    setApps,
+    selectedApp,
+    setSelectedApp,
+    page,
     setPage,
     pages,
     setPages,
@@ -27,15 +33,25 @@ const Home = (props) => {
     setRequestType,
     appData,
     setAppData,
+    attachments,
+    setAttachments,
     pageList,
     setPageList,
+    requestTypes,
+    setRequestTypes,
+    initialFormData,
+    setInitialFormData,
     tableName,
     setTableName,
-    apps,
-    setApps,
-    selectedApp,
-    setSelectedApp
-  } = useContext(Context)
+    tables,
+    setTables,
+    currency,
+    setCurrency,
+    language,
+    setLanguage,
+    currencySymbol,
+    setCurrencySymbol
+}= useContext(Context)
 
   
 
@@ -48,7 +64,6 @@ const Home = (props) => {
   const [requests, setRequests] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
 
- 
 
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
   
@@ -62,7 +77,7 @@ const Home = (props) => {
     }
     try{
       const response = await crud.getData(appName)
-        console.log("announcements: ",response)
+    
         setAnnouncements(response)
         setHlightedAnnouncement(response[0]);
     }catch(error){
@@ -82,8 +97,9 @@ const Home = (props) => {
     }
     try{
       const response = await crud.getData(appName)
-        console.log("requests: ",response)
+      
         setRequests(response)
+        setAppData(prev=>({...prev,icons: appIcons}))
     }catch(error){
         console.log(error)
         setRequests([])
@@ -121,7 +137,6 @@ const Home = (props) => {
     
     const parentId = e.currentTarget.parentElement.id; 
     setSelectedApp(parentId)
-    console.log(parentId)
     
     if(environment == "freeagent"){
       const appHomePage = apps.find(i=>i.name === parentId).home_page_link
@@ -240,7 +255,7 @@ const Home = (props) => {
 
  
 return(
-    <div className={pageClass}>
+    <div className={pageClass} style={{height:"100vh", width: "100vw"}}>
 
     {/* Search bar and shop menu */}
     <div className="d-flex justify-content-center mb-3">
@@ -288,9 +303,9 @@ return(
   </div>
 
     {/* Content section */}
-    <div className="d-flex justify-content-center">
+    <div className="d-flex justify-content-center" style={{height: "65%"}}>
     
-      <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:contentContainerHeight, minHeight:"300px"}}>
+      <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:"90%", minHeight:"300px"}}>
         
          {/* Request Something Panel*/}
           <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
@@ -345,7 +360,7 @@ return(
             </div>
         </div>
             
-        </div>
+      </div>
         
     </div>
 

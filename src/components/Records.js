@@ -74,8 +74,6 @@ const getChartProps =  async (req, res)=>{
     condition: selectedApp
 }
   const response = await getRecords(params)
-  console.log(response)
-
   setChartProps(response)
 }
 
@@ -139,14 +137,14 @@ const [pageClass, setPageClass] = useState("flex-container flex-column animate__
                 </div>
                 :
                 props !=null && props.type === "BarChart"?
-                <div className="d-flex justify-content-center  bg-white border rounded-3 shadow" style={chartContainerStyle}>
+                <div key={index} className="d-flex justify-content-center  bg-white border rounded-3 shadow" style={chartContainerStyle}>
                   <ParetoChart
                       props = {props}
                     />
                 </div>
                 :
                 props !=null && props.type === "ParetoChart"?
-                <div className="d-flex justify-content-center bg-white border rounded-3 shadow" style={chartContainerStyle}>
+                <div key={index} className="d-flex justify-content-center bg-white border rounded-3 shadow" style={chartContainerStyle}>
                   <ParetoChart
                       props = {props}
                     />

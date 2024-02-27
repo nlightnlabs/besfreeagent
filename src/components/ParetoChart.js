@@ -149,8 +149,6 @@ const ParetoChart = ({props}) => {
               }
               pareto_data.push(tail_item)
             }
-
-            console.log(pareto_data)
         
             let labels = []
             pareto_data.map((item)=>{

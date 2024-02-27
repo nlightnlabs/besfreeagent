@@ -88,7 +88,7 @@ export const getRecords = async (req, res)=>{
 
   try{
     const result = await dbUrl.post("/db/getRecords",{params})
-    console.log(result)
+  
     const data = await result.data
     return (data)
   }catch(error){
@@ -116,9 +116,9 @@ export const addRecord = async (tableName, formData)=>{
         tableName: tableName,
         formData: formData
     }
-    // console.log(params)
+
     try{
-      const result = await dbUrl.post("/db/addRecord",{params})
+      const result = await dbUrl.post("/db/addRecord",params)
       console.log(result)
       const data = await result.data
       return (data)

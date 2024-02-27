@@ -63,7 +63,7 @@ const FloatingPanel = (props) => {
         onDoubleClick={handleMouseUp}
       >
         <div className="d-flex justify-content-between align-items-center" style={{backgroundColor:"rgb(0,100,255)", height:"30px", overflow:"hidden"}}>
-          <div className="d-flex ms-1" style={{fontSize:"18px", color: "white", fontWeight: "bold"}}>{toProperCase(title)}</div>
+          <div className="d-flex ms-1" style={{fontSize:"18px", color: "white", fontWeight: "bold"}}>{toProperCase(title.replaceAll("_"," "))}</div>
           <div className="d-flex" style={{fontSize:"16px"}} >
             <img src={icons.length>0 && icons.find(i=>i.name==="close").image} style={iconButtonStyle} onClick={(e)=>displayPanel(false)}/>
           </div>

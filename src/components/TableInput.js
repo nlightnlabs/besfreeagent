@@ -27,7 +27,7 @@ const TableInput = (props) => {
   const [optionsWindow, setOptionsWindow] = useState(false)
 
   const getInititalData=(initialTableData)=>{
-    console.log(typeof initialTableData)
+  
     if(typeof initialTableData == "string" && initialTableData.length>0){
       if(Array.isArray(JSON.parse(props.initialTableData))){
         console.log(JSON.parse(props.initialTableData))

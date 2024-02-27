@@ -61,13 +61,43 @@ function App() {
     setUser,
     users,
     setUsers,
+    userLoggedIn,
+    setUserLoggedIn,
     appIcons,
     setAppIcons,
+    apps,
+    setApps,
+    selectedApp,
+    setSelectedApp,
+    page,
+    setPage,
+    pages,
+    setPages,
     pageName,
     setPageName,
-    apps,
-    setApps
-  } = useContext(Context)
+    requestType,
+    setRequestType,
+    appData,
+    setAppData,
+    attachments,
+    setAttachments,
+    pageList,
+    setPageList,
+    requestTypes,
+    setRequestTypes,
+    initialFormData,
+    setInitialFormData,
+    tableName,
+    setTableName,
+    tables,
+    setTables,
+    currency,
+    setCurrency,
+    language,
+    setLanguage,
+    currencySymbol,
+    setCurrencySymbol
+} = useContext(Context)
 
   const [displayPage, setDisplayPage] = useState(false)
 
@@ -89,9 +119,10 @@ function App() {
 
   const getUserData = async ()=>{
     const response = await crud.getUserData()
-    console.log("users: ",response)
+   
     setUser(response.user)
     setUsers(response.users)
+    setAppData(prev=>({...prev,user: response.user, users: response.users}))
   }
 
   const getAppIcons = async (req, res)=>{
@@ -105,8 +136,9 @@ function App() {
 
     try{
         const response = await crud.getData(appName)
-        console.log("app icons: ",response)
+      
         setAppIcons(response)
+        setAppData(prev=>({...prev,appIcons: response}))
     }catch(error){
         console.log(error)
         setAppIcons([])
@@ -124,7 +156,7 @@ function App() {
 
     try{
       const response = await crud.getData(appName)
-        console.log("apps: ",response)
+       
         setApps(response)
     }catch(error){
       console.log(error)
@@ -133,13 +165,23 @@ function App() {
   }
 
   useEffect(()=>{
-    if(FAClient !==null){
-      getUserData()
-      getAppIcons()
-      getApps()
-      setDisplayPage(true)
-    }
+    setTimeout(async ()=>{
+      if(FAClient !==null){
+        await getUserData()
+        await getAppIcons()
+        await getApps()
+        setDisplayPage(true)
+      }
+    },500)
+    
 },[FAClient])
+
+useEffect(()=>{
+  if(users.length>0 && appIcons.length>0 && apps.length>0){
+    setDisplayPage(true)
+  }
+},[users])
+
 
   return (
     <div style={pageStyle}>
