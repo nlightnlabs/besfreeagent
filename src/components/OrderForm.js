@@ -1,12 +1,14 @@
 import React, {useRef, useState, useEffect} from "react"
 import MultiInput from "./MultiInput"
-import { UTCToLocalDate } from "./functions/formatValue"
+import { UTCToLocalDate } from "./functions/formatValue.js"
+import * as crud from './apis/crud.js'
 
 const OrderForm = (props)=>{
 
     const appData = props.appData
     const setAppData = props.setAppData
-    const [cart, setCart] = useState(props.cart)
+    const cart = props.cart
+    const resetCart = props.resetCart
     const businessUnits = appData.businessUnits
     const user = appData.user
     const users = appData.users
@@ -50,6 +52,7 @@ const OrderForm = (props)=>{
 
     const handleSubmit = async ()=>{
      
+      const environment = window.environment
 
       const allValuesAreEmptyOrNull = Object.values(formData).every(obj => obj === "" || obj === null);
       if(allValuesAreEmptyOrNull){
@@ -102,15 +105,15 @@ const OrderForm = (props)=>{
         console.log(orderForm)
       }
 
-      await addRecord(appName, orderForm)
+      await crud.addRecord(appName, orderForm)
 
       alert(`Order has been created and is being reviewed: ${JSON.stringify(finalFormData)}`)
-      setCart([])
+      resetCart()
       setShowOrderForm(false)
     }
 
     return(
-      <div className="d-flex flex-column bg-light p-3">
+      <div className="d-flex flex-column bg-light p-3 w-100">
         <h3>Review Order</h3>
         
         <div className="d-flex justify-content-between">

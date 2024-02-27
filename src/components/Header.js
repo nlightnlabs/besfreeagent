@@ -46,12 +46,20 @@ const Header = () => {
 
   
   const handleAppOption=(app)=>{
-      setSelectedApp(app.name)
-      setTableName(app.db_table)
-      let nextPage = app.default_component
-      setPageList([nextPage])
-      setPage(pages.filter(x=>x.name===nextPage)[0])
-      setPageName(nextPage)
+      const environment = window.environment
+      
+      if(environment === "freeagent" && app.name !== "gen_ai" && app.name!=="request_intake"){
+        const FAClient = window.FAClient
+        const page = apps.find(item=>item.name===app.name).home_page_link
+        FAClient.navigateTo(page)
+      }else{
+        setSelectedApp(app.name)
+        setTableName(app.db_table)
+        let nextPage = app.default_component
+        setPageList([nextPage])
+        setPage(pages.filter(x=>x.name===nextPage)[0])
+        setPageName(nextPage)
+      }
   }
 
   const topBarStyle={

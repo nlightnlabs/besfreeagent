@@ -270,12 +270,19 @@ const getCatalogItems = async ()=>{
     }
   
     let totalItems = updatedCart.length
-    let total = Number(appData.totalAmount)
-    updatedCart.map(item=>{
-        let itemAmount = Number((Number(item.price)*Number(item.quantity)).toFixed(2))
-        total = itemAmount + total
-      })
-     setAppData(prev=>({...prev,totalAmount: total, totalItems: totalItems, cart: updatedCart}))
+    let totalAmount = appData.totalAmount + Number((Number(item.price)*Number(item.quantity)).toFixed(2))
+    setAppData(prev=>({...prev,...{["totalAmount"]: totalAmount},...{["totalItems"]: totalItems},...{["cart"]: updatedCart}}))
+ }
+
+ const resetCart = ()=>{
+  setCart([])
+  setAppData(prevAppData => ({
+    ...prevAppData,
+    cart: [],
+    totalAmount: 0,
+    totalItems: 0
+  }));
+  getCatalogItems()
  }
 
 
@@ -340,6 +347,7 @@ const getCatalogItems = async ()=>{
                   appData = {appData}
                   setAppData = {setAppData}
                   setShowOrderForm = {setShowOrderForm}
+                  resetCart = {resetCart}
                 />
                 </div>
               }
@@ -357,6 +365,7 @@ const getCatalogItems = async ()=>{
             appData={appData}
             displayPanel={setShowOrderForm}
             cart={cart} 
+            resetCart={resetCart}
         >
           <OrderForm appData={appData} setAppData={setAppData} setShowOrderForm={setShowOrderForm} cart={cart} />
         </FloatingPanel>

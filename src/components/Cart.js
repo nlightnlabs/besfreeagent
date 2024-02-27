@@ -6,21 +6,16 @@ const Cart = (props)=>{
     const setAppData = props.setAppData
     const cart = props.cart
     const setCart = props.setCart
+    const resetCart = props.resetCart
 
     const icons = appData.icons
     const currencySymbol = appData.currencySymbol
 
-    const [totalAmount, setTotalAmount] = React.useState(appData.totalAmount)
-    const [totalItems, setTotalItems] = React.useState(appData.totalItems)
-
-    useEffect(()=>{
-      setCart(props.cart)
-    },[props.cart])
-
-    const setShowOrderForm = props.setShowOrderForm
+    const [totalAmount, setTotalAmount] = useState(appData.totalAmount)
+    const [totalItems, setTotalItems] = useState(appData.totalItems)
 
     const getTotals =(updatedCart)=>{
-      let total = Number(totalAmount)
+      let total = 0
       updatedCart.map(item=>{
         let itemAmount = Number((Number(item.price)*Number(item.quantity)).toFixed(2))
         total = itemAmount + total
@@ -30,6 +25,15 @@ const Cart = (props)=>{
       setAppData({...appData,...{["totalItems"]:updatedCart.length}})
       setAppData({...appData,...{["totalAmount"]:total}})
     }
+
+    useEffect(()=>{
+      setCart(props.cart)
+      getTotals(props.cart)
+    },[props.cart])
+
+    const setShowOrderForm = props.setShowOrderForm
+
+   
 
   
     const handleRemoveItem = (item)=>{
@@ -41,10 +45,6 @@ const Cart = (props)=>{
 
     const handleCheckout = (e)=>{
       setShowOrderForm(true)
-    }
-
-    const resetCart = ()=>{
-      setCart([])
     }
 
     const cellStyle={
