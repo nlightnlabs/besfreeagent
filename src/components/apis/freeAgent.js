@@ -161,40 +161,33 @@ export const deleteFARecord = async (appName, recordId) => {
   //Standard function to get a user's data from FreeAgent
   export const getCurrentFAUserData = async () => {
     const FAClient = window.FAClient
-    const response = await FAClient.getUserInfo()
-    console.log("getUserInfo response: ", response)
-    return response
 
-
-    // return new Promise((resolve, reject) => {
-    //     FAClient.getUserInfo((response) => {
-    //         console.log('User info: ', response);
-    //         if (response) {
-    //             resolve(response);
-    //         } else {
-    //             reject("No response from server");
-    //         }
-    //     });
-    // });
+    return new Promise((resolve, reject) => {
+        FAClient.getUserInfo((response) => {
+            console.log('User info: ', response);
+            if (response) {
+                resolve(response);
+            } else {
+                reject("No response from server");
+            }
+        });
+    });
 }
 
   //Standard function to get a user's data from FreeAgent
   export const getAllFAUserData = async () => {
     const FAClient = window.FAClient
-    const response = await FAClient.getTeamMembers()
-    console.log("getTeamMembers response: ", response)
-    return response
 
-    // return new Promise((resolve, reject) => {
-    //     FAClient.getTeamMembers((response) => {
-    //         console.log('All users: ', response);
-    //         if (response) {
-    //             resolve(response);
-    //         } else {
-    //             reject("No response from server");
-    //         }
-    //     });
-    // });
+    return new Promise((resolve, reject) => {
+        FAClient.getTeamMembers((response) => {
+            console.log('All users: ', response);
+            if (response) {
+                resolve(response);
+            } else {
+                reject("No response from server");
+            }
+        });
+    });
 }
 
 export const navigateTo = (url)=>{
