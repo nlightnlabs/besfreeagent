@@ -73,13 +73,11 @@ export const getUserData = async () => {
     let users = []
 
     if(environment==="freeagent"){
-        user = await freeAgentApi.getCurrentFAUserData();
-        users = await freeAgentApi.getAllFAUserData();
+        // user = await freeAgentApi.getCurrentFAUserData();
+        // users = await freeAgentApi.getAllFAUserData();
 
-        if(users.length==0){
             users = await getData("custom_app_35")
             user = await users.find(i=>i.first_name==="Barbara")
-        }
     }else{
         let response = await nlightnApi.getTable("users")
         users = await response.data
