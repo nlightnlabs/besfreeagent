@@ -160,34 +160,50 @@ export const deleteFARecord = async (appName, recordId) => {
 
   //Standard function to get a user's data from FreeAgent
   export const getCurrentFAUserData = async () => {
-    const FAClient = window.FAClient
+    const FAClient = window.FAClient    
+    try{
+        const response = await FAClient.getUserInfo()
+        console.log("FA client reponse for current user: ", response)
+        return response
+    }catch(error){
+        console.log(error)
+    }
 
-    return new Promise((resolve, reject) => {
-        FAClient.getUserInfo((response) => {
-            console.log('User info: ', response);
-            if (response) {
-                resolve(response);
-            } else {
-                reject("No response from server");
-            }
-        });
-    });
+    // return new Promise((resolve, reject) => {
+    //     FAClient.getUserInfo((response) => {
+    //         console.log('Current user: ', response);
+    //         if (response) {
+    //             resolve(response);
+    //         } else {
+    //             reject("No response from server");
+    //         }
+    //     });
+    // });
+
 }
 
   //Standard function to get a user's data from FreeAgent
   export const getAllFAUserData = async () => {
     const FAClient = window.FAClient
+   
+    try{
+        const response = await FAClient.getTeamMembers()
+        console.log("FA client reponse for all users: ", response)
+        return response
+    }catch(error){
+        console.log(error)
+    }
 
-    return new Promise((resolve, reject) => {
-        FAClient.getTeamMembers((response) => {
-            console.log('All users: ', response);
-            if (response) {
-                resolve(response);
-            } else {
-                reject("No response from server");
-            }
-        });
-    });
+    // return new Promise((resolve, reject) => {
+    //     FAClient.getTeamMembers((response) => {
+    //         console.log('All users: ', response);
+    //         if (response) {
+    //             resolve(response);
+    //         } else {
+    //             reject("No response from server");
+    //         }
+    //     });
+    // });
 }
 
 export const navigateTo = (url)=>{
