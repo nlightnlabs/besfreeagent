@@ -1,9 +1,6 @@
 import React, {useState, useContext, useEffect, useRef} from 'react';
-import {ContextProvider, Context } from './Context.js';
+import {Context } from './Context.js';
 import "bootstrap/dist/css/bootstrap.min.css"
-import {getTable} from './apis/axios.js'
-import { toProperCase } from './functions/formatValue.js';
-import { appIcons, generalIcons } from './apis/icons.js';
 
 const Header = () => {
 
@@ -11,8 +8,11 @@ const Header = () => {
       user,
       setUser,
       userLoggedIn,
-      setUserLoggedIn,
+      users,
+      setUsers,
       page,
+      appIcons,
+      setAppIcons,
       setPage,
       pages,
       setPages,
@@ -20,16 +20,10 @@ const Header = () => {
       setPageName,
       requestType,
       setRequestType,
-      requestTypes,
-      setRequestTypes,
       appData,
       setAppData,
-      attachments,
-      setAttachments,
       pageList,
       setPageList,
-      tables,
-      setTables,
       tableName,
       setTableName,
       apps,
@@ -41,90 +35,16 @@ const Header = () => {
     
 
     const [showUserOptions, setShowUserOptions] = useState(false)
-    const [userOptionsClassName, setUserOptionsClassName] = useState("d-flex flex-column p-1 border border-1 rounded rounded-3 shadow-sm")
     
     const topBarRef = useRef(null)
     const menuRef = useRef(null)
-
-    const [userData, setUserData]=useState({
-      first_name: "",
-      email: "",
-    })
-
-    const getApps = async ()=>{
-      const response = await getTable("apps")
-      // console.log(response)
-      setApps(response.data)
-  }
-
-    const initializeUserData=()=>{
-      let x = JSON.stringify(appData) 
-      if(x.search("user_info")>0){
-        setUserData(appData.user_info)
-      }
-    }
-
-    
-    useEffect(()=>{
-      // setUser(localStorage.getItem('user'));
-      getApps()
-      initializeUserData()
-      // console.log(Context)
-
-    },[appData, userLoggedIn])
-
-    const homeIcon = `${generalIcons}/home_icon.png`
-    const menuIcon = `${generalIcons}/menu_icon.png`
 
     const iconStyle = {
         maxHeight: 50,
     cursor: "pointer"
     }
 
-  // const handleMenuOption=(elem)=>{
   
-
-  //   if(elem == "settingsButton"){
-  //     let nextPage = "Settings"
-  //     setPageList([nextPage])
-  //     setPage(pages.filter(x=>x.name===nextPage)[0])
-  //     setPageName(nextPage)
-  //   }
-  //   if(elem == "allRequestsButton"){
-  //     let nextPage = "Requests"
-  //     setPageList([...pageList,nextPage])
-  //     setPage(pages.filter(x=>x.name===nextPage)[0])
-  //     setPageName(nextPage)
-  //   }
-  //   if(elem == "updateButton"){
-  //     let nextPage = "User Info"
-  //     setPageList([...pageList,nextPage])      
-  //     setPage(pages.filter(x=>x.name===nextPage)[0])
-  //     setPageName(nextPage)
-  //   }
-  //   if(elem == "homeButton"){
-  //     let nextPage = "Home"
-  //     setPageList([...pageList,nextPage]) 
-  //     console.log(pages.filter(x=>x.name===nextPage)[0])
-  //     setPage(pages.filter(x=>x.name===nextPage)[0])
-  //     setPageName(nextPage)
-  //   }
-  //   if(elem == "signOutButton"){
-  //     localStorage.removeItem('user');
-  //     let nextPage = "Log In"
-  //     setPageList([nextPage])
-  //     setPage(pages.filter(x=>x.name===nextPage)[0])
-  //     setUserData({
-  //       first_name: "",
-  //       email: "",
-  //     })
-  //     setUser({})
-  //     setAppData({})
-  //     setUserLoggedIn(false)
-  //     setPageName(nextPage)
-  //   }
-  // }
-
   const handleAppOption=(app)=>{
       setSelectedApp(app.name)
       setTableName(app.db_table)
@@ -139,7 +59,8 @@ const Header = () => {
     top: 0,
     height: 60,
     borderBottom: "1px solid lightgray",
-    marginBottom: "10px"
+    marginBottom: "10px",
+    zIndex:9999
   }
 
   const [windowDimensions, setWindowDimensions] = useState({
@@ -164,6 +85,7 @@ const Header = () => {
   }, []);
 
   const menuStyle={
+    position: 'absolute',
     width: 300, 
     right: 0, 
     overflowY: "auto", 
@@ -174,24 +96,24 @@ const Header = () => {
 
   return (
     <div ref={topBarRef} className="d-flex bg-white justify-content-end" style={topBarStyle}>
-      <div className="p-1"><img id="homeButton" src={homeIcon} style={iconStyle} onClick={(e)=>setPageName("Home")}></img></div>
-      <div className="p-1"><img id="menuButton" src={menuIcon} style={iconStyle} onClick={(e)=>setShowUserOptions(!showUserOptions)}></img></div>
+      <div className="p-1"><img id="homeButton" src={appIcons.length>0? appIcons.find(item=>item.name==="home").image:null} style={iconStyle} onClick={(e)=>setPageName("Home")}></img></div>
+      <div className="p-1"><img id="menuButton" src={appIcons.length>0? appIcons.find(item=>item.name==="menu").image:null} style={iconStyle} onClick={(e)=>setShowUserOptions(!showUserOptions)}></img></div>
 
       {showUserOptions &&
-      <div className="d-flex position-absolute flex-column border border-1 rounded rounded-3 shadow shadow p-3" 
+      <div className="d-flex flex-column border border-1 rounded rounded-3 shadow shadow p-3" 
       style={menuStyle}
       onMouseLeave={()=>setShowUserOptions(false)}
       >
         <div className="d-flex flex-column flex-wrap mb-3 border-bottom">
             <div style={{fontSize: 12}}>Signed in:</div>
-            <div className="fw-bold text-primary p-1" style={{fontSize: 12}}>{userData.full_name}</div>
+            <div className="fw-bold text-primary p-1" style={{fontSize: 12}}>{user.full_name}</div>
         </div>
 
         <div className="d-flex flex-column flex-wrap mb-3 border-top-1 ">
           {apps.map((app,index)=>(
               <button key={index} id={app.name} name={app.name} className="btn btn-light text-secondary mb-1 text-sm p-1" onClick={(e)=>handleAppOption(app)}>
                 <div className="d-flex justify-content-start">
-                  <img src={`${appIcons}/${app.icon_url}`} style={{height: 25, width: 25, marginRight: 10}}></img>
+                  <img src={app.icon} style={{height: 25, width: 25, marginRight: 10}}></img>
                   {app.label}
                 </div>
               </button>

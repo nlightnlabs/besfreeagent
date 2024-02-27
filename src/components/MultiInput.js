@@ -1,7 +1,7 @@
 import React, {useState, useEffect, forwardRef, useRef} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { generalIcons } from './apis/icons';
 import {formatDateInput} from './functions/formatValue'
+import * as crud from "./apis/crud.js"
 
 const MultiInput = forwardRef((props, ref) => {
 
@@ -47,12 +47,11 @@ const MultiInput = forwardRef((props, ref) => {
   const [datePickerDisplay, setDatePickerDisplay] = useState("none")
   const [selectedIndex, setSelectedIndex] = useState(props.list ? props.list.indexOf(props.value) : 0)
 
-  const [startDate, setStartDate] = useState(new Date());
-
   const [formClassList, setFormClassList] = useState("form-floating w-100")
+  const [appIcons, setAppIcons] = useState([])
 
   const inputRef = useRef("")
-  const containerRef = useRef("")
+
 
   useEffect(()=>{
     if(props.list && options.length<1){
@@ -77,6 +76,28 @@ const MultiInput = forwardRef((props, ref) => {
   useEffect(()=>{
     setValue(props.value || "")
   },[props.value])
+
+  const getAppIcons = async (req, res)=>{
+    const environment = window.environment
+    let appName = ""
+    if(environment ==="freeagent"){
+      appName= "icon"
+    }else{
+      appName="icons"
+    }
+
+    try{
+        const response = await crud.getData(appName)
+        setAppIcons(response)
+    }catch(error){
+        console.log(error)
+        setAppIcons([])
+    }
+  }
+
+  useEffect(()=>{
+    getAppIcons()
+  },[])
 
 
   const containerstyle={
@@ -128,8 +149,6 @@ const MultiInput = forwardRef((props, ref) => {
   const dropDownStyle = {
     display: dropDownDisplay,
     position: "absolute",
-    top: containerstyle.top + containerRef.current.clientHeight,
-    left: inputStyle.left,
     width: "100%",
     maxHeight: 300,
     overflowY: "auto",
@@ -284,7 +303,6 @@ const MultiInput = forwardRef((props, ref) => {
 
   return (
     <div 
-      ref = {containerRef}
       id={id}
       name={name} 
       className="d-flex"
@@ -311,11 +329,11 @@ const MultiInput = forwardRef((props, ref) => {
             :
             type == "file" ?
               <input 
+                ref = {inputRef}
                 className="form-control"
                 id={id}
                 name={name}
                 style={textAreaStyle}
-                ref = {inputRef}
                 type={type}
                 value={value}
                 placeholder={label}
@@ -347,7 +365,7 @@ const MultiInput = forwardRef((props, ref) => {
         
 
          {props.list && props.list.length>0 && type!=="date" &&
-            <div style={dropDownStyle}>
+            <div style={{...dropDownStyle, top: inputRef.current.offsetHeight, left:inputRef.current.left}}>
               {options.map((item,index)=>(
                 <div
                   key={index}
@@ -366,7 +384,7 @@ const MultiInput = forwardRef((props, ref) => {
         {
             props.list && props.list.length>0 && type=="select" && allowAddData && 
             <img 
-              src={`${generalIcons}/add_icon.png`} 
+              src={appIcons.find(i=>i.name==="add").image} 
               alt="Add Icon"
               style={addIconStyle} 
               onClick={(e)=>handleAddData(e)}>

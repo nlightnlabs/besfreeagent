@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import Workflow from './Workflow.js'
 import DataEntryFrom from './DataEntryForm.js'
 import Activities from './Activities.js'
 import { generalIcons } from './apis/icons.js'
@@ -84,9 +83,7 @@ const RecordDetails = (props) => {
             </div>
         </div>
         <div className="d-flex w-100 flex-column p-3">
-        {/* <div className="row">
-            <Workflow/>
-        </div> */}
+ 
         <div className="row">
             <div className="col-7 p-3" style={FormDataPanel}>
                 <DataEntryFrom

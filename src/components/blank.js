@@ -1,2 +1,0 @@
-
-    { "type": "ValueChart", "tableName": "budgets", "aggregationMethod": "sum", "fieldToAggregate": "item_amount", "valueColor": "green", "valueWeight": "bold", "valueSize": 48, "subTitle": "Total Budget", "subTitleColor": "gray", "subTitleWeight": "normal", "subTitleSize": 12, "format": "currency", "currencySymbol": "$", "digits":"2", "abbreviate":"true", "query": "" }

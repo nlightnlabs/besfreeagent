@@ -117,6 +117,17 @@ export const formatDateInput = (inputValue)=>{
   let dateValue = new Date(inputValue);  
   let dd = String(dateValue.getDate()).padStart(2, '0'); 
   let mm = String(dateValue.getMonth() + 1).padStart(2, '0'); let yyyy = dateValue.getFullYear(); 
-  let formattedDate = yyyy + '-' + mm + '-' + dd; return formattedDate;
+  let formattedDate = yyyy + '-' + mm + '-' + dd; 
   return formattedDate
+}
+
+
+export const limitText =(textContent,maxLength)=>{
+  if (textContent !=="" && textContent !=null){
+    var text = textContent.toString();
+    if (text.length > maxLength) {
+      text=text.substring(0, maxLength) + '...';
+    }
+    return(text)
+  }
 }

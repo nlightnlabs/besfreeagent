@@ -12,7 +12,7 @@ import GenAIAnalyzeSpend from './GenAIAnalyzeSpend.js'
 import ImageConvert from './ImageConvert.js'
 
 
-const Gpt = (props) => {
+const GenAIWorkbench = (props) => {
 
     const {user, appData} = useContext(Context)
 
@@ -116,4 +116,4 @@ const Gpt = (props) => {
   )
 }
 
-export default Gpt
+export default GenAIWorkbench

@@ -3,9 +3,7 @@ import {Context} from "./Context.js"
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import MultiInput from './MultiInput.js';
-import { getTable, getRecords, search } from './apis/axios.js';
 import StatusListBox from './StatusListBox.js';
-import Draggable from 'react-draggable'
 import RequestIntakeHome from './RequestIntakeHome.js';
 import * as crud from "./apis/crud.js"
 
@@ -43,7 +41,6 @@ const Home = (props) => {
 
   useEffect(()=>{
       getAnnouncements()
-      getApps()
       getRequests()
 },[])
 
@@ -74,24 +71,6 @@ const Home = (props) => {
     }
   }
 
-  const getApps = async (req, res)=>{
-    const environment = window.environment
-    let appName = ""
-    if(environment ==="freeagent"){
-      appName= "web_app"
-    }else{
-      appName="apps"
-    }
-
-    try{
-      const response = await crud.getData(appName)
-        console.log("apps: ",response)
-        setApps(response)
-    }catch(error){
-      console.log(error)
-      setApps([])
-    }
-  }
 
   const getRequests = async (req, res)=>{
     const environment = window.environment
@@ -123,23 +102,15 @@ const Home = (props) => {
     {status: "Cancelled", color: "red"}
 ] 
 
-
-const handleSearch = async (e)=>{
-
-  const searchResults = search(searchTerms)
-
-}
-
-
-  const goToCatalog =(e)=>{
-    const nextPage = "Catalog"
+  const goToMarketPlace=(e)=>{
+    const nextPage = "Market Place"
     setPage(pages.filter(x=>x.name===nextPage)[0])
     setPageList([...pageList,nextPage])
     setPageName(nextPage)
   }
 
-  const gotToGenAI =(e)=>{
-    const nextPage = "GenAIStudio"
+  const gotToGenAIWorkbench =(e)=>{
+    const nextPage = "GenAI Workbench"
     setPage(pages.filter(x=>x.name===nextPage)[0])
     setPageList([...pageList,nextPage])
     setPageName(nextPage)
@@ -170,7 +141,7 @@ const handleSearch = async (e)=>{
     
     if (articleId>0){
       setAppData({...appData,...{["selected_article_id"]:articleId}})
-      const nextPage = "Announcement"
+      const nextPage = "Article"
       setPage(pages.filter(x=>x.name===nextPage)[0])
       setPageList([...pageList,nextPage])
       setPageName(nextPage)
@@ -275,11 +246,11 @@ return(
     <div className="d-flex justify-content-center mb-3">
         <div className="d-flex justify-content-between" style={{width: "50%"}}>
 
-          <div className="d-flex me-3 flex-column" onClick={(e)=>goToCatalog(e)}>
+          <div className="d-flex me-3 flex-column" onClick={(e)=>goToMarketPlace(e)}>
                 <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="shopping").image:null}></img>
                 <div style={{fontSize: 14, color: "gray"}}>Shop</div>
             </div>
-            <div className="d-flex me-3 flex-column" onClick={(e)=>gotToGenAI(e)}>
+            <div className="d-flex me-3 flex-column" onClick={(e)=>gotToGenAIWorkbench(e)}>
                 <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="gen_ai").image:null}></img>
                 <div style={{fontSize: 14, color: "gray"}}>GenAI</div>
             </div>
@@ -292,7 +263,7 @@ return(
                 border={"2px solid lightgray"}
                 onChange={(e)=>setSearchTerms(e.target.value)}
             />
-            <div className="d-flex me-3 flex-column" onClick={(e)=>gotToGenAI(e)}>
+            <div className="d-flex me-3 flex-column" onClick={(e)=>gotToGenAIWorkbench(e)}>
                 <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="search").image:null}></img> 
                 <div style={{fontSize: 14, color: "gray"}}>Search</div>
             </div>
@@ -364,10 +335,10 @@ return(
             <div style={sectionTitleStyle}>Work on Something</div>
             <div className="d-flex justify-content-center flex-wrap">
             {
-              apps.map((app,index)=>(
-                <div id={app.name} className="d-flex flex-column justify-content-center m-3" style={{height: 50, width: "50", zIndex:100, cursor: "pointer"}} key={index}>
+              apps.length>0 && apps.map((app,index)=>(
+                <div id={app.name} className="d-flex align-items-center flex-column justify-content-center m-3" style={{height: "50px", width: "50px", cursor: "pointer"}} key={index}>
                     <img  style={iconStyle} src={app.icon} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
-                    <div className="text-center" style={{fontSize: 12, color: "gray"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
+                    <div className="d-flex text-center" style={{fontSize: 12, color: "gray", whiteSpace:"wrap"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
                 </div>
               ))
             }

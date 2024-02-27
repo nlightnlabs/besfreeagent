@@ -3,9 +3,9 @@ import {Context } from './components/Context.js';
 import "bootstrap/dist/css/bootstrap.min.css"
 import 'animate.css';
 import Home from './components/Home.js';
-import GenAIStudio from './components/GenAIStudio.js'
+import GenAIWorkbench from './components/GenAIWorkbench.js';
 import Records from './components/Records.js'
-import Catalog from './components/Catalog.js'
+import MarketPlace from './components/MarketPlace.js'
 import Article from './components/Article.js';
 import Header from './components/Header.js'
 import * as crud from './components/apis/crud.js'
@@ -65,18 +65,18 @@ function App() {
     setAppIcons,
     pageName,
     setPageName,
-    appData,
-    setAppData
+    apps,
+    setApps
   } = useContext(Context)
 
   const [displayPage, setDisplayPage] = useState(false)
 
   let pageData=[
-    {name: "Home", component: <Home/>, data: "home", request_type: false, description: "Description for this request", icon:null},
-    {name: "GenAIStudio", component: <GenAIStudio/>, data: "gen_ai_stuid", request_type: false, description: "Description for this request", icon:null},
-    {name: "Catalog", component: <Catalog/>, data: "catalog", request_type: false, description: "Description for this request", icon:null},
-    {name: "Records", component: <Records/>, data: "records", request_type: false, description: "Description for this request", icon: null},
-    {name: "Annoncement", component: <Article/>, data: "news_article", request_type: false, description: "Description for this request", icon: null},
+    {name: "Home", component: <Home/>},
+    {name: "GenAI Workbench", component: <GenAIWorkbench/>},
+    {name: "Market Place", component: <MarketPlace/>},
+    {name: "Records", component: <Records/>},
+    {name: "Article", component: <Article/>},
   ]
 
   const pageStyle={
@@ -113,10 +113,30 @@ function App() {
     }
   }
 
+  const getApps = async (req, res)=>{
+    const environment = window.environment
+    let appName = ""
+    if(environment ==="freeagent"){
+      appName= "web_app"
+    }else{
+      appName="apps"
+    }
+
+    try{
+      const response = await crud.getData(appName)
+        console.log("apps: ",response)
+        setApps(response)
+    }catch(error){
+      console.log(error)
+      setApps([])
+    }
+  }
+
   useEffect(()=>{
     if(FAClient !==null){
       getUserData()
       getAppIcons()
+      getApps()
       setDisplayPage(true)
     }
 },[FAClient])

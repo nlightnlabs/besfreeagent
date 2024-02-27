@@ -1,107 +1,124 @@
-import React, {useState, useEffect} from 'react'
-import "bootstrap/dist/css/bootstrap.min.css"
-import 'animate.css';
-import { appIcons, generalIcons } from './apis/icons.js';
+import React, {useRef, useState, useEffect} from "react"
 
+const Cart = (props)=>{
 
-const Cart = (props) => {
-
+    const appData = props.appData
+    const setAppData = props.setAppData
     const cart = props.cart
     const setCart = props.setCart
-    const [totalItems, setTotalItems] = useState(props.totalItems || 0)
-    const [totalAmount, setTotalAmount] = useState(props.totalAmount || 0)
-    const handleCheckOut = props.handleCheckOut
 
-    const summarizeCart = ()=>{
+    const icons = appData.icons
+    const currencySymbol = appData.currencySymbol
 
-        setTotalItems(cart.length)
-        
-        let total = 0
-        cart.map((item)=>{
-            total = (Number(total)+Number(item.item_amount)).toFixed(2)
-        })
-        setTotalAmount(total)
-    }
+    const [totalAmount, setTotalAmount] = React.useState(appData.totalAmount)
+    const [totalItems, setTotalItems] = React.useState(appData.totalItems)
 
     useEffect(()=>{
-        setCart(props.cart)
-        summarizeCart();
-    },[props])
+      setCart(props.cart)
+    },[props.cart])
 
-    const handleQuantityChange = (cartIndex, inputValue)=>{
-        let quantity = inputValue
-        let price = cart[cartIndex].price
-        let item_amount = quantity*price
+    const setShowOrderForm = props.setShowOrderForm
 
-        let tempCart = cart
-        tempCart[cartIndex].quantity = inputValue
-        tempCart[cartIndex].item_amount = item_amount
-        setCart(tempCart)
-
-        summarizeCart()
+    const getTotals =(updatedCart)=>{
+      let total = Number(totalAmount)
+      updatedCart.map(item=>{
+        let itemAmount = Number((Number(item.price)*Number(item.quantity)).toFixed(2))
+        total = itemAmount + total
+      })
+      setTotalItems(updatedCart.length)
+      setTotalAmount(total)
+      setAppData({...appData,...{["totalItems"]:updatedCart.length}})
+      setAppData({...appData,...{["totalAmount"]:total}})
     }
 
-    const handleDelete = (cartIndex)=>{
-        setCart(cart.filter(item => cart.indexOf(item) !== cartIndex));
+  
+    const handleRemoveItem = (item)=>{
+      console.log(item)
+        let updatedCart = cart.filter(record => record.id !== item.id);
+        setCart(updatedCart)
+        getTotals(updatedCart)
     }
 
-    const iconStyle={
-        maxHeight: 30,
-        maxWidth: 30,
-        cursor: "pointer"
-      }
-      
-      const cartInputStyle={
-        border: "1px solid lightgray",
-        maxWidth: "50px",
-        outline: "none",
-        textAlign: 'right',
-        color: 'blue',
-        borderRadius: "5px"
-      }
-    
-      const cartCellStyle={
-        textAlign: 'right'
-      }
+    const handleCheckout = (e)=>{
+      setShowOrderForm(true)
+    }
 
-  return (
-    <div className="flex-container flex-column">
-        <img src={`${appIcons}/shopping_icon.png`} style={iconStyle} alt="Shopping Cart Icon"></img>
-        <div className="d-flex w-100 flex-column justify-content-between">
-        {totalItems > 0 ? <div className="d-flex justify-content-end fw-bold" style={{fontSize: "16px"}}>{totalItems} item{totalItems>1?"s":""}</div> : null }
-        {totalAmount > 0 ? <div className="d-flex justify-content-end fw-bold" style={{fontSize: "16px"}}>${totalAmount} total</div> : null }
-        <button className="btn btn-primary" onClick={(e)=>handleCheckOut()}>Check Out</button>
-        <div className="d-flex flex-column" style={{overflow:"hidden", fontSize: "12px"}}>  
-            {cart.length>0 ?
-            <table className="table table-striped table-light table-border p-0">
+    const resetCart = ()=>{
+      setCart([])
+    }
+
+    const cellStyle={
+      fontSize: "12px"
+    }
+
+    const iconButtonStyle = {
+      height: "30px",
+      width: "30px",
+      cursor: "pointer"
+    }
+
+
+    return(
+      <div className="d-flex flex-column bg-light p-3" style={{width: "100%", height:"100%"}}>
+        
+        <div className="d-flex justify-content-between">
+        <div className="d-flex flex-column">
+          <div className = "d-flex" style={{fontWeight: "normal"}}>
+            <span style={{marginRight: 5}}>Total Items:</span> 
+            <span style={{fontWeight: "bold"}}> {Number(totalItems).toLocaleString()}</span> 
+          </div>
+          <div className = "d-flex" style={{fontWeight: "normal"}}>
+            <span style={{marginRight: 5}}>Total Amount: </span>
+            <span style={{fontWeight: "bold"}}> {currencySymbol}{Number(totalAmount.toFixed(2)).toLocaleString()}</span></div>
+          </div>
+
+          <div className="d-flex">
+            {icons.length>0 && 
+            <img name="reset_cart_icon" 
+            title="Reset cart" alt="Reset Cart Icon" 
+            src={`${icons.find(item=>item.name==="reset").image}`} 
+            style={iconButtonStyle}
+            onClick={(e)=>resetCart()}
+            >
+          </img>}
+          </div>
+        </div>
+        
+        <button className="btn btn-primary" onClick={(e)=>handleCheckout(e)}>Check Out</button>
+        <div>
+          <table className="table table-striped" style={{fontSize: "12px"}}>
             <thead>
-                <tr className="fw-bold text-center">
-                    <td>Item</td>
-                    <td>Price</td>
-                    <td>Quantity</td>
-                    <td>Amount</td>
-                    <td></td>
-                    </tr>
+            <tr>
+              <th scope="col" className="w-50">Item</th>
+              <th scope="col" className="text-center">Quantity</th>
+              <th scope="col" className="text-center">Price</th>
+              <th scope="col" className="text-center" >Amount</th>
+              <th scope="col" className="text-center"></th>
+            </tr>
             </thead>
             <tbody>
-            {cart.map((item,cartIndex)=>(
-                <tr key={cartIndex} className="animate__animated animate__fadeIn animate__duration-0.5s">
-                    <td >{item.item_name}</td>
-                    <td style={cartCellStyle}>${Number(item.price).toFixed(2)}</td>
-                    <td style={cartCellStyle}><input style={cartInputStyle} value={item.quantity} onChange={(e)=>handleQuantityChange(cartIndex, e.target.value)}></input></td>
-                    <td style={cartCellStyle}>${Number(item.item_amount).toFixed(2)}</td>
-                    <td style={{...cartCellStyle,['fontWeight']:'bold'}}><img style={{height: 25, width: 25}} src={`${appIcons}/delete_icon.png`} onClick={(e)=>{handleDelete(cartIndex)}}></img></td>
-                </tr>
+            {cart.map((item)=>(
+              <tr key={item.id}>
+                <td>{item.item_name}</td>
+                <td className="text-center">{Number(item.quantity).toLocaleString()}</td>
+                <td className="text-center">{currencySymbol}{Number(item.price).toLocaleString()}</td>
+                <td className="text-end">{currencySymbol}{Number(item.item_amount).toLocaleString()}</td>
+                <td>
+                  {icons.length>0 &&
+                    <img 
+                      src={icons.length>0 && icons.find(i=>i.name==="remove").image} 
+                      style={iconButtonStyle}
+                      onClick={()=>handleRemoveItem(item)} 
+                    ></img>
+                  }
+                </td>
+              </tr>
             ))}
-            </tbody>
-            </table>
-            :
-            <div className="text-center" style={{color: "gray"}}>Nothing in cart</div>
-            }
+          </tbody>
+          </table>
         </div>
-        </div>
-    </div>
-  )
-}
+      </div>
+    )
+  }
 
-export default Cart
+  export default Cart
