@@ -84,7 +84,7 @@ const buttonIconStyle={
                 >
                 </textarea>
                 <div className="d-flex justify-content-center mt-1" style={{width: "100%"}}>
-                    <div class="btn-group" role="group" aria-label="Basic example">
+                    <div clasName="btn-group" role="group" aria-label="Basic example">
                         <button id="askButton" className="btn btn-primary" onClick={(e)=>handleSubmit(true)}>Submit</button>
                     </div>
                 </div>
