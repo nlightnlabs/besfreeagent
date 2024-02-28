@@ -153,11 +153,11 @@ const Home = (props) => {
   }
 
   const handleSelectedArticle =(articleId)=>{
-    
+    console.log(articleId)
     if (articleId>0){
       setAppData({...appData,...{["selected_article_id"]:articleId}})
       const nextPage = "Article"
-      setPage(pages.filter(x=>x.name===nextPage)[0])
+      setPage(pages.find(x=>x.name===nextPage))
       setPageList([...pageList,nextPage])
       setPageName(nextPage)
     }

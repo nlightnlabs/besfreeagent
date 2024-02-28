@@ -164,12 +164,17 @@ function App() {
     }
   }
 
+  const getPageData = async()=>{
+    setPages(pageData)
+  }
+
   useEffect(()=>{
     setTimeout(async ()=>{
       if(FAClient !==null){
         await getUserData()
         await getAppIcons()
         await getApps()
+        await getPageData()
         setDisplayPage(true)
       }
     },500)
