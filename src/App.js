@@ -23,24 +23,20 @@ function App() {
     }
     window.environment = environment
 
-    const [FAClient, setFAClient] = useState(null)
-    
     const useExternalScript = (src) => {
         useEffect(() => {
             const script = document.createElement('script');
             script.src = src;
             script.async = true;
             document.body.appendChild(script);
-            
-            //Initialize the connection to the FreeAgent this step takes away the loading spinner
+
             setTimeout(()=>{
-                const FAAppletClient = window.FAAppletClient;
-                let faClient = new FAAppletClient({
-                    appletId: 'nlightnlabs-bes-home',
-                });
-                window.FAClient = faClient;
-                setFAClient(faClient)
-            },500)
+              const FAAppletClient = window.FAAppletClient;
+              let faClient = new FAAppletClient({
+                  appletId: 'nlightnlabs-bes-home',
+              });
+              window.FAClient = faClient;
+          },500)
                 
             return () => {
                 document.body.removeChild(script);
@@ -49,6 +45,7 @@ function App() {
     };
     //script to itnegrate FreeAgent library
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
+     
 
 
 
@@ -169,6 +166,7 @@ function App() {
 
   useEffect(()=>{
     setTimeout(async ()=>{
+      const FAClient = window.FAClient
       if(FAClient !==null){
         await getUserData()
         await getAppIcons()
@@ -178,7 +176,7 @@ function App() {
       }
     },500)
     
-},[FAClient])
+},[window.FAClient])
 
 useEffect(()=>{
   if(users.length>0 && appIcons.length>0 && apps.length>0){
