@@ -26,6 +26,7 @@ const GenAIWorkbench = (props) => {
         if (contentContainerRef.current) {
             setContentContainerHeight(window.innerHeight - contentContainerRef.current.getBoundingClientRect().top);
         }
+        console.log(user)
     },[window.innerHeight, window.innerWidth])
 
 

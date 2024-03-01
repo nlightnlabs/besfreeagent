@@ -69,6 +69,10 @@ const RequestIntakeForm = (props) => {
 	const setFormData = props.setFormData
 	const setShowRequestIntakeModal = props.setShowRequestIntakeModal
 
+	const [requestTypeData, setRequestTypeData] = useState([])
+	const [requestSections, setRequestSections] = useState([])
+	const [currentRequestSection, setCurrentRequestSection] = useState("")
+
 	const [formName, setFormName] = useState(props.formName)
 	const userData = user
 
@@ -99,11 +103,33 @@ const RequestIntakeForm = (props) => {
 
 	const [lastPage, setLastPage] = useState(false)
 
-	useEffect(() => {
+	useEffect(()=>{
+		const getRequestTypeSections = async ()=>{
+			const query = `SELECT * FROM request_flow_forms where "request_type" = '${requestType}';`
+		
+			try {
+				const response = await getData(query);
+				setRequestTypeData(response)
+				
+				let fieldSet = new Set()
+				response.map(item=>{
+					fieldSet.add(item.ui_form_description)
+				})
+				let requestSectionList = Array.from(fieldSet)
+				setRequestSections([...requestSectionList,"Request Summary"])
+		
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
+		}
+		getRequestTypeSections()
+	},[])
+
+
+
+	useEffect(() => {	
 		getFormFields();
 	}, [formName, props.requestType, userData])
-
-
 
 	const getFormFields = async () => {
 		
@@ -124,6 +150,8 @@ const RequestIntakeForm = (props) => {
 
 			//Setup initial formdata with default values if any
 			setUpFormData(formFields);
+
+			setCurrentRequestSection(formFields.find(item=>item.ui_form_name===formName).ui_form_description)
 			
 		} catch (error) {
 			console.error("Error fetching data:", error);
@@ -487,232 +515,251 @@ const RequestIntakeForm = (props) => {
 	};
 
 	return (
-
-        <div className="d-flex flex-column bg-light p-3" style={pageStyle}>
-		
-			<form name='form' id="form" onSubmit={handleSubmit} noValidate>
-			
-                {initialValues && (
-					<div
-						className="d-flex flex-column bg-white rounded-3 animate__animated fade-in"
-						style={{ height: "70vh"}}
+		<div className="d-flex" style={pageStyle}>
+			<div className="d-flex flex-column bg-light p-3" style={{width: "25%", minWidth:"200px", height:"100%"}}>
+				
+				{requestSections.length>0 && requestSections.map((item,index)=>(
+					<div className="d-flex flex-column p-2" 
+					style={{
+						color: currentRequestSection===item? "rgb(0,100,255)":"lightgray",
+						fontWeight: currentRequestSection===item? "bold":"normal",
+						border: currentRequestSection===item? "1px solid lightgray":"none",
+						borderRadius: currentRequestSection===item? "5px":"0",
+						backgroundColor: currentRequestSection===item? "rgba(235,245,255,0.5)":"rgba(235,245,255,0)"
+					}} 
+					key={index}
 					>
-						
-					{sections.map((section, sectionIndex) =>
-						section.name == "navigation" && section.visible ? 
-							<div key={sectionIndex} className="d-flex justify-content-center mb-3 p-3">
-								{
-									formElements.map((item, index)=>(
+						{item}
+					</div>		
+				))}
+			</div>
+
+			<div className="d-flex" style={{height: "100%", width: "75%"}}>
+
+				<form className= "w-100" name='form' id="form" onSubmit={handleSubmit} noValidate>
+			
+					{initialValues && (
+						<div
+							className="d-flex flex-column bg-white animate__animated fade-in"
+							style={{ height: "100%", width: "100%"}}
+						>
+							
+						{sections.map((section, sectionIndex) =>
+							section.name == "navigation" && section.visible ? 
+								<div key={sectionIndex} className="d-flex justify-content-end mb-3 p-3">
+									{
+										formElements.map((item, index)=>(
+											item.ui_form_section === section.name &&
+											item.ui_component_visible &&
+											item.ui_component_type === "button" &&
+												<button 
+													key={index}
+													id={item.ui_id}
+													name={item.ui_name}
+													onClick = {eval(item.ui_onclick)}
+													className={item.ui_classname}
+													>
+														{item.ui_label}
+												</button>	
+										))
+									}
+								</div>	
+							:
+							section.name !== null && section.name !== "navigation" && section.visible ? (
+
+								<div
+									key={sectionIndex}
+									className={section.name==="navigation"?  "d-flex justify-content-end": "d-flex flex-column"}
+									style={section.name==="navigation"? navSectionStyle : sectionStyle}
+								>
+									{section.title_visible &&
+										<div style={sectionTitle}>
+											{toProperCase(section.name.replaceAll("_", " "))}
+										</div>
+									}
+									{formElements.map((item, index) =>
 										item.ui_form_section === section.name &&
 										item.ui_component_visible &&
-										item.ui_component_type === "button" &&
-											<button 
-												key={index}
-												id={item.ui_id}
-												name={item.ui_name}
-												onClick = {eval(item.ui_onclick)}
-												className={item.ui_classname}
-												>
-													{item.ui_label}
-											</button>	
-									))
-								}
-							</div>	
-						:
-						section.name !== null && section.name !== "navigation" && section.visible ? (
-
-							<div
-								key={sectionIndex}
-								className={section.name==="navigation"?  "d-flex justify-content-end": "d-flex flex-column"}
-								style={section.name==="navigation"? navSectionStyle : sectionStyle}
-							>
-								{section.title_visible &&
-									<div style={sectionTitle}>
-										{toProperCase(section.name.replaceAll("_", " "))}
-									</div>
-								}
-								{formElements.map((item, index) =>
-									item.ui_form_section === section.name &&
-									item.ui_component_visible &&
-									(item.ui_component_type === "input" ||
-										item.ui_component_type == "select") &&
-									item.ui_input_type !== "file" ? (
-										<div key={index} className="d-flex flex-column mb-3">
-											<MultiInput
-												id={{ id: item.ui_id, section: item.ui_form_section }}
-												name={{
-													name: item.ui_name,
-													section: item.ui_form_section,
-												}}
-												className={item.ui_classname}
-												label={item.ui_label}
-												type={item.ui_input_type}
-												value={formData[item.ui_id].value}
-												valueColor={item.ui_color}
-												inputFill={item.ui_backgroundColor}
-												fill={item.ui_backgroundColor}
-												border={border}
-												readonly={eval(item.ui_readonly) || !allowEdit}
-												disabled={eval(item.ui_disabled) || !allowEdit}
-												onClick={eval(item.ui_onclick)}
-												onChange={eval(item.ui_onchange)}
-												onBlur={eval(item.ui_onblur)}
-												onMouseOver={eval(item.ui_onmouseover)}
-												onMouseLeave={eval(item.ui_mouseLeave)}
-												list={
-													dropdownLists.filter(
-														(l) => l.name === `${item.ui_id}_list`
-													).length > 0 &&
-													dropdownLists.filter(
-														(l) => l.name === `${item.ui_id}_list`
-													)[0].listItems
-												}
-												allowAddData={item.ui_allow_add_data}
-											/>
-										</div>
-									) : item.ui_form_section === section.name &&
-										item.ui_component_visible &&
-										item.ui_input_type == "file" ? (
-										<div key={index} className="d-flex flex-column mb-3">
-											<Attachments
-												id={{ id: item.ui_id, section: item.ui_form_section }}
-												name={{
-													name: item.ui_name,
-													section: item.ui_form_section,
-												}}
-												onChange={(e) => handleChange(e)}
-												valueColor={item.ui_color}
-												currentAttachments={formData[item.ui_id].value !==null? formData[item.ui_id].value:""}
-												prepareAttachments={prepareAttachments}
-												userData={userData}
-												readonly={eval(item.ui_readonly) || !allowEdit}
-												disabled={eval(item.ui_disabled) || !allowEdit}
-											/>
-										</div>
-									) : item.ui_form_section === section.name &&
-										item.ui_component_visible &&
-										item.ui_component_type == "table" ? (
-										<div key={index} className="d-flex flex-column mb-3">
-											<TableInput
-												id={{ id: item.ui_id, section: item.ui_form_section }}
-												name={{
-													name: item.ui_name,
-													section: item.ui_form_section,
-												}}
-												onChange={(e) => handleChange(e)}
-												valueColor={item.ui_color}
-												valueSize={item.ui_font_size}
-												valueWeight={item.ui_font_weight}
-												valueFill={item.ui_background_color}
-												initialTableData={formData[item.ui_id].value}
-												list={
-													dropdownLists.filter(
-														(l) => l.name === `${item.ui_id}_list`
-													).length > 0 &&
-													dropdownLists.filter(
-														(l) => l.name === `${item.ui_id}_list`
-													)[0].listItems
-												}
-												readonly={eval(item.ui_readonly) || !allowEdit}
-												disabled={eval(item.ui_disabled) || !allowEdit}
-											/>
-										</div>
-									) 
-									:
-									item.ui_form_section === section.name &&
-									item.ui_component_visible &&
-									item.ui_component_type == "img"?
-									<div key={index} className={item.ui_classname}>
-										<img src={`${appIcons}/${item.ui_default_value}`} alt={item.label} style={JSON.parse(item.ui_style)}></img>
-										{item.ui_className}
-									</div>
-									:
-									
-									item.ui_form_section === section.name &&
-									item.ui_component_visible &&
-									item.ui_input_type=="output" &&
-									item.ui_component_type == "title"?
-									<div className={item.ui_classname} style={item.style}>{item.ui_default_value}</div>
-
-									:
-
-									item.ui_form_section === section.name &&
-									item.ui_component_visible &&
-									item.ui_input_type == "output"&&
-									item.ui_component_type == "json_table"?
-									
-									<div key={index} className="flex-container" style={JSON.parse(item.ui_style)}>
-										{
-											Object.entries(eval(item.ui_default_value)).map(([key,value],fieldIndex)=>(
-												value.value !=null &&
-													<div key={fieldIndex} className="row">
-													<div className="col-3 text-left" style={{color: "gray"}}>{toProperCase(key.replaceAll("_"," "))}: </div>
-													{
-														typeof value.value == "string"?
-														<div className="col text-left" style={{color: "black"}}>{value.value}</div>
-														:
-														typeof value.value =="object" && Array.isArray(value.value) && key =="attachments"?
-														<div className="col-8" style={{color: "black"}}>
-															{(value.value).map((row, rowIndex)=>(
-																<div>
-																	<a key={rowIndex} style={{color: "blue"}} href={row.url}>{row.name}</a>
-																</div>
-															))}
-														</div>
-														:
-														typeof value.value =="object" && Array.isArray(value.value)?
-														<div className="col-8" style={{color: "black"}}>
-															
-															<table className="table table-bordered table-striped text-center">
-																<tr>
-																	{Object.keys((value.value)[0]).map((header,headerIndex)=>(
-																		<th scope="col" className="w-50">{toProperCase(header.replaceAll("_"," "))}</th>
-																	))}
-																</tr>
-																{(value.value).map((row, rowIndex)=>(
-																	(Object.values(row))[0].length>0 &&
-																		<tr key={rowIndex}>
-																			{Object.values(row).map((val,itemIndex)=>(
-																				<td key={itemIndex}>{val}</td>
-																			))
-																	}	
-																	</tr>
-																))}
-															</table>
-														</div>
-														:
-														typeof value.value =="object" ?
-														<div> {JSON.stringify(value.value)}</div>
-														:
-														null
+										(item.ui_component_type === "input" ||
+											item.ui_component_type == "select") &&
+										item.ui_input_type !== "file" ? (
+											<div key={index} className="d-flex flex-column mb-3">
+												<MultiInput
+													id={{ id: item.ui_id, section: item.ui_form_section }}
+													name={{
+														name: item.ui_name,
+														section: item.ui_form_section,
+													}}
+													className={item.ui_classname}
+													label={item.ui_label}
+													type={item.ui_input_type}
+													value={formData[item.ui_id].value}
+													valueColor={item.ui_color}
+													inputFill={item.ui_backgroundColor}
+													fill={item.ui_backgroundColor}
+													border={border}
+													readonly={eval(item.ui_readonly) || !allowEdit}
+													disabled={eval(item.ui_disabled) || !allowEdit}
+													onClick={eval(item.ui_onclick)}
+													onChange={eval(item.ui_onchange)}
+													onBlur={eval(item.ui_onblur)}
+													onMouseOver={eval(item.ui_onmouseover)}
+													onMouseLeave={eval(item.ui_mouseLeave)}
+													list={
+														dropdownLists.filter(
+															(l) => l.name === `${item.ui_id}_list`
+														).length > 0 &&
+														dropdownLists.filter(
+															(l) => l.name === `${item.ui_id}_list`
+														)[0].listItems
 													}
-													
-												</div>
-											))
-										}
+													allowAddData={item.ui_allow_add_data}
+												/>
+											</div>
+										) : item.ui_form_section === section.name &&
+											item.ui_component_visible &&
+											item.ui_input_type == "file" ? (
+											<div key={index} className="d-flex flex-column mb-3">
+												<Attachments
+													id={{ id: item.ui_id, section: item.ui_form_section }}
+													name={{
+														name: item.ui_name,
+														section: item.ui_form_section,
+													}}
+													onChange={(e) => handleChange(e)}
+													valueColor={item.ui_color}
+													currentAttachments={formData[item.ui_id].value !==null? formData[item.ui_id].value:""}
+													prepareAttachments={prepareAttachments}
+													userData={userData}
+													readonly={eval(item.ui_readonly) || !allowEdit}
+													disabled={eval(item.ui_disabled) || !allowEdit}
+												/>
+											</div>
+										) : item.ui_form_section === section.name &&
+											item.ui_component_visible &&
+											item.ui_component_type == "table" ? (
+											<div key={index} className="d-flex flex-column mb-3">
+												<TableInput
+													id={{ id: item.ui_id, section: item.ui_form_section }}
+													name={{
+														name: item.ui_name,
+														section: item.ui_form_section,
+													}}
+													onChange={(e) => handleChange(e)}
+													valueColor={item.ui_color}
+													valueSize={item.ui_font_size}
+													valueWeight={item.ui_font_weight}
+													valueFill={item.ui_background_color}
+													initialTableData={formData[item.ui_id].value}
+													list={
+														dropdownLists.filter(
+															(l) => l.name === `${item.ui_id}_list`
+														).length > 0 &&
+														dropdownLists.filter(
+															(l) => l.name === `${item.ui_id}_list`
+														)[0].listItems
+													}
+													readonly={eval(item.ui_readonly) || !allowEdit}
+													disabled={eval(item.ui_disabled) || !allowEdit}
+												/>
+											</div>
+										) 
+										:
+										item.ui_form_section === section.name &&
+										item.ui_component_visible &&
+										item.ui_component_type == "img"?
+										<div key={index} className={item.ui_classname}>
+											<img src={`${appIcons}/${item.ui_default_value}`} alt={item.label} style={JSON.parse(item.ui_style)}></img>
+											{item.ui_className}
+										</div>
+										:
 										
-									</div>
+										item.ui_form_section === section.name &&
+										item.ui_component_visible &&
+										item.ui_input_type=="output" &&
+										item.ui_component_type == "title"?
+										<div className={item.ui_classname} style={item.style}>{item.ui_default_value}</div>
 
-									:
+										:
 
-									item.ui_form_section === section.name &&
-									item.ui_component_visible &&
-									item.ui_input_type=="output" &&
-									item.ui_component_type == "html"?
-									<div
-										key={index} dangerouslySetInnerHTML={{__html: formData[item.ui_id]}}
-									/>
-																		
-									: null
-								)}
-								
-							</div>
-						) : null
+										item.ui_form_section === section.name &&
+										item.ui_component_visible &&
+										item.ui_input_type == "output"&&
+										item.ui_component_type == "json_table"?
+										
+										<div key={index} className="flex-container" style={JSON.parse(item.ui_style)}>
+											{
+												Object.entries(eval(item.ui_default_value)).map(([key,value],fieldIndex)=>(
+													value.value !=null &&
+														<div key={fieldIndex} className="row">
+														<div className="col-3 text-left" style={{color: "gray"}}>{toProperCase(key.replaceAll("_"," "))}: </div>
+														{
+															typeof value.value == "string"?
+															<div className="col text-left" style={{color: "black"}}>{value.value}</div>
+															:
+															typeof value.value =="object" && Array.isArray(value.value) && key =="attachments"?
+															<div className="col-8" style={{color: "black"}}>
+																{(value.value).map((row, rowIndex)=>(
+																	<div>
+																		<a key={rowIndex} style={{color: "blue"}} href={row.url}>{row.name}</a>
+																	</div>
+																))}
+															</div>
+															:
+															typeof value.value =="object" && Array.isArray(value.value)?
+															<div className="col-8" style={{color: "black"}}>
+																
+																<table className="table table-bordered table-striped text-center">
+																	<tr>
+																		{Object.keys((value.value)[0]).map((header,headerIndex)=>(
+																			<th scope="col" className="w-50">{toProperCase(header.replaceAll("_"," "))}</th>
+																		))}
+																	</tr>
+																	{(value.value).map((row, rowIndex)=>(
+																		(Object.values(row))[0].length>0 &&
+																			<tr key={rowIndex}>
+																				{Object.values(row).map((val,itemIndex)=>(
+																					<td key={itemIndex}>{val}</td>
+																				))
+																		}	
+																		</tr>
+																	))}
+																</table>
+															</div>
+															:
+															typeof value.value =="object" ?
+															<div> {JSON.stringify(value.value)}</div>
+															:
+															null
+														}
+														
+													</div>
+												))
+											}
+											
+										</div>
+
+										:
+
+										item.ui_form_section === section.name &&
+										item.ui_component_visible &&
+										item.ui_input_type=="output" &&
+										item.ui_component_type == "html"?
+										<div
+											key={index} dangerouslySetInnerHTML={{__html: formData[item.ui_id]}}
+										/>
+																			
+										: null
+									)}
+									
+								</div>
+							) : null
+						)}
+					</div>
+						
 					)}
-				</div>
-					
-				)}
-			</form>
+				</form>
+			</div>
 		</div>
         
 	);

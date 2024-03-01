@@ -79,14 +79,6 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
             <div className="col"></div>
 
             <div className="col-lg-8" style={{height: "100%", overflowY:"hidden"}}>
-
-                <div className="d-flex justify-content-center animate__animated animate__heartbeat animate__duration-0.5s" style={{height: 150, overflow: "hidden"}}>
-                    <img  src={SuccessIcon} style={{height: 125} }alt="Success Icon"/>
-                </div>
-            
-                <h1 className="text-center">Thank You</h1>
-                <h4 className="text-center">Your request is being reviewed</h4>
-
                 <div className="d-flex justify-content-center mt-3">
                     <form onSubmit={handleSubmit}>
                     <div className="btn-group mb-3">
@@ -95,6 +87,15 @@ const [pageClass, setPageClass] = useState("container mt-5 animate__animated ani
                     </div>
                     </form>
                 </div>
+
+                <div className="d-flex justify-content-center animate__animated animate__heartbeat animate__duration-0.5s" style={{height: 150, overflow: "hidden"}}>
+                    <img  src={appData.appIcons.find(i=i.name==="check_mark").image} style={{height: 125} }alt="Success Icon"/>
+                </div>
+            
+                <h1 className="text-center">Thank You</h1>
+                <h4 className="text-center">Your request is being reviewed</h4>
+
+                
                 
                 
                 <div className="=flex-fill shadow shadow-lg rounded-top-2" style={{backgroundImage: "linear-gradient(45deg, rgb(9, 128, 243), rgb(0, 223, 255))", height:25}}></div>

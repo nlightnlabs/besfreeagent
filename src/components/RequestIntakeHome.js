@@ -107,7 +107,7 @@ const RequestIntakeHome = (props) => {
     <div>
         {requestTypes.map((item, index)=>(
             item.include && 
-            <div key={index} id={item.name} className="d-flex border border-1 border-light shadow shadow-sm p-2 m-2" style={{cursor: "pointer", zIndex:7}} onClick={(e)=>handleSelect(e)}>
+            <div key={index} id={item.name} className="d-flex border border-1 border-light rounded-3 shadow shadow-sm p-2 m-2" style={{cursor: "pointer", zIndex:7}} onClick={(e)=>handleSelect(e)}>
                 <img  id={item.name} src={item.icon} alt={`${item.name} icon`} style={{maxHeight: 30, maxWidth: 30}}></img>
                 <div id={item.name} className="d-flex flex-column ps-3">
                     <div id={item.name} style={{fontSize: 14, fontWeight: 'bold'}}>{item.label}</div>
@@ -122,7 +122,7 @@ const RequestIntakeHome = (props) => {
         top="50vh"
         left="50vw"
         height="80vh"
-        width="60vw"
+        width="800px"
         appData={appData}
         displayPanel={setShowRequestIntakeModal}
       >

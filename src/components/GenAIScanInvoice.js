@@ -1,4 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useContext, useRef} from 'react'
+import {Context} from "./Context"
 import { scanInvoice } from './apis/axios'
 import {toProperCase} from './functions/formatValue'
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -10,8 +11,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const GenAIScanInvoice = (props) => {
 
-    const user = props.user
-    const appData = props.appData
+    const {user, users, appData} = useContext(Context)
 
     const [formData, setFormData] = useState({
         supplier_name:"",

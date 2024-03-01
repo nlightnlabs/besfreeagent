@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { askGPT } from './apis/axios.js'
 import {toProperCase} from './functions/formatValue.js'
 import axios,{getList} from './apis/axios.js'
 import Spinner from './Spinner.js'
+import {Context} from './Context.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
 
@@ -12,7 +13,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const GenAICreateContract = (props) => {
 
-    const userData = props.user
+    const {user, users, appData} = useContext(Context)
     
     const [prompt, setPrompt] = useState("")
     const [response, setResponse] = useState("")
@@ -62,9 +63,9 @@ const prepareFormData = async ()=>{
         {id: 5, section: "counter_party_info", name: "counter_party_company_name", label: "Company name to be on contract", list: business_names, value:"",  type:"text"},
         {id: 6, section: "counter_party_info", name: "counter_party_representative_name", label: "Name of contract owner at the counter party", list: null, value:"", type:"text"},
         {id: 7, section: "counter_party_info", name: "counter_party_representative_title", label: "Title of contract at the counter party", list: null, value:"", type:"text"},
-        {id: 8, section: "my_company_info", name: "my_company_name", label: "Company name to be on contract", list: null, value: userData.company_name,  type:"text"},
-        {id: 9, section: "my_company_info", name: "my_company_representative_name", label: "Name of contract owner", list: null, value:userData.full_name, type:"text"},
-        {id: 10, section: "my_company_info", name: "my_company_representative_title", label: "Title of the contract owner", list: null, value:userData.job_title, type:"text"},
+        {id: 8, section: "my_company_info", name: "my_company_name", label: "Company name to be on contract", list: null, value: users.company_name,  type:"text"},
+        {id: 9, section: "my_company_info", name: "my_company_representative_name", label: "Name of contract owner", list: null, value:users.full_name, type:"text"},
+        {id: 10, section: "my_company_info", name: "my_company_representative_title", label: "Title of the contract owner", list: null, value:users.job_title, type:"text"},
       ]
       setFormData(form_data)
 

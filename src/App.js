@@ -32,7 +32,6 @@ function App() {
             script.async = true;
             document.body.appendChild(script);
             
-
             //Initialize the connection to the FreeAgent this step takes away the loading spinner
             setTimeout(()=>{
                 const FAAppletClient = window.FAAppletClient;

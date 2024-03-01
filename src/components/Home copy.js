@@ -184,11 +184,10 @@ const Home = (props) => {
   }, [announcements]);
 
   const sectionTitleStyle={
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "normal",
     color: "#5B9BD5",
-    marginBottom: 10,
-    backgroundColor: "rgb(225,235,245)"
+    marginBottom: 10
   }
 
   const iconStyle={
@@ -254,67 +253,9 @@ const Home = (props) => {
     };
   }, [windowHeight, contentContainerRef]);
 
-
-//   const appsRef = useRef(null)
-//   const [appLocations, setAppLocations] = useState([])
-//   const radius = 175
-//   const [appsTop, setAppsTop] = useState(0);
-//   const [appsLeft, setAppsLeft] = useState(0);
-//   const [appsWidth, setAppsWidth] = useState(0);
-//   const [ appsHeight,setAppsHeight] = useState(0)
-//   const calculateCoordinates = ()=> {
-
-//     var numPoints = apps.length;
-//     let arr = []
-//     apps.map((item,index)=>{
-//         var angle = (2 * Math.PI / numPoints) * index;
-//         var x = radius * Math.cos(angle);
-//         var y = radius * Math.sin(angle);
-//         arr.push({...item,...{top: y},...{left: x}});
-//     })
-//     console.log(arr)
-//     setAppLocations(arr)
-// }
-
-// useEffect(()=>{
-//   calculateCoordinates()
-  
-//   const updatePosition = () => {
-//     const rect = appsRef.current;
-//     setAppsTop(rect.top);
-//     setAppsLeft(rect.left);
-//     setAppsWidth(rect.offsetWidth);
-//     setAppsHeight(rect.offsetHeight)
-//   };
-//   updatePosition()
-
-//   // Call updatePosition initially and on window resize
-//   updatePosition();
-//   window.addEventListener('resize', updatePosition);
-
-//   // Cleanup event listener on component unmount
-//   return () => {
-//     window.removeEventListener('resize', updatePosition);
-//   };
-    
-// },[])
-
-const [isHovered, setIsHovered] = useState(false);
-
-const styles = `
-  .app-div {
-    width: 50px;
-    height: 50px;
-    transition: all 0.3s ease; /* Smooth transition for the growth effect */
-  }
-  
-  .pp-div.hovered {
-    transform: scale(1.2); /* Grow by 20% when hovered */
-  }
-}`
  
 return(
-    <div className={pageClass} style={{height:"100vh", width: "100vw", backgroundColor: "white"}}>
+    <div className={pageClass} style={{height:"100vh", width: "100vw"}}>
 
     {/* Search bar and shop menu */}
     <div className="d-flex justify-content-center mb-3">
@@ -337,6 +278,10 @@ return(
                 border={"2px solid lightgray"}
                 onChange={(e)=>setSearchTerms(e.target.value)}
             />
+            <div className="d-flex me-3 flex-column" onClick={(e)=>gotToGenAIWorkbench(e)}>
+                <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="search").image:null}></img> 
+                <div style={{fontSize: 14, color: "gray"}}>Search</div>
+            </div>
         </div>
     </div>
         
@@ -344,13 +289,13 @@ return(
     
     <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
       <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
-      style={{ height: "auto", width: "100%", overflow: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
+      style={{ height: "auto", width: "100%", overflowY: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
           {announcements.length > 0 && (
               <img
                   src={highlightedAnnouncement.cover_image}
                   alt={highlightedAnnouncement.headline}
                   className={imageClass}
-                  style={{ width: "100%", height: "100%", margin: "auto"}}
+                  style={{ width: "100%", height: "auto", margin: "auto"}}
                   onClick={(e)=>handleSelectedArticle(highlightedAnnouncement.id)}
               />
           )}
@@ -361,31 +306,12 @@ return(
     <div className="d-flex justify-content-center" style={{height: "65%"}}>
     
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:"90%", minHeight:"300px"}}>
-
-         {/* Request status panel */}
-         <div className="d-flex flex-column justify-content-around border border-1 rounded-3 bg-white shadow m-2" 
-          style={{height: "95%", width: "30%", minWidth:"300px", overflowY: "auto"}}>
-            <div className="p-2" style={sectionTitleStyle}>My Requests</div>
-            <div className="p-3" style={{overflowY: "auto"}}>
-              <StatusListBox
-                  title="My Requests"
-                  data={requests}
-                  colors = {colors}
-                  buttonLabel = "New Request"
-                  listType = "status"
-                  updateParentStates = {{setPageName, setPage, setPageList, setSelectedApp, pages, pageList}}
-                  appData = {{user: appData.user_info}}
-              />
-              </div>
-          </div>
-
-
         
          {/* Request Something Panel*/}
-          <div className="d-flex flex-column justify-content-around border border-1 rounded-3 bg-white shadow m-2" 
+          <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
           style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
-            <div className="p-2" style={sectionTitleStyle}>Request Something</div>
-            <div className="p-3" style={{overflowY: "auto"}}>
+            <div style={sectionTitleStyle}>Request Something</div>
+            <div style={{overflowY: "auto"}}>
               <RequestIntakeHome
                 appData = {appData}
                 setSelectedApp = {setSelectedApp}
@@ -400,11 +326,29 @@ return(
               />
             </div>
           </div>
+  
 
-            {/* Work on Something Panel */}
-          <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
-            <div className="p-2" style={sectionTitleStyle}>Work on Something</div>
-            <div className="d-flex justify-content-center flex-wrap p-3">
+        {/* Request status panel */}
+          <div className="d-flex flex-column justify-content-around p-2 border border-1 rounded-3 bg-white shadow m-2" 
+          style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
+            <div style={sectionTitleStyle}>My Requests</div>
+            <div style={{overflowY: "auto"}}>
+              <StatusListBox
+                  title="My Requests"
+                  data={requests}
+                  colors = {colors}
+                  buttonLabel = "New Request"
+                  listType = "status"
+                  updateParentStates = {{setPageName, setPage, setPageList, setSelectedApp, pages, pageList}}
+                  appData = {{user: appData.user_info}}
+              />
+              </div>
+          </div>
+
+         {/* Work on Something Panel */}
+        <div className="d-flex flex-column p-2 border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
+            <div style={sectionTitleStyle}>Work on Something</div>
+            <div className="d-flex justify-content-center flex-wrap">
             {
               apps.length>0 && apps.map((app,index)=>(
                 <div id={app.name} className="d-flex align-items-center flex-column justify-content-center m-3" style={{height: "50px", width: "50px", cursor: "pointer"}} key={index}>
@@ -415,35 +359,11 @@ return(
             }
             </div>
         </div>
-
-        {/* <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
-            <div className="p-2" style={sectionTitleStyle}>Work on Something</div>
-            <div ref={appsRef} style={{position: "relative"}}>
-            {
-              appLocations.length>0 && appLocations.map((app,index)=>(
-                <div id={appLocations.name} 
-                className="app-div" 
-                style={{position: "absolute", top: app.top, left: appsWidth/2+app.left, cursor: "pointer"}} key={index}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                >
-                    <img  style={iconStyle} src={app.icon} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
-                    <div className="d-flex text-center" style={{fontSize: 12, color: "gray", whiteSpace:"wrap"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
-                </div>
-              ))
-            }
-            </div>
-        </div> */}
-  
-
-       
-
-       
             
       </div>
         
     </div>
-            <style>{styles}</style>
+
 </div>
 )
 }

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import "bootstrap/dist/css/bootstrap.min.css"
-import { generalIcons } from './apis/icons'
+import {UTCToLocalDate} from "./functions/formatValue"
 
 const StatusListBox = (props) => {
 
@@ -63,7 +63,8 @@ const StatusListBox = (props) => {
         marginBottom: 5,
         color: "gray",
         fontSize: 12,
-        padding: 2
+        padding: 2,
+        width: "100px",
     }
 
     
@@ -82,9 +83,10 @@ const StatusListBox = (props) => {
 
     const statusStyle={
         display: "flex", 
-        width: "30%", 
+        width: "100px", 
         justifyContent: "end",
-        fontSize: "12px"
+        fontSize: "12px",
+        fontWeight: "bold"
     }
 
 
@@ -107,31 +109,19 @@ const StatusListBox = (props) => {
     <div>
         {data.map((item,index)=>(
         <div key={index} id={item.id} style={{display: "flex", flexDirection: "column", width: "100%", cursor: "pointer"}} onClick={(e)=>handleClick(e)}>
-            { listType == "action"?
-                <div style={{...listItemStyle,...{marginBottom: 10}}}>
-                    <div style={{width: "70%"}}>
-                        {item.subject}
-                    </div>
-                    <div className="btn-group btn-group-sm" style={{width: "25%"}}>
-                        <button className="btn btn-outline-primary btn-sm p-0" style={{fontSize: 14, height: 28}}>Start</button>
-                    </div>
-                </div>
-                :
-                <>
-                <div style={listItemStyle}>
+                <div className = "d-flex justify-content-between shadow shadow-sm" style={listItemStyle}>
                     <div className="d-flex flex-column" style={{width: "55%", fontSize: "12px"}}>
                         <span style={{fontWeight: "bold"}}>{item.subject}</span>
                         <span>{item.request_type}</span>
                     </div>
-                    <div className="d-flex flex-column">
+                    <div className="d-flex flex-column justify-content-end">
                         <span style={{...statusStyle,...{color: getColor(item.stage)}}}>{item.stage}</span>
-                        <span>{item.request_date}</span>
+                        <span style={timeStampStyle}>{UTCToLocalDate(item.request_date)}</span>
                     </div>
                     
                 </div>
                 <div style={timeStampStyle}>{item.timestamp}</div>
-                </>
-            }
+
         </div>
         ))}
     </div>

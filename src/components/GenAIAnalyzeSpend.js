@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import * as XLSX from 'xlsx/xlsx.mjs';
 import {appIcons} from './apis/icons.js'
 import MultiInput from './MultiInput.js';
 import Draggable from 'react-draggable';
+import {Context} from './Context'
 
 const GenAIAnalyzeSpend = () => {
+
+  const {user, appData} = useContext(Context)
 
   const [showUploadDataWindow, setShowUploadDataWindow] = useState(false);
   const [showConnectDataWindow, setShowConnectDataWindow] = useState(false);
