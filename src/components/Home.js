@@ -255,63 +255,6 @@ const Home = (props) => {
   }, [windowHeight, contentContainerRef]);
 
 
-//   const appsRef = useRef(null)
-//   const [appLocations, setAppLocations] = useState([])
-//   const radius = 175
-//   const [appsTop, setAppsTop] = useState(0);
-//   const [appsLeft, setAppsLeft] = useState(0);
-//   const [appsWidth, setAppsWidth] = useState(0);
-//   const [ appsHeight,setAppsHeight] = useState(0)
-//   const calculateCoordinates = ()=> {
-
-//     var numPoints = apps.length;
-//     let arr = []
-//     apps.map((item,index)=>{
-//         var angle = (2 * Math.PI / numPoints) * index;
-//         var x = radius * Math.cos(angle);
-//         var y = radius * Math.sin(angle);
-//         arr.push({...item,...{top: y},...{left: x}});
-//     })
-//     console.log(arr)
-//     setAppLocations(arr)
-// }
-
-// useEffect(()=>{
-//   calculateCoordinates()
-  
-//   const updatePosition = () => {
-//     const rect = appsRef.current;
-//     setAppsTop(rect.top);
-//     setAppsLeft(rect.left);
-//     setAppsWidth(rect.offsetWidth);
-//     setAppsHeight(rect.offsetHeight)
-//   };
-//   updatePosition()
-
-//   // Call updatePosition initially and on window resize
-//   updatePosition();
-//   window.addEventListener('resize', updatePosition);
-
-//   // Cleanup event listener on component unmount
-//   return () => {
-//     window.removeEventListener('resize', updatePosition);
-//   };
-    
-// },[])
-
-const [isHovered, setIsHovered] = useState(false);
-
-const styles = `
-  .app-div {
-    width: 50px;
-    height: 50px;
-    transition: all 0.3s ease; /* Smooth transition for the growth effect */
-  }
-  
-  .pp-div.hovered {
-    transform: scale(1.2); /* Grow by 20% when hovered */
-  }
-}`
  
 return(
     <div className={pageClass} style={{height:"100vh", width: "100vw", backgroundColor: "white"}}>
@@ -414,36 +357,10 @@ return(
               ))
             }
             </div>
-        </div>
-
-        {/* <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
-            <div className="p-2" style={sectionTitleStyle}>Work on Something</div>
-            <div ref={appsRef} style={{position: "relative"}}>
-            {
-              appLocations.length>0 && appLocations.map((app,index)=>(
-                <div id={appLocations.name} 
-                className="app-div" 
-                style={{position: "absolute", top: app.top, left: appsWidth/2+app.left, cursor: "pointer"}} key={index}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                >
-                    <img  style={iconStyle} src={app.icon} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
-                    <div className="d-flex text-center" style={{fontSize: 12, color: "gray", whiteSpace:"wrap"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
-                </div>
-              ))
-            }
-            </div>
-        </div> */}
-  
-
-       
-
-       
-            
+        </div>           
       </div>
         
     </div>
-            <style>{styles}</style>
 </div>
 )
 }
