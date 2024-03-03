@@ -18,7 +18,7 @@ function App() {
     // IMPORTANT:  Be sure to import crud functions file where data needs to be added, updated, or deleted and include freeagent api file in api folder
 
     // Set the environment to either freeagent or nlightn
-    let environment = "freeagent"
+    let environment = "nlightn"
     if(process.env.NODE_ENV ==="development"){
         environment = "nlightn"
     }
