@@ -18,6 +18,8 @@ import Attachments from "./Attachments.js";
 import MultiInput from "./MultiInput.js";
 import TableInput from "./TableInput.js";
 
+import * as crud from './apis/crud'
+
 const RequestIntakeForm = (props) => {
 
 	const {
@@ -413,10 +415,8 @@ const RequestIntakeForm = (props) => {
 					const recordId = await responseId[0].id
 					console.log(recordId)
 				
-						// Update activity log
-						if(environment !=="freeagent"){
-							updateActivityLog("requests", recordId, appData.userData.email, "New request submitted")
-						}
+					// Update activity log
+					updateActivityLog("requests", recordId, appData.userData.email, "New request submitted")
 					
 					}catch(error){
 						console.log(error)
@@ -436,18 +436,42 @@ const RequestIntakeForm = (props) => {
 						stringifiedFormData = {...stringifiedFormData,...{[db_key]:db_value}}
 					})
 
-					stringifiedFormData = {...stringifiedFormData,
-						...{["requester_user_id"]:userData.id},
-						...{["requester"]:userData.full_name},
-						...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
-						...{["request_date"]: UTCToLocalDate((new Date()).toString())},
-						...{["stage"]:"Draft"},
-						...{["status"]:"Open"}
+					environment = window.environment
+					let appName = ""
+					
+					if(environment ==="freeagent"){
+						appName = "requests"
+
+						stringifiedFormData = {...stringifiedFormData,
+							...{["user"]:user.id},
+							...{["requester"]:userData.full_name},
+							...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
+							...{["request_date"]: UTCToLocalDate((new Date()).toString())},
+							...{["stage"]:"Draft"},
+							...{["status"]:"Open"}
+						}
+						
+					}else{
+						
+						appName = "requests"
+
+						stringifiedFormData = {...stringifiedFormData,
+							...{["requester_user_id"]:userData.id},
+							...{["requester"]:userData.full_name},
+							...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
+							...{["request_date"]: UTCToLocalDate((new Date()).toString())},
+							...{["stage"]:"Draft"},
+							...{["status"]:"Open"}
+						}
+							
 					}
+
 					try {
-						const addedRequestResponse = await addRecord("requests",stringifiedFormData)
+						const addedRequestResponse = await crud.addRecord(appName,stringifiedFormData)
 						console.log(addedRequestResponse)
-						getRecordId()
+						if(environment !=="freeagent"){
+							getRecordId()
+						}
 					}catch(error){
 						console.log(error)
 					}

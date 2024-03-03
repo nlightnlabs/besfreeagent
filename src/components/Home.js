@@ -5,6 +5,7 @@ import 'animate.css';
 import MultiInput from './MultiInput.js';
 import StatusListBox from './StatusListBox.js';
 import RequestIntakeHome from './RequestIntakeHome.js';
+import Apps from './Apps.js';
 import * as crud from "./apis/crud.js"
 
 
@@ -118,12 +119,6 @@ const Home = (props) => {
     {status: "Cancelled", color: "red"}
 ] 
 
-  const goToMarketPlace=(e)=>{
-    const nextPage = "Market Place"
-    setPage(pages.filter(x=>x.name===nextPage)[0])
-    setPageList([...pageList,nextPage])
-    setPageName(nextPage)
-  }
 
   const gotToGenAIWorkbench =(e)=>{
     const nextPage = "GenAI Workbench"
@@ -191,12 +186,6 @@ const Home = (props) => {
     backgroundColor: "rgb(225,235,245)"
   }
 
-  const iconStyle={
-    maxHeight: 40,
-    maxWidth: 40,
-    cursor: "pointer"
-  }
-
   const bannerRef = useRef()
   const [bannerWidth, setBannerWidth] = useState("100%")
   const [contentWidth, setContentWidth] = useState("100%")
@@ -258,30 +247,6 @@ const Home = (props) => {
  
 return(
     <div className={pageClass} style={{height:"100vh", width: "100vw", backgroundColor: "white"}}>
-
-    {/* Search bar and shop menu */}
-    <div className="d-flex justify-content-center mb-3">
-        <div className="d-flex justify-content-between" style={{width: "50%"}}>
-
-          <div className="d-flex me-3 flex-column" onClick={(e)=>goToMarketPlace(e)}>
-                <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="shopping").image:null}></img>
-                <div style={{fontSize: 14, color: "gray"}}>Shop</div>
-            </div>
-            <div className="d-flex me-3 flex-column" onClick={(e)=>gotToGenAIWorkbench(e)}>
-                <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="gen_ai").image:null}></img>
-                <div style={{fontSize: 14, color: "gray"}}>GenAI</div>
-            </div>
-
-
-            <MultiInput
-                valueSize={14}
-                valueColor="#5B9BD5"
-                label="Search"
-                border={"2px solid lightgray"}
-                onChange={(e)=>setSearchTerms(e.target.value)}
-            />
-        </div>
-    </div>
         
     {/* News Banner */}
     
@@ -301,27 +266,9 @@ return(
   </div>
 
     {/* Content section */}
-    <div className="d-flex justify-content-center" style={{height: "65%"}}>
+    <div className="d-flex justify-content-center" style={{height: "80%"}}>
     
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:"90%", minHeight:"300px"}}>
-
-         {/* Request status panel */}
-         <div className="d-flex flex-column justify-content-around border border-1 rounded-3 bg-white shadow m-2" 
-          style={{height: "95%", width: "30%", minWidth:"300px", overflowY: "auto"}}>
-            <div className="p-2" style={sectionTitleStyle}>My Requests</div>
-            <div className="p-3" style={{overflowY: "auto"}}>
-              <StatusListBox
-                  title="My Requests"
-                  data={requests}
-                  colors = {colors}
-                  buttonLabel = "New Request"
-                  listType = "status"
-                  updateParentStates = {{setPageName, setPage, setPageList, setSelectedApp, pages, pageList}}
-                  appData = {{user: appData.user_info}}
-              />
-              </div>
-          </div>
-
 
         
          {/* Request Something Panel*/}
@@ -345,19 +292,17 @@ return(
           </div>
 
             {/* Work on Something Panel */}
-          <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "33%",minWidth:"300px", overflowY: "auto"}}>
+          <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "70%",minWidth:"300px", overflow: "hidden"}}>
             <div className="p-2" style={sectionTitleStyle}>Work on Something</div>
-            <div className="d-flex justify-content-center flex-wrap p-3">
-            {
-              apps.length>0 && apps.map((app,index)=>(
-                <div id={app.name} className="d-flex align-items-center flex-column justify-content-center m-3" style={{height: "50px", width: "50px", cursor: "pointer"}} key={index}>
-                    <img  style={iconStyle} src={app.icon} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
-                    <div className="d-flex text-center" style={{fontSize: 12, color: "gray", whiteSpace:"wrap"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
-                </div>
-              ))
-            }
-            </div>
-        </div>           
+            <div className="d-flex flex-column p-3" style={{width: "100%", height:"90%", overflowY:"auto"}}>
+              <Apps 
+                apps = {apps}
+                handleSelectedApp = {handleSelectedApp}
+              />
+              </div>
+          </div>
+
+
       </div>
         
     </div>

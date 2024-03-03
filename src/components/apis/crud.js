@@ -59,12 +59,29 @@ export const getUserData = async () => {
         user = await users.find(i=>i.full_name==="Barbara Washington")
     }else{
         let response = await nlightnApi.getTable("users")
-        console.log(response)
+        // console.log(response)
         users = await response.data
         user = await users.find(i=>i.first_name==="General")
     }
 
     return {user, users}
 };
+
+export const search = async (searchTerms) => {
+
+    const environment  = window.environment 
+    
+    let results = []
+    if(environment == "freeagent"){
+        for(let i=1;i<=100;i++){
+            results.push({id: i, title:`Search Result ${i}`, contents:`Results ${i} contents`, source: `Source ${i}`, link:""},)
+        }
+    }else{
+        for(let i=1;i<=100;i++){
+            results.push({id: i, title:`Search Result ${i}`, contents:`Results ${i} contents`, source: `Source ${i}`, link:""},)
+        }
+    }
+    return results
+}
 
 

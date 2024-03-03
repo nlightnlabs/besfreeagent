@@ -8,6 +8,7 @@ import Records from './components/Records.js'
 import MarketPlace from './components/MarketPlace.js'
 import Article from './components/Article.js';
 import Header from './components/Header.js'
+import Settings from './components/Settings.js'
 import * as crud from './components/apis/crud.js'
 
 function App() {
@@ -31,11 +32,7 @@ function App() {
             document.body.appendChild(script);
 
             setTimeout(()=>{
-              const FAAppletClient = window.FAAppletClient;
-              let faClient = new FAAppletClient({
-                  appletId: 'nlightnlabs-bes-home',
-              });
-              window.FAClient = faClient;
+              initializeFreeAgentConnection()
           },500)
                 
             return () => {
@@ -46,7 +43,13 @@ function App() {
     //script to itnegrate FreeAgent library
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
      
-
+    const initializeFreeAgentConnection = ()=>{
+      const FAAppletClient = window.FAAppletClient;
+              let faClient = new FAAppletClient({
+                  appletId: 'nlightnlabs-bes-home',
+              });
+              window.FAClient = faClient;
+    }
 
 
 // ********************************************************APP SPECIFIC CODE STARTS HERE******************************************************************************
@@ -103,6 +106,7 @@ function App() {
     {name: "Market Place", component: <MarketPlace/>},
     {name: "Records", component: <Records/>},
     {name: "Article", component: <Article/>},
+    {name: "Settings", component: <Settings/>},
   ]
 
   const pageStyle={
@@ -187,7 +191,7 @@ useEffect(()=>{
 
   return (
     <div style={pageStyle}>
-        {displayPage && <Header/>}
+        {displayPage && window.environment !=="freeagent" && <Header/>}
         {displayPage && pageData.find(item=>item.name===pageName).component}
     </div>
   );

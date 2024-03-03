@@ -3,6 +3,7 @@ import {Context} from "./Context.js"
 import {getTable} from './apis/axios.js'
 import RequestIntakeForm from './RequestIntakeForm.js';
 import FloatingPanel from './FloatingPanel.js';
+import * as crud from './apis/crud.js'
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -56,14 +57,16 @@ const RequestIntakeHome = (props) => {
     const [formData, setFormData] = useState({})
 
     const getRequestStypes = async (req, res)=>{
-        
-        try{
-             const response = await getTable("request_flow_types")
-             const requestData = response.data  
-             setRequestTypes(requestData)
-        }catch(error){
-            //console.log(error)
+
+        const environment = window.environment
+        let appName = ""
+        if(environment === "freeagent"){
+          appName = "request_flow_types"
+        }else{
+          appName = "request_flow_types"
         }
+        const response = await crud.getData("request_flow_types")
+        setRequestTypes(response)
     }
 
     useEffect(()=>{
@@ -77,21 +80,10 @@ const RequestIntakeHome = (props) => {
         setShowRequestIntakeModal(true)
     }
 
-    const RequestIntakeModalStyle={
-        position: "fixed", 
-        top: '50%',
-        left: '50%',
-        height: "80vh", 
-        width: "50vw", 
-        translate: "-50% -50%",
-        zIndex: 999,
-        cursor: "grab",
-        overflow: "hidden"
-      }
-
+  
       const iconStyle = {
-      maxHeight: 30,
-      maxWidth: 30,
+      maxHeight: 50,
+      maxWidth: 50,
       cursor: "pointer",
       marginLeft: 5,
 	  };
@@ -103,8 +95,28 @@ const RequestIntakeHome = (props) => {
     //console.log(formData)
   },[showRequestIntakeModal])
 
+  const goToMarketPlace=(e)=>{
+    const nextPage = "Market Place"
+    setPage(pages.filter(x=>x.name===nextPage)[0])
+    setPageList([...pageList,nextPage])
+    setPageName(nextPage)
+  }
+
   return (
-    <div>
+    <div className="d-flex flex-column" style={{height:"100%"}}>
+      
+      <div className="d-flex justify-content-center mb-1">
+          <div className="d-flex flex-column align-items-center" onClick={(e)=>goToMarketPlace(e)}>
+                <img style={iconStyle} src={appIcons.length > 0 ? appIcons.find(item=>item.name==="shopping").image:null}></img>
+                <div style={{fontSize: 14, color: "rgb(0,150,225", fontWeight: "bold"}}>Shop</div>
+            </div>
+      </div>
+
+      <div className="d-flex justify-content-center mb-1" style={{height:"25px", color: "gray"}}> - OR - </div>
+
+      <div className="d-flex w-100 justify-content-center mb-1" style={{fontSize: 14, color: "rgb(0,150,225", fontWeight: "bold"}}> Request Something</div>
+
+      <div className="d-flex flex-column" style={{height:"100%", overflow:"auto"}}>
         {requestTypes.map((item, index)=>(
             item.include && 
             <div key={index} id={item.name} className="d-flex border border-1 border-light rounded-3 shadow shadow-sm p-2 m-2" style={{cursor: "pointer", zIndex:7}} onClick={(e)=>handleSelect(e)}>
@@ -115,7 +127,7 @@ const RequestIntakeHome = (props) => {
                 </div>
             </div>
             ))}
-        
+        </div>
         {showRequestIntakeModal &&
       <FloatingPanel
         title={requestType}
@@ -148,7 +160,7 @@ const RequestIntakeHome = (props) => {
               setShowRequestIntakeModal = {setShowRequestIntakeModal}
             />
           }
-
+       
         </div>
       </FloatingPanel>
     }

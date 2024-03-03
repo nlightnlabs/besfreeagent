@@ -107,9 +107,9 @@ const MultiInput = forwardRef((props, ref) => {
     left: 0,
     get display(){if(layout=="stacked"){return "block"}else{return "flex"}},
     width: "100%",
-    minHeight: height,
+    height: height,
     marginTop: marginTop || 0,
-    marginBottom: marginTop || 10
+    marginBottom: marginTop || 10,
   }
   
 
@@ -122,6 +122,7 @@ const MultiInput = forwardRef((props, ref) => {
     outline: "none",
     width: width || "100%",
     border: border|| "1px solid rgb(235,235,235)",
+    height: containerstyle.height,
     get padding(){ if(padding){return padding}else{ return ;}}
   }
 
@@ -133,7 +134,7 @@ const MultiInput = forwardRef((props, ref) => {
     backgroundColor: valueFill || "white",
     outline: "none",
     width: width || "100%",
-    minHeight: 100,
+    height: containerstyle.height || 100,
     border: border|| "1px solid rgb(235,235,235)",
   }
 
