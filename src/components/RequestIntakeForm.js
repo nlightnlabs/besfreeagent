@@ -210,8 +210,7 @@ const RequestIntakeForm = (props) => {
 	const calculateForm = async (formDataFields, updatedFormData) => {
 
 		let formData = updatedFormData;
-		//console.log(formData)
-
+	
 		formDataFields.map(async (item) => {
 
 			//console.log(formData[item.ui_id].value)
@@ -413,8 +412,14 @@ const RequestIntakeForm = (props) => {
 		
 		e.preventDefault();
 		const form = e.target
-		if(lastPage){
 
+		console.log("formName: ",formName)
+		if(formName ==="Request Summary"){
+			const FAClient = window.FAClient
+			FAClient.navigateTo("/entity/custom_app_52/view/all")
+		}
+
+		if(lastPage){
 		
 				const getRecordId = async ()=>{
 					const getNewRecordIDQuery = `Select id from requests where requester_user_id ='${userData.id}' order by id desc limit 1;`
@@ -452,6 +457,10 @@ const RequestIntakeForm = (props) => {
 					
 					if(environment ==="freeagent"){
 						appName = "custom_app_52"
+
+						console.log(spendCategories)
+						console.log(businessUnits)
+						console.log(businesses)
 
 						Object.entries(stringifiedFormData).map(([key,value])=>{
 							if(key ==="subcategory"){
@@ -520,6 +529,7 @@ const RequestIntakeForm = (props) => {
 				setFormName(nextPage)
 			}
 		}
+		
 
 
 	const handleChange = (e) => {
