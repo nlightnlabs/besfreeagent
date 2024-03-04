@@ -137,6 +137,7 @@ const Home = (props) => {
       const appHomePage = apps.find(i=>i.name === parentId).home_page_link
       console.log(appHomePage)
       const FAClient = window.FAClient
+      console.log(FAClient)
       FAClient.navigateTo(appHomePage)
     }else{
       setTableName(apps.filter(row=>row.name==parentId)[0].db_table)
