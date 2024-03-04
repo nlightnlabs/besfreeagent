@@ -65,6 +65,10 @@ const RequestIntakeForm = (props) => {
 		setCurrencySymbol
 	} = useContext(Context)
 
+	useEffect(()=>{
+		console.log("appData.FAClient: ",appData.FAClient)
+	  },[])
+
 	const environment = window.environment
 	const setRequestStype = props.setRequestStype
 	const formData = props.formData;

@@ -62,6 +62,9 @@ const RequestIntakeHome = (props) => {
     const [businessUnits, setBusinessUnits] = useState([])
     const [businesses, setBusinesses] = useState([])
 
+    useEffect(()=>{
+      console.log("appData.FAClient: ",appData.FAClient)
+    },[])
   
     useEffect(()=>{
 

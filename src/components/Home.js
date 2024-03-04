@@ -54,7 +54,9 @@ const Home = (props) => {
     setCurrencySymbol
 }= useContext(Context)
 
-  
+useEffect(()=>{
+  console.log("appData.FAClient: ",appData.FAClient)
+},[])
 
   useEffect(()=>{
       getAnnouncements()
