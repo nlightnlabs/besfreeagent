@@ -138,6 +138,7 @@ const RequestIntakeForm = (props) => {
 
 
 	useEffect(() => {	
+		console.log("formName: ", formName)
 		getFormFields();
 	}, [formName, props.requestType, userData])
 
@@ -406,6 +407,7 @@ const RequestIntakeForm = (props) => {
 		return output;
 	};
 
+
 	const handleSubmit =async (e, nextPage)=>{
 		
 		console.log(formData)
@@ -418,6 +420,7 @@ const RequestIntakeForm = (props) => {
 			const FAClient = window.FAClient
 			FAClient.navigateTo("/entity/custom_app_52/view/all")
 		}
+
 
 		if(lastPage){
 		
