@@ -458,12 +458,16 @@ const RequestIntakeForm = (props) => {
 					if(environment ==="freeagent"){
 						appName = "custom_app_52"
 
-						console.log(spendCategories)
-						console.log(businessUnits)
-						console.log(businesses)
+						console.log("spendCategories: ",spendCategories)
+						console.log("businessUnits: ",businessUnits)
+						console.log("businesses: ",businesses)
 
+						console.log("stringifiedFormData: ",stringifiedFormData)
 						Object.entries(stringifiedFormData).map(([key,value])=>{
+							
 							if(key ==="subcategory"){
+								console.log("key: ",key)
+								console.log("value: ", value)
 								stringifiedFormData[key] = spendCategories.find(i=>i.subcategory===value).id
 							}
 
