@@ -415,13 +415,6 @@ const RequestIntakeForm = (props) => {
 		e.preventDefault();
 		const form = e.target
 
-		console.log("formName: ",formName)
-		if(formName ==="Request Summary"){
-			const FAClient = window.FAClient
-			FAClient.navigateTo("/entity/custom_app_52/view/all")
-		}
-
-
 		if(lastPage){
 		
 				const getRecordId = async ()=>{
@@ -471,15 +464,32 @@ const RequestIntakeForm = (props) => {
 							if(key ==="subcategory"){
 								console.log("key: ",key)
 								console.log("value: ", value)
-								stringifiedFormData[key] = spendCategories.find(i=>i.subcategory===value).id
+								try{
+									stringifiedFormData[key] = spendCategories.find(i=>i.subcategory.toLowerCase()===value.toLowerCase()).id
+								}catch(error){
+									delete stringifiedFormData[key]
+								}
 							}
 
 							if(key ==="business_unit"){
-								stringifiedFormData[key] = businessUnits.find(i=>i.name===value).id
+								console.log("key: ",key)
+								console.log("value: ", value)
+								try{
+									stringifiedFormData[key] = businessUnits.find(i=>i.name.toLowerCase()===value.toLowerCase()).id
+								}catch(error){
+									delete stringifiedFormData[key]
+								}
+								
 							}
 
 							if(key ==="supplier"){
-								stringifiedFormData[key] = businesses.find(i=>i.name===value).id
+								console.log("key: ",key)
+								console.log("value: ", value)
+								try{
+									stringifiedFormData[key] = businesses.find(i=>i.name.toLowerCase()===value.toLowerCase()).id
+								}catch(error){
+									delete stringifiedFormData[key]
+								}
 							}
 							
 						})
