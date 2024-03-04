@@ -65,7 +65,7 @@ const Home = (props) => {
   const [requests, setRequests] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
 
-  const FAClient = props.appData.FAClient
+  const FAClient = window.FAClient
 
 
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
