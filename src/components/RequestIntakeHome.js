@@ -4,6 +4,7 @@ import {getTable} from './apis/axios.js'
 import RequestIntakeForm from './RequestIntakeForm.js';
 import FloatingPanel from './FloatingPanel.js';
 import * as crud from './apis/crud.js'
+import * as nlightnApi from './apis/nlightn'
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -52,25 +53,63 @@ const RequestIntakeHome = (props) => {
     setCurrencySymbol
 } = useContext(Context)
 
+    const environment = window.environment
+
     const [showRequestIntakeModal, setShowRequestIntakeModal] = useState(false)
     const [formName, setFormName] = useState("")
     const [formData, setFormData] = useState({})
+    const [spendCategories, setSpendCategories] = useState([])
+    const [businessUnits, setBusinessUnits] = useState([])
+    const [businesses, setBusinesses] = useState([])
 
-    const getRequestStypes = async (req, res)=>{
-
-        const environment = window.environment
-        let appName = ""
-        if(environment === "freeagent"){
-          appName = "request_flow_types"
-        }else{
-          appName = "request_flow_types"
-        }
-        const response = await crud.getData("request_flow_types")
-        setRequestTypes(response)
-    }
-
+  
     useEffect(()=>{
-        getRequestStypes()
+
+      const getRequestStypes = async ()=>{
+        const response = await nlightnApi.getTable("request_flow_types")
+        setRequestTypes(response.data)
+      }
+      getRequestStypes()
+
+
+      const getBusinessUnits = async ()=>{
+        let appName=""
+        if(environment ==="freeagent"){
+          appName = "business_unit"
+        }else{
+          appName = "business_units"
+        }
+        const response = await crud.getData(appName)
+        setBusinessUnits(response)
+      }
+      getBusinessUnits()
+    
+
+      const getCategories = async ()=>{
+        let appName=""
+        if(environment ==="freeagent"){
+          appName = "custom_app_56"
+        }else{
+          appName = "spend_categories"
+        }
+        const response = await crud.getData(appName)
+        setSpendCategories(response)
+      }
+      getCategories()
+    
+
+      const getBusinesses = async ()=>{
+        let appName=""
+        if(environment ==="freeagent"){
+          appName = "custom_app_44"
+        }else{
+          appName = "businesses"
+        }
+        const response = await crud.getData(appName)
+        setBusinesses(response)
+      }
+      getBusinesses()
+
     },[])
 
     const handleSelect = (e)=>{
@@ -139,7 +178,7 @@ const RequestIntakeHome = (props) => {
         displayPanel={setShowRequestIntakeModal}
       >
         <div className="d-flex w-100">
-          {formName == "request_summary" ?
+          {formName === "request_summary" ?
             <RequestIntakeForm
               requestType = {"Summary"}
               setRequestType = {setRequestType}
@@ -147,6 +186,7 @@ const RequestIntakeHome = (props) => {
               setFormName = {setFormName}
               formData = {formData}
               setFormData = {setFormData}
+              appData ={{spendCategories, businessUnits, businesses}}
               setShowRequestIntakeModal = {setShowRequestIntakeModal}
             />
           :
@@ -157,6 +197,7 @@ const RequestIntakeHome = (props) => {
               setFormName = {setFormName}
               formData = {formData}
               setFormData = {setFormData}
+              appData ={{spendCategories, businessUnits, businesses}}
               setShowRequestIntakeModal = {setShowRequestIntakeModal}
             />
           }

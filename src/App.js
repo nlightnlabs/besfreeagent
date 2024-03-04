@@ -18,7 +18,7 @@ function App() {
     // IMPORTANT:  Be sure to import crud functions file where data needs to be added, updated, or deleted and include freeagent api file in api folder
 
     // Set the environment to either freeagent or nlightn
-    let environment = "nlightn"
+    let environment = "freeagent"
     if(process.env.NODE_ENV ==="development"){
         environment = "nlightn"
     }
@@ -136,7 +136,6 @@ function App() {
 
     try{
         const response = await crud.getData(appName)
-      
         setAppIcons(response)
         setAppData(prev=>({...prev,appIcons: response}))
     }catch(error){

@@ -105,6 +105,9 @@ const RequestIntakeForm = (props) => {
 
 	const [lastPage, setLastPage] = useState(false)
 
+	const {spendCategories, businessUnits, businesses} = props.appData
+	
+
 	useEffect(()=>{
 		const getRequestTypeSections = async ()=>{
 			const query = `SELECT * FROM request_flow_forms where "request_type" = '${requestType}';`
@@ -125,6 +128,7 @@ const RequestIntakeForm = (props) => {
 			}
 		}
 		getRequestTypeSections()
+
 	},[])
 
 
@@ -405,6 +409,7 @@ const RequestIntakeForm = (props) => {
 		const form = e.target
 		if(lastPage){
 
+		
 				const getRecordId = async ()=>{
 					const getNewRecordIDQuery = `Select id from requests where requester_user_id ='${userData.id}' order by id desc limit 1;`
 					console.log(getNewRecordIDQuery)
@@ -440,15 +445,30 @@ const RequestIntakeForm = (props) => {
 					let appName = ""
 					
 					if(environment ==="freeagent"){
-						appName = "requests"
+						appName = "custom_app_52"
+
+						Object.entries(stringifiedFormData).map(([key,value])=>{
+							if(key ==="subcategory"){
+								stringifiedFormData[key] = spendCategories.find(i=>i.subcategory===value).id
+							}
+
+							if(key ==="business_unit"){
+								stringifiedFormData[key] = businessUnits.find(i=>i.name===value).id
+							}
+
+							if(key ==="supplier"){
+								stringifiedFormData[key] = businesses.find(i=>i.name===value).id
+							}
+							
+						})
+						
 
 						stringifiedFormData = {...stringifiedFormData,
-							...{["user"]:user.id},
-							...{["requester"]:userData.full_name},
+							...{["requester"]:user.id},
 							...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
 							...{["request_date"]: UTCToLocalDate((new Date()).toString())},
 							...{["stage"]:"Draft"},
-							...{["status"]:"Open"}
+							...{["status"]:"Open"},
 						}
 						
 					}else{
@@ -456,14 +476,13 @@ const RequestIntakeForm = (props) => {
 						appName = "requests"
 
 						stringifiedFormData = {...stringifiedFormData,
-							...{["requester_user_id"]:userData.id},
-							...{["requester"]:userData.full_name},
+							...{["requester_user_id"]:user.id},
+							...{["requester"]:user.full_name},
 							...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
 							...{["request_date"]: UTCToLocalDate((new Date()).toString())},
 							...{["stage"]:"Draft"},
 							...{["status"]:"Open"}
 						}
-							
 					}
 
 					try {
