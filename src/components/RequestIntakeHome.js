@@ -197,7 +197,7 @@ const RequestIntakeHome = (props) => {
               setFormName = {setFormName}
               formData = {formData}
               setFormData = {setFormData}
-              appData ={{spendCategories, businessUnits, businesses}}
+              appData ={{...appData,...{spendCategories},...{businessUnits},...{businesses}}}
               setShowRequestIntakeModal = {setShowRequestIntakeModal}
             />
           }

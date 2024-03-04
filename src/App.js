@@ -49,6 +49,7 @@ function App() {
                   appletId: 'nlightnlabs-bes-home',
               });
               window.FAClient = faClient;
+              setAppData({...appData,...{["FAClient"]:faClient}})
     }
 
 
@@ -155,8 +156,12 @@ function App() {
 
     try{
       const response = await crud.getData(appName)
-
-      setApps(response.sort((a, b) => a.id - b.id))
+      let data = []
+      if(environment ==="freeagent"){
+        setApps(response.sort((a, b) => a.seq_id - b.seq_id))
+      }else{
+        setApps(response.sort((a, b) => a.id - b.id))
+      }
     }catch(error){
       console.log(error)
       setApps([])

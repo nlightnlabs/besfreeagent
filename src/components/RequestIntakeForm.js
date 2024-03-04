@@ -404,7 +404,9 @@ const RequestIntakeForm = (props) => {
 	};
 
 	const handleSubmit =async (e, nextPage)=>{
-
+		
+		console.log(formData)
+		
 		e.preventDefault();
 		const form = e.target
 		if(lastPage){
@@ -470,6 +472,8 @@ const RequestIntakeForm = (props) => {
 							...{["stage"]:"Draft"},
 							...{["status"]:"Open"},
 						}
+
+						console.log("freeagent stringifiedFormData", stringifiedFormData)
 						
 					}else{
 						
@@ -486,6 +490,7 @@ const RequestIntakeForm = (props) => {
 					}
 
 					try {
+						console.log("Adding record: ", stringifiedFormData)
 						const addedRequestResponse = await crud.addRecord(appName,stringifiedFormData)
 						console.log(addedRequestResponse)
 						if(environment !=="freeagent"){
@@ -501,6 +506,7 @@ const RequestIntakeForm = (props) => {
 					let formDataWithAttachments = await response.formDataWithAttachments				
 					addNewRequestToDb(formDataWithAttachments)
 				}else{
+					console.log("adding new request with formData: ", formData)
 					addNewRequestToDb(formData)
 				}
 

@@ -65,6 +65,8 @@ const Home = (props) => {
   const [requests, setRequests] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
 
+  const FAClient = props.appData.FAClient
+
 
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
   
@@ -134,11 +136,17 @@ const Home = (props) => {
     setSelectedApp(parentId)
     
     if(environment == "freeagent"){
-      const appHomePage = apps.find(i=>i.name === parentId).home_page_link
-      console.log(appHomePage)
-      const FAClient = window.FAClient
-      console.log(FAClient)
-      FAClient.navigateTo(appHomePage)
+      
+      if(parentId =="gen_ai"){
+        const nextPage = app.default_component
+        setPage(pages.filter(x=>x.name===nextPage)[0])
+        setPageList([...pageList,nextPage])
+        setPageName(nextPage)
+      }
+      else{
+        const appHomePage = apps.find(i=>i.name === parentId).home_page_link
+        FAClient.navigateTo(appHomePage)
+      }
     }else{
       setTableName(apps.filter(row=>row.name==parentId)[0].db_table)
       const nextPage = app.default_component
