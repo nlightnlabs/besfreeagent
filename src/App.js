@@ -155,8 +155,8 @@ function App() {
 
     try{
       const response = await crud.getData(appName)
-       
-        setApps(response)
+
+      setApps(response.sort((a, b) => a.id - b.id))
     }catch(error){
       console.log(error)
       setApps([])
