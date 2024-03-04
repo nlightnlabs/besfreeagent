@@ -64,10 +64,6 @@ const Home = (props) => {
   const [announcements, setAnnouncements] = useState([])
   const [requests, setRequests] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
-
-  const FAClient = window.FAClient
-
-
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
   
   const getAnnouncements = async (req, res)=>{
@@ -145,6 +141,7 @@ const Home = (props) => {
       }
       else{
         const appHomePage = apps.find(i=>i.name === parentId).home_page_link
+        const FAClient = window.FAClient
         FAClient.navigateTo(appHomePage)
       }
     }else{
