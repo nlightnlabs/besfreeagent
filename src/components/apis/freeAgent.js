@@ -143,6 +143,8 @@ export const addFARecord = async (appName, formData)=>{
     console.log(updatedFormData)
 
     const query = {query: `mutation{createEntity(entity: \"${appName}\",field_values: {${updatedFormData}}){entity_value {id, seq_id, field_values}}}`}
+    console.log("free agent query:", query)
+    
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
         const data = response.data.createEntity.entity_value;
