@@ -447,7 +447,7 @@ const RequestIntakeForm = (props) => {
 						stringifiedFormData = {...stringifiedFormData,...{[db_key]:db_value}}
 					})
 
-					environment = window.environment
+					const environment = window.environment
 					let appName = ""
 					
 					if(environment ==="freeagent"){
