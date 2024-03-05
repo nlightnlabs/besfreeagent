@@ -448,6 +448,16 @@ const RequestIntakeForm = (props) => {
 						stringifiedFormData = {...stringifiedFormData,...{[db_key]:db_value}}
 					})
 
+					const generateRequestDate =async ()=>{
+						const utcDate = new Date();
+						const year = utcDate.getUTCFullYear();
+						const month = String(utcDate.getUTCMonth() + 1).padStart(2, '0');
+						const day = String(utcDate.getUTCDate()).padStart(2, '0');
+						const requestDate = `${year}-${month}-${day}`;
+						return requestDate
+					}
+					const requestDate = await generateRequestDate()
+
 					const environment = window.environment
 					let appName = ""
 					
@@ -491,14 +501,14 @@ const RequestIntakeForm = (props) => {
 									delete stringifiedFormData[key]
 								}
 							}
-							
 						})
-						
 
+						
+						
 						stringifiedFormData = {...stringifiedFormData,
 							...{["requester"]:user.id},
 							...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
-							...{["request_date"]: UTCToLocalDate((new Date()).toString())},
+							...{["request_date"]: requestDate},
 							...{["stage"]:"Draft"},
 							...{["status"]:"Open"},
 						}
@@ -513,7 +523,7 @@ const RequestIntakeForm = (props) => {
 							...{["requester_user_id"]:user.id},
 							...{["requester"]:user.full_name},
 							...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
-							...{["request_date"]: UTCToLocalDate((new Date()).toString())},
+							...{["request_date"]: requestDate},
 							...{["stage"]:"Draft"},
 							...{["status"]:"Open"}
 						}
