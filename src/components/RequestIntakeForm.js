@@ -441,12 +441,13 @@ const RequestIntakeForm = (props) => {
 					try{
 						let lineItems = formData["items"].value
 						if(lineItems.length>0){
-							items.map((item, index)=>{
+							lineItems.map((item, index)=>{
 								if(Object.keys(item)[0] !==null && Object.keys(item)[0]!==""){
 									lineItems[index] = item
 								}
 							})
 						}
+						console.log("lineitems:", lineItems)
 						return lineItems
 					}catch(error){
 						return ""
