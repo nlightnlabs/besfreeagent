@@ -417,145 +417,165 @@ const RequestIntakeForm = (props) => {
 
 		if(lastPage){
 		
-				const getRecordId = async ()=>{
-					const getNewRecordIDQuery = `Select id from requests where requester_user_id ='${userData.id}' order by id desc limit 1;`
-					console.log(getNewRecordIDQuery)
+			const getRecordId = async ()=>{
+				const getNewRecordIDQuery = `Select id from requests where requester_user_id ='${userData.id}' order by id desc limit 1;`
+				console.log(getNewRecordIDQuery)
+		
+				try{  
+				const responseId = await getData(getNewRecordIDQuery)
+				console.log(responseId)
+				const recordId = await responseId[0].id
+				console.log(recordId)
 			
-					try{  
-					const responseId = await getData(getNewRecordIDQuery)
-					console.log(responseId)
-					const recordId = await responseId[0].id
-					console.log(recordId)
+				// Update activity log
+				updateActivityLog("requests", recordId, appData.userData.email, "New request submitted")
 				
-					// Update activity log
-					updateActivityLog("requests", recordId, appData.userData.email, "New request submitted")
-					
+				}catch(error){
+					console.log(error)
+				}
+			}
+
+			const addNewRequestToDb = async (formData)=>{
+
+				const getLineItems = async ()=>{
+					try{
+						let lineItems = formData["items"].value
+						if(lineItems.length>0){
+							items.map((item, index)=>{
+								if(Object.keys(item)[0] !==null && Object.keys(item)[0]!==""){
+									lineItems[index] = item
+								}
+							})
+						}
+						return lineItems
 					}catch(error){
-						console.log(error)
+						return ""
 					}
 				}
+				const  lineItems = await getLineItems()
+				
+				let stringifiedFormData = {}
+				Object.entries(formData).map(([key,value])=>{
+					//console.log(key)
+					let db_key = formData[key].db_field_name
+					let db_value = value.value
+					if(typeof db_value =="object"){
+						db_value = JSON.stringify(db_value)
+					}
+					if(key==="items"){
+						db_value = JSON.stringify(lineItems)
+					}
+					stringifiedFormData = {...stringifiedFormData,...{[db_key]:db_value}}
+				})
 
-				const addNewRequestToDb = async (formData)=>{
-					
-					let stringifiedFormData = {}
-					Object.entries(formData).map(([key,value])=>{
-						//console.log(key)
-						let db_key = formData[key].db_field_name
-						let db_value = value.value
-						if(typeof db_value =="object"){
-							db_value = JSON.stringify(db_value)
+				const generateRequestDate =async ()=>{
+					const utcDate = new Date();
+					const year = utcDate.getUTCFullYear();
+					const month = String(utcDate.getUTCMonth() + 1).padStart(2, '0');
+					const day = String(utcDate.getUTCDate()).padStart(2, '0');
+					const requestDate = `${year}-${month}-${day}`;
+					return requestDate
+				}
+				const requestDate = await generateRequestDate()
+
+				const environment = window.environment
+				let appName = ""
+				
+				if(environment ==="freeagent"){
+					appName = "custom_app_52"
+
+					console.log("spendCategories: ",spendCategories)
+					console.log("businessUnits: ",businessUnits)
+					console.log("businesses: ",businesses)
+
+					console.log("stringifiedFormData: ",stringifiedFormData)
+					Object.entries(stringifiedFormData).map(([key,value])=>{
+						
+						if(key ==="subcategory"){
+							console.log("key: ",key)
+							console.log("value: ", value)
+							try{
+								stringifiedFormData[key] = spendCategories.find(i=>i.subcategory.toLowerCase()===value.toLowerCase()).id
+							}catch(error){
+								delete stringifiedFormData[key]
+							}
 						}
-						stringifiedFormData = {...stringifiedFormData,...{[db_key]:db_value}}
+
+						if(key ==="business_unit"){
+							console.log("key: ",key)
+							console.log("value: ", value)
+							try{
+								stringifiedFormData[key] = businessUnits.find(i=>i.name.toLowerCase()===value.toLowerCase()).id
+							}catch(error){
+								delete stringifiedFormData[key]
+							}
+							
+						}
+
+						if(key ==="supplier"){
+							console.log("key: ",key)
+							console.log("value: ", value)
+							try{
+								stringifiedFormData[key] = businesses.find(i=>i.name.toLowerCase()===value.toLowerCase()).id
+							}catch(error){
+								delete stringifiedFormData[key]
+							}
+						}
 					})
 
-					const generateRequestDate =async ()=>{
-						const utcDate = new Date();
-						const year = utcDate.getUTCFullYear();
-						const month = String(utcDate.getUTCMonth() + 1).padStart(2, '0');
-						const day = String(utcDate.getUTCDate()).padStart(2, '0');
-						const requestDate = `${year}-${month}-${day}`;
-						return requestDate
-					}
-					const requestDate = await generateRequestDate()
-
-					const environment = window.environment
-					let appName = ""
 					
-					if(environment ==="freeagent"){
-						appName = "custom_app_52"
-
-						console.log("spendCategories: ",spendCategories)
-						console.log("businessUnits: ",businessUnits)
-						console.log("businesses: ",businesses)
-
-						console.log("stringifiedFormData: ",stringifiedFormData)
-						Object.entries(stringifiedFormData).map(([key,value])=>{
-							
-							if(key ==="subcategory"){
-								console.log("key: ",key)
-								console.log("value: ", value)
-								try{
-									stringifiedFormData[key] = spendCategories.find(i=>i.subcategory.toLowerCase()===value.toLowerCase()).id
-								}catch(error){
-									delete stringifiedFormData[key]
-								}
-							}
-
-							if(key ==="business_unit"){
-								console.log("key: ",key)
-								console.log("value: ", value)
-								try{
-									stringifiedFormData[key] = businessUnits.find(i=>i.name.toLowerCase()===value.toLowerCase()).id
-								}catch(error){
-									delete stringifiedFormData[key]
-								}
-								
-							}
-
-							if(key ==="supplier"){
-								console.log("key: ",key)
-								console.log("value: ", value)
-								try{
-									stringifiedFormData[key] = businesses.find(i=>i.name.toLowerCase()===value.toLowerCase()).id
-								}catch(error){
-									delete stringifiedFormData[key]
-								}
-							}
-						})
-
-						
-						
-						stringifiedFormData = {...stringifiedFormData,
-							...{["requester"]:user.id},
-							...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
-							...{["request_date"]: requestDate},
-							...{["stage"]:"Draft"},
-							...{["status"]:"Open"},
-						}
-
-						console.log("freeagent stringifiedFormData", stringifiedFormData)
-						
-					}else{
-						
-						appName = "requests"
-
-						stringifiedFormData = {...stringifiedFormData,
-							...{["requester_user_id"]:user.id},
-							...{["requester"]:user.full_name},
-							...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
-							...{["request_date"]: requestDate},
-							...{["stage"]:"Draft"},
-							...{["status"]:"Open"}
-						}
+					
+					stringifiedFormData = {...stringifiedFormData,
+						...{["requester"]:user.id},
+						...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
+						...{["request_date"]: requestDate},
+						...{["stage"]:"Draft"},
+						...{["status"]:"Open"},
 					}
 
-					try {
-						console.log("Adding record: ", stringifiedFormData)
-						const addedRequestResponse = await crud.addRecord(appName,stringifiedFormData)
-						console.log(addedRequestResponse)
-						if(environment !=="freeagent"){
-							getRecordId()
-						}
-					}catch(error){
-						console.log(error)
-					}
-				}
-
-				if(attachments.length>0){
-					const response = await uploadFiles()
-					let formDataWithAttachments = await response.formDataWithAttachments				
-					addNewRequestToDb(formDataWithAttachments)
+					console.log("freeagent stringifiedFormData", stringifiedFormData)
+					
 				}else{
-					console.log("adding new request with formData: ", formData)
-					addNewRequestToDb(formData)
+					
+					appName = "requests"
+
+					stringifiedFormData = {...stringifiedFormData,
+						...{["requester_user_id"]:user.id},
+						...{["requester"]:user.full_name},
+						...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
+						...{["request_date"]: requestDate},
+						...{["stage"]:"Draft"},
+						...{["status"]:"Open"}
+					}
 				}
 
-				// setFormClassList('form-group was-validated')
-				setFormName(nextPage)
-			}else{
-				setFormName(nextPage)
+				try {
+					console.log("Adding record: ", stringifiedFormData)
+					const addedRequestResponse = await crud.addRecord(appName,stringifiedFormData)
+					console.log(addedRequestResponse)
+					if(environment !=="freeagent"){
+						getRecordId()
+					}
+				}catch(error){
+					console.log(error)
+				}
 			}
+
+			if(attachments.length>0){
+				const response = await uploadFiles()
+				let formDataWithAttachments = await response.formDataWithAttachments				
+				addNewRequestToDb(formDataWithAttachments)
+			}else{
+				console.log("adding new request with formData: ", formData)
+				addNewRequestToDb(formData)
+			}
+
+			// setFormClassList('form-group was-validated')
+			setFormName(nextPage)
+		}else{
+			setFormName(nextPage)
 		}
+	}
 		
 
 
