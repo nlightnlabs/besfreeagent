@@ -158,7 +158,7 @@ function App() {
       const response = await crud.getData(appName)
       let data = []
       if(environment ==="freeagent"){
-        setApps(response.sort((a, b) => a.seq_id - b.seq_id))
+        setApps(response.sort((a, b) => a.created - b.created))
       }else{
         setApps(response.sort((a, b) => a.id - b.id))
       }
