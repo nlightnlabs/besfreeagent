@@ -441,6 +441,7 @@ const RequestIntakeForm = (props) => {
 						let lineItems = []
 						if(formData["items"].value.length>0){
 							formData["items"].value.map((item)=>{
+								console.log("Object.keys(item)",Object.keys(item))
 								if(Object.keys(item)[0] !==null && Object.keys(item)[0]!==""){
 									lineItems.push(item)
 								}
@@ -460,8 +461,7 @@ const RequestIntakeForm = (props) => {
 					let db_key = formData[key].db_field_name
 					let db_value = value.value
 					if(typeof db_value =="object"){
-						db_value = JSON.stringify(db_value.replaceAll('"','\"'))
-						db_value = JSON.stringify(db_value.replaceAll("'","\'"))
+						db_value = JSON.stringify(db_value)
 					}
 					if(key==="items"){
 						db_value = JSON.stringify(lineItems)

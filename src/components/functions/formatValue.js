@@ -131,3 +131,20 @@ export const limitText =(textContent,maxLength)=>{
     return(text)
   }
 }
+
+export const escapeQuotes = (inputString) =>{
+  let escapedString =""
+  
+  if(inputString.search("'")>0){
+    // Replace double quotes with escaped double quotes
+    escapedString = inputString.replace(/'/g, "\\'");
+  }
+
+  if(escapedString.search('"')>0){
+    // Replace double quotes with escaped double quotes
+    escapedString = escapedString.replace(/"/g, '\\"');
+  }
+
+  return escapedString;
+  
+}
