@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "animate.css";
 import React, { useState, useEffect, useContext, useRef, createRef } from "react";
 import {Context} from "./Context.js"
-import { toProperCase, UTCToLocalDate } from "./functions/formatValue.js";
+import { toProperCase, UTCToLocalDate, escapeQuotes } from "./functions/formatValue.js";
 import axios, {
 	getData,
 	getList,
@@ -441,8 +441,7 @@ const RequestIntakeForm = (props) => {
 						let lineItems = []
 						if(formData["items"].value.length>0){
 							formData["items"].value.map((item)=>{
-								console.log("Object.keys(item)",Object.keys(item))
-								if(Object.keys(item)[0] !==null && Object.keys(item)[0]!==""){
+								if(Object.values(item)[0] !==null && Object.values(item)[0]!==""){
 									lineItems.push(item)
 								}
 							})
@@ -461,10 +460,10 @@ const RequestIntakeForm = (props) => {
 					let db_key = formData[key].db_field_name
 					let db_value = value.value
 					if(typeof db_value =="object"){
-						db_value = JSON.stringify(db_value)
+						db_value = escapeQuotes(JSON.stringify(db_value))
 					}
 					if(key==="items"){
-						db_value = JSON.stringify(lineItems)
+						db_value = escapeQuotes(JSON.stringify(lineItems))
 					}
 					stringifiedFormData = {...stringifiedFormData,...{[db_key]:db_value}}
 				})
@@ -780,7 +779,7 @@ const RequestIntakeForm = (props) => {
 										item.ui_component_visible &&
 										item.ui_component_type == "img"?
 										<div key={index} className={item.ui_classname}>
-											<img src={`${appIcons}/${item.ui_default_value}`} alt={item.label} style={JSON.parse(item.ui_style)}></img>
+											<img src={appIcons.find(i=>i.name===item.ui_default_value).image} alt={item.label} style={JSON.parse(item.ui_style)}></img>
 											{item.ui_className}
 										</div>
 										:
