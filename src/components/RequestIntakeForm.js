@@ -436,7 +436,6 @@ const RequestIntakeForm = (props) => {
 			}
 
 			const addNewRequestToDb = async (formData)=>{
-
 				const getLineItems = async ()=>{
 					try{
 						let lineItems = []
@@ -461,7 +460,8 @@ const RequestIntakeForm = (props) => {
 					let db_key = formData[key].db_field_name
 					let db_value = value.value
 					if(typeof db_value =="object"){
-						db_value = JSON.stringify(db_value)
+						db_value = JSON.stringify(db_value.replaceAll('"','\"'))
+						db_value = JSON.stringify(db_value.replaceAll("'","\'"))
 					}
 					if(key==="items"){
 						db_value = JSON.stringify(lineItems)
