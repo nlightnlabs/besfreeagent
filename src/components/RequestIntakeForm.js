@@ -439,11 +439,11 @@ const RequestIntakeForm = (props) => {
 
 				const getLineItems = async ()=>{
 					try{
-						let lineItems = formData["items"].value
-						if(lineItems.length>0){
-							lineItems.map((item, index)=>{
+						let lineItems = []
+						if(formData["items"].value.length>0){
+							formData["items"].value.map((item)=>{
 								if(Object.keys(item)[0] !==null && Object.keys(item)[0]!==""){
-									lineItems[index] = item
+									lineItems.push(item)
 								}
 							})
 						}
