@@ -246,7 +246,7 @@ const getCatalogItems = async ()=>{
     }else{
       setTimeout(()=>{
         loadData()
-      },3000)
+      },500)
     }
   }, []);
   
