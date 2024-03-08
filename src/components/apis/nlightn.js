@@ -37,9 +37,23 @@ export const getTable = async (tableName, res)=>{
   }
 
   //Get List
-  export const getList = async (tableName,fieldName, res)=>{
+  export const getList = async (tableName,fieldName)=>{
+
     try{
       const result = await dbUrl.get(`/db/list/${tableName}/${fieldName}`)
+      const data = await result.data
+      return (data)
+    }catch(error){
+      // console.log(error)
+    }
+  }
+
+
+// Get  Conditional List
+  export const getConditionalList = async (tableName,fieldName,conditionalField, condition)=>{
+   
+    try{
+      const result = await dbUrl.get(`/db/subList/${tableName}/${fieldName}/${conditionalField}/${condition}`)
       const data = await result.data
       return (data)
     }catch(error){
@@ -49,7 +63,7 @@ export const getTable = async (tableName, res)=>{
 
 
 //Get Record
-export const getRecord = async (req, res)=>{
+export const getRecord = async (req)=>{
   const params = {
       tableName: req.tableName,
       recordId: req.recordId,
@@ -58,11 +72,11 @@ export const getRecord = async (req, res)=>{
 
   try{
     const result = await dbUrl.post("/db/getRecord",{params})
-    //console.log(result)
+    // console.log(result)
     const data = await result.data
     return (data)
   }catch(error){
-    //console.log(error)
+    // console.log(error)
   }
 }
 
@@ -87,10 +101,6 @@ export const getRecords = async (req, res)=>{
 
 //Create New Record
 export const addRecord = async (tableName, formData)=>{
-
-  console.log(tableName)
-  console.log(formData)
-
   if(tableName.length > 0 && Object.entries(formData).length>0){
     try{
       const result = await dbUrl.post("/db/addRecord",{tableName, formData})
@@ -107,18 +117,9 @@ export const addRecord = async (tableName, formData)=>{
 
 //Update Record
 export const updateRecord = async (tableName,idField,recordId,formData)=>{
-    
-    const params = {
-        tableName,
-        idField,
-        recordId,
-        formData
-    }
-
-    console.log(params)
-    
+  
     try{
-      const result = await dbUrl.post("/db/updateRecord",{params})
+      const result = await dbUrl.post("/db/updateRecord",{tableName,idField,recordId,formData})
       //console.log(result)
       const data = await result.data
       return (data)
@@ -199,7 +200,7 @@ export const askGPT = async (req)=>{
     const result = await dbUrl.post("/gpt",{params})
     return (result)
   }catch(error){
-    console.log(error)
+    // console.log(error)
   }
 }
 
@@ -225,7 +226,6 @@ export const scanInvoice = async ({args})=>{
   const {documentText, record} = args
 
   const prompt = `The following is an invoice received from a supplier: ${documentText}. Fill in the values in this javascript object: ${JSON.stringify(record)} based on the information in the invoice. Leave a value blank if it can not be determined based on the invoice document received. Return response as javascript object. Be sure to return a properly structured json object with closed brackets and array sub elements if needed.`
-  console.log(prompt)
 
   const params = {
     prompt: prompt
@@ -233,10 +233,9 @@ export const scanInvoice = async ({args})=>{
 
   try{
     const result = await dbUrl.post("/gpt",{params})
-    console.log(JSON.parse(result.data))
     return (JSON.parse(result.data))
   }catch(error){
-    console.log(error)
+    // console.log(error)
   }
 }
 
@@ -251,9 +250,65 @@ export const runPython = async (pythonAppName,args)=>{
     return (JSON.parse(result.data))
 
   }catch(error){
-    console.log(error)
+    // console.log(error)
   }
 }
 
 //Get list of all tables in database:
-const query= `SELECT table_name FROM information_schema.tables where table_schema = 'public';`
+export const getAllTables = async()=>{
+  const query= `SELECT table_name FROM information_schema.tables where table_schema = 'public';`
+  try{
+    const result = await dbUrl.post("/query",{query})
+    console.log(JSON.parse(result.data))
+    return (JSON.parse(result.data))
+  }catch(error){
+    console.log(error)
+  }
+  
+}
+
+// show columsn
+export const getColumnData = async(tableName)=>{
+
+  const query= `SELECT column_name as name, data_type FROM information_schema.COLUMNS where TABLE_NAME = N'${tableName}';`
+  try{
+    const result = await dbUrl.post("/db/query",{query})
+    const data = result.data
+
+    let fieldList = [] 
+      data.map(item=>{
+        fieldList.push(item.name)
+      })
+    return ({data: data, fieldList:fieldList})
+  }catch(error){
+    console.log(error)
+  }
+}
+
+export const updateActivityLog = async(app, recordId, userEmail, description)=>{
+  
+  const formData = {
+    "app":app,
+    "record_id":recordId,
+    "user":userEmail,
+    "description":description
+  }
+  
+  const params = {
+    tableName: "activities",
+    formData:formData
+  }
+  
+  try{
+    const result = await dbUrl.post("/db/addRecord",{params})
+    // console.log(result)
+    const data = await result.data
+    return (data)
+  }catch(error){
+    // console.log(error)
+  }
+}
+
+
+
+

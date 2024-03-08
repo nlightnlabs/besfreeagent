@@ -133,10 +133,10 @@ export const limitText =(textContent,maxLength)=>{
 }
 
 export const escapeQuotes = (inputString) =>{
-  let escapedString =""
+  let escapedString =``
   
   if(inputString.search("'")>0){
-    // Replace double quotes with escaped double quotes
+    // Replace single quotes with escaped single quotes
     escapedString = inputString.replace(/'/g, "\\'");
   }
 

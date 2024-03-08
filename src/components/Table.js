@@ -7,11 +7,12 @@ import RecordDetails from './RecordDetails.js';
 import { getTable } from './apis/axios.js';
 import {toProperCase} from './functions/formatValue.js'
 import { UTCToLocalTime } from './functions/time.js';
-import Draggable from 'react-draggable';
+import * as nlightnApi from "./apis/nlightn.js"
+import FloatingPanel from './FloatingPanel.js';
 
 const Table = (props) => {
 
-    const userData = props.userData;
+    const user = props.user;
     const tableName = props.tableName || ""
     const formName = props.formName || ""
     const appData = props.appData
@@ -19,10 +20,13 @@ const Table = (props) => {
     const [fields, setFields] = useState([])
     const [recordId, setSelectedRecordId] = useState(0)
     const [showRecordDetails, setShowRecordDetails] = useState(false)
+    const appIcons = props.appIcons
     
 
     const getTableData = async (req, res)=>{
-      const response = await getTable(tableName)
+
+      const response = await nlightnApi.getTable(tableName)
+      console.log("table data:",response)
 
       let fieldList = []
         if(response.data.length>0){
@@ -70,23 +74,29 @@ const Table = (props) => {
         />
         {
           showRecordDetails && 
-          <Draggable>
-          <div 
-            className="d-flex flex-column bg-light border border-3 shadow rounded-3" 
-            style={recordDetailsModalStyle}>
-              <RecordDetails
-                tableName={tableName}
-                recordId={recordId}
-                tableData={tableData}
-                formName={formName}
-                userData = {userData}
-                appData = {appData}
-                setShowRecordDetails = {setShowRecordDetails}
-                refreshTable = {setTableData}
-                updateParentStates = {[getTableData]}
-              />
+          <div className="d-flex" style={{height:"100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.5)", position: "absolute", top: 0, left:0}}>
+            <FloatingPanel
+              title={""}
+              top="50vh"
+              left="50vw"
+              height="80vh"
+              width="50vw"
+              appData={appData}
+              displayPanel={setShowRecordDetails}
+            >
+            <RecordDetails
+              tableName={tableName}
+              recordId={recordId}
+              tableData={tableData}
+              formName={formName}
+              user = {user}
+              appData = {appData}
+              setShowRecordDetails = {setShowRecordDetails}
+              refreshTable = {setTableData}
+              updateParentStates = {[getTableData]}
+            />
+            </FloatingPanel>
           </div>
-          </Draggable>
         }          
     </div>
   )

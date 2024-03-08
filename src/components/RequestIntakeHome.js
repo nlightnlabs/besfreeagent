@@ -61,12 +61,16 @@ const RequestIntakeHome = (props) => {
     const [spendCategories, setSpendCategories] = useState([])
     const [businessUnits, setBusinessUnits] = useState([])
     const [businesses, setBusinesses] = useState([])
+    const [dbFieldData, setDbFieldData]= useState([])
 
     useEffect(()=>{
-      console.log("appData.FAClient: ",appData.FAClient)
-    },[])
-  
-    useEffect(()=>{
+
+        let appName = ""
+        if(environment === "freegent"){
+          appName = "custom_app_52"
+        }else{
+          appName = "requests"
+        }
 
       const getRequestStypes = async ()=>{
         const response = await nlightnApi.getTable("request_flow_types")
@@ -76,12 +80,6 @@ const RequestIntakeHome = (props) => {
 
 
       const getBusinessUnits = async ()=>{
-        let appName=""
-        if(environment ==="freeagent"){
-          appName = "business_unit"
-        }else{
-          appName = "business_units"
-        }
         const response = await crud.getData(appName)
         setBusinessUnits(response)
       }
@@ -89,12 +87,6 @@ const RequestIntakeHome = (props) => {
     
 
       const getCategories = async ()=>{
-        let appName=""
-        if(environment ==="freeagent"){
-          appName = "custom_app_56"
-        }else{
-          appName = "spend_categories"
-        }
         const response = await crud.getData(appName)
         setSpendCategories(response)
       }
@@ -102,16 +94,17 @@ const RequestIntakeHome = (props) => {
     
 
       const getBusinesses = async ()=>{
-        let appName=""
-        if(environment ==="freeagent"){
-          appName = "custom_app_44"
-        }else{
-          appName = "businesses"
-        }
         const response = await crud.getData(appName)
         setBusinesses(response)
       }
       getBusinesses()
+
+     
+      const getRequestDbFieldNames = async ()=>{
+        const response = await crud.getColumnData(appName)
+        setDbFieldData(response)
+      }
+      getRequestDbFieldNames()
 
     },[])
 
@@ -189,7 +182,7 @@ const RequestIntakeHome = (props) => {
               setFormName = {setFormName}
               formData = {formData}
               setFormData = {setFormData}
-              appData ={{spendCategories, businessUnits, businesses}}
+              appData ={{...appData,...{spendCategories},...{businessUnits},...{businesses},...{dbFieldData}}}
               setShowRequestIntakeModal = {setShowRequestIntakeModal}
             />
           :
@@ -200,7 +193,7 @@ const RequestIntakeHome = (props) => {
               setFormName = {setFormName}
               formData = {formData}
               setFormData = {setFormData}
-              appData ={{...appData,...{spendCategories},...{businessUnits},...{businesses}}}
+              appData ={{...appData,...{spendCategories},...{businessUnits},...{businesses},...{dbFieldData}}}
               setShowRequestIntakeModal = {setShowRequestIntakeModal}
             />
           }

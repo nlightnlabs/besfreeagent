@@ -1,23 +1,40 @@
 import React, {useState, useEffect, useRef} from 'react'
 import "bootstrap/dist/css/bootstrap.min.css"
-import { getData } from './apis/axios'
 import { toProperCase } from './functions/formatValue'
 import {UTCToLocalTime} from './functions/time'
 import { generalIcons } from './apis/icons'
+import * as nlightnApi from './apis/nlightn.js'
 
 const Activities = (props) => {
 
-  const data = props.activities
   const tableName = props.tableName || ""
   const recordId = props.recordId || ""
-  const [activities, setActivities] = useState(props.activities)
-
-  const windowSize =useRef()
+  const [activities, setActivities] = useState([])
 
   useEffect(()=>{
-    // console.log(typeof data)
-    setActivities(data)
+    const getActivityData = async ()=>{
+      const query = `SELECT A.*, B.first_name, B.last_name from activities as A left join users as B on A.user = B.email where "record_id"='${recordId}' and "app" = '${tableName}' order by "record_created" desc;`
+      const returnedData = await nlightnApi.getData(query)
+
+      setActivities(returnedData.sort((a, b) => {
+          return  b.record_created-a.record_created;
+        }));
+    }
+    getActivityData()
   },[props])
+
+  const sortActivities = (data, direction)=>{
+    if(direction=="descending"){
+      setActivities(activities.sort((a, b) => {
+        return  b.record_created-a.record_created;
+      }));
+    }else if(direction=="ascending"){
+      setActivities(activities.sort((a, b) => {
+        return  b.record_created-a.record_created;
+      }));
+    }
+  }
+  
 
   //function to return data from db as JSON or string
   const dataFormat=(text)=>{

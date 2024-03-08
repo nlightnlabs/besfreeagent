@@ -113,7 +113,6 @@ const TableInput = (props) => {
         ...props,
         value: lineItems,
       }
-      console.log(target)
       onChange({target})
     }
   }

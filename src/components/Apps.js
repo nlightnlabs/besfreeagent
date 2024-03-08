@@ -1,8 +1,52 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
+import {Context} from './Context.js'
 
 const Apps = (props) => {
 
-    const apps = props.apps
+    const {
+        user,
+        setUser,
+        users,
+        setUsers,
+        userLoggedIn,
+        setUserLoggedIn,
+        appIcons,
+        setAppIcons,
+        apps,
+        setApps,
+        selectedApp,
+        setSelectedApp,
+        page,
+        setPage,
+        pages,
+        setPages,
+        pageName,
+        setPageName,
+        requestType,
+        setRequestType,
+        appData,
+        setAppData,
+        attachments,
+        setAttachments,
+        pageList,
+        setPageList,
+        requestTypes,
+        setRequestTypes,
+        initialFormData,
+        setInitialFormData,
+        tableName,
+        setTableName,
+        tables,
+        setTables,
+        currency,
+        setCurrency,
+        language,
+        setLanguage,
+        currencySymbol,
+        setCurrencySymbol
+    }= useContext(Context)
+
+
     const handleSelectedApp = props.handleSelectedApp
     const [businessProcesses, setBusinessProcesses] = useState([])
 
@@ -13,7 +57,6 @@ const Apps = (props) => {
         })
         let fields = Array.from(fieldSet)
         setBusinessProcesses(fields)
-        console.log(fields)
     }
 
     useEffect(()=>{
@@ -38,7 +81,6 @@ const Apps = (props) => {
                     <div id={app.name} className="d-flex align-items-center flex-column justify-content-center m-3" style={{height: "50px", width: "50px", cursor: "pointer"}} key={index}>
                         <img  style={iconStyle} src={app.icon} alt={`${app.label} icon`} onClick={(e)=>{handleSelectedApp(e, app)}}></img>
                         <div className="d-flex text-center" style={{fontSize: 12, color: "gray", whiteSpace:"wrap"}} onClick={(e)=>{handleSelectedApp(e,app)}}>{app.label}</div>
-                    
                     </div>
                     :
                     null))

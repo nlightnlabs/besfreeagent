@@ -54,9 +54,6 @@ const Home = (props) => {
     setCurrencySymbol
 }= useContext(Context)
 
-useEffect(()=>{
-  console.log("appData.FAClient: ",appData.FAClient)
-},[])
 
   useEffect(()=>{
       getAnnouncements()
@@ -87,7 +84,6 @@ useEffect(()=>{
     }
   }
 
-
   const getRequests = async (req, res)=>{
     const environment = window.environment
     let appName = ""
@@ -105,26 +101,6 @@ useEffect(()=>{
         console.log(error)
         setRequests([])
     }
-  }
-
-  const colors =[
-    {status: "Draft", color: "rgba(200,200,200,1)"},
-    {status: "Approved", color: "green"},
-    {status: "Reviewing", color: "rgba(92,155,213,1)"},
-    {status: "Hold", color: "orange"},
-    {status: "Denied", color: "red"},
-    {status: "Completed", color: "green"},
-    {status: "New Document", color: "rgba(92,155,213,1)"},
-    {status: "New Comment", color: "orange"},
-    {status: "Cancelled", color: "red"}
-] 
-
-
-  const gotToGenAIWorkbench =(e)=>{
-    const nextPage = "GenAI Workbench"
-    setPage(pages.filter(x=>x.name===nextPage)[0])
-    setPageList([...pageList,nextPage])
-    setPageName(nextPage)
   }
 
   const handleSelectedApp =(e,app)=>{
@@ -147,16 +123,15 @@ useEffect(()=>{
         FAClient.navigateTo(appHomePage)
       }
     }else{
-      setTableName(apps.filter(row=>row.name==parentId)[0].db_table)
+      setTableName(apps.find(row=>row.name==parentId).db_table)
       const nextPage = app.default_component
-      setPage(pages.filter(x=>x.name===nextPage)[0])
+      setPage(pages.filter(x=>x.find===nextPage))
       setPageList([...pageList,nextPage])
       setPageName(nextPage)
     }
   }
 
   const handleSelectedArticle =(articleId)=>{
-    console.log(articleId)
     if (articleId>0){
       setAppData({...appData,...{["selected_article_id"]:articleId}})
       const nextPage = "Article"

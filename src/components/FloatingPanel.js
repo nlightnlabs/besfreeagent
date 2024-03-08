@@ -1,9 +1,10 @@
 import React, {useRef, useState, useEffect} from "react"
 import { toProperCase } from "./functions/formatValue";
+import * as nlightnApi from './apis/nlightn.js'
 
 const FloatingPanel = (props) => {
-    const { children, title, height, width, appData, displayPanel } = props;
-    const icons = appData.icons
+    const { children, title, height, width, displayPanel } = props;
+    const [icons, setIcons] = useState([])
 
     const panelRef = React.useRef();
     const allowDrag = true
@@ -11,6 +12,17 @@ const FloatingPanel = (props) => {
     const [position, setPosition] = React.useState({ x: 0.5*window.innerWidth, y: 0.5*window.innerHeight });
     const [isDragging, setIsDragging] = React.useState(false);
     const [offset, setOffset] = React.useState({ x: 0, y: 0 });
+
+    const getIcons = async ()=>{
+      const response = await nlightnApi.getTable("icons")
+      const data = response.data
+      console.log(data)
+      setIcons(data)
+    }
+
+    useEffect(()=>{
+      getIcons()
+    },[])
   
     const containerStyle = {
       position: "fixed",
@@ -63,10 +75,10 @@ const FloatingPanel = (props) => {
         onMouseMove={handleMouseMove}
         onDoubleClick={handleMouseUp}
       >
-        <div className="d-flex justify-content-between align-items-center" style={{backgroundColor:"rgb(0,100,255)", height:"50px", overflow:"hidden"}}>
-          <div className="d-flex ms-1" style={{fontSize:"20px", color: "white", fontWeight: "bold"}}>{toProperCase(title.replaceAll("_"," "))}</div>
-          <div className="d-flex"  >
-            <img src={icons.length>0 && icons.find(i=>i.name==="close").image} style={iconButtonStyle} onClick={(e)=>displayPanel(false)}/>
+        <div className="d-flex justify-content-between align-items-center" style={{backgroundColor:"rgb(0,100,255)", height:"40px", overflow:"hidden"}}>
+          <div className="d-flex ms-1" style={{fontSize:"20px", color: "white", fontWeight: "bold"}}>{title && toProperCase(title.replaceAll("_"," "))}</div>
+          <div className="d-flex">
+            <img src={icons.length>0 ? icons.find(i=>i.name==="close").image : null} style={iconButtonStyle} onClick={(e)=>displayPanel(false)}/>
           </div>
         </div>
         <div className="d-flex flex-wrap" style={{height: "95%", width: "100%", overflowY:"auto", overflowX: "hidden"}}>

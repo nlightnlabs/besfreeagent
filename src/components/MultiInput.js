@@ -1,12 +1,12 @@
 import React, {useState, useEffect, forwardRef, useRef} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { generalIcons } from './apis/icons';
 import {formatDateInput} from './functions/formatValue'
-import * as crud from "./apis/crud.js"
 
 const MultiInput = forwardRef((props, ref) => {
 
   let target = {}
-  const list = props.list || []
+  const list = props.list
   const label = props.label
   const type = props.type
   const id = props.id
@@ -47,17 +47,15 @@ const MultiInput = forwardRef((props, ref) => {
   const [datePickerDisplay, setDatePickerDisplay] = useState("none")
   const [selectedIndex, setSelectedIndex] = useState(props.list ? props.list.indexOf(props.value) : 0)
 
+  const [startDate, setStartDate] = useState(new Date());
+
   const [formClassList, setFormClassList] = useState("form-floating w-100")
-  const [appIcons, setAppIcons] = useState([])
 
   const inputRef = useRef("")
-
+  const containerRef = useRef("")
 
   useEffect(()=>{
-    if(props.list && options.length<1){
-      setOptions(props.list.filter(item=>item))
-    }
-
+  
     if(props.readonly || props.disabled){
       setValueColor("black")
       setLabelFill("white")
@@ -71,34 +69,11 @@ const MultiInput = forwardRef((props, ref) => {
       setFormClassList("form-group w-100")
      }
 
-  },[props.list, props.readonly, props.disabled, props.label])
+  },[props.readonly, props.disabled, props.label])
 
   useEffect(()=>{
     setValue(props.value || "")
   },[props.value])
-
-  const getAppIcons = async (req, res)=>{
-    const environment = window.environment
-    let appName = ""
-    if(environment ==="freeagent"){
-      appName= "icon"
-    }else{
-      appName="icons"
-    }
-
-    try{
-        const response = await crud.getData(appName)
-        setAppIcons(response)
-    }catch(error){
-        console.log(error)
-        setAppIcons([])
-    }
-  }
-
-  useEffect(()=>{
-    getAppIcons()
-  },[])
-
 
   const containerstyle={
     display: "flex",
@@ -107,14 +82,13 @@ const MultiInput = forwardRef((props, ref) => {
     left: 0,
     get display(){if(layout=="stacked"){return "block"}else{return "flex"}},
     width: "100%",
-    height: height,
+    minHeight: height,
     marginTop: marginTop || 0,
-    marginBottom: marginTop || 10,
+    marginBottom: marginTop || 10
   }
   
 
   const inputStyle ={
-    cursor: "pointer",
     fontSize: valueSize || 14,
     fontWeight: valueWeight || "normal",
     color: valueColor || "#5B9BD5",
@@ -122,7 +96,6 @@ const MultiInput = forwardRef((props, ref) => {
     outline: "none",
     width: width || "100%",
     border: border|| "1px solid rgb(235,235,235)",
-    height: containerstyle.height,
     get padding(){ if(padding){return padding}else{ return ;}}
   }
 
@@ -134,7 +107,7 @@ const MultiInput = forwardRef((props, ref) => {
     backgroundColor: valueFill || "white",
     outline: "none",
     width: width || "100%",
-    height: containerstyle.height || 100,
+    minHeight: 100,
     border: border|| "1px solid rgb(235,235,235)",
   }
 
@@ -150,8 +123,10 @@ const MultiInput = forwardRef((props, ref) => {
   const dropDownStyle = {
     display: dropDownDisplay,
     position: "absolute",
+    top: (inputRef.current.offsetHeight)+"px",
+    left: (inputRef.current.offsetLeft)+"px",
     width: "100%",
-    maxHeight: 300,
+    maxHeight: 200,
     overflowY: "auto",
     overflowX: "hidden",
     padding: padding || 5,
@@ -160,7 +135,7 @@ const MultiInput = forwardRef((props, ref) => {
     border: "1px solid lightgray",
     borderRadius: "0px 0px 5px 10px",
     color: valueColor || "#5B9BD5",
-    zIndex: 999999
+    zIndex:99999
   }
 
   const optionsStyle = {
@@ -178,11 +153,11 @@ const MultiInput = forwardRef((props, ref) => {
   const handleOptionClick=(e)=>{
 
     let selectedIndex = e.target.id
-    let selectedValue = props.list[selectedIndex]
+    let selectedValue = list[selectedIndex]
 
     setValue(selectedValue)
     setSelectedIndex(selectedIndex)
-    setOptions(props.list)
+    setOptions(list)
 
     setDropDownDisplay("none")
     updateStates(selectedValue)
@@ -208,8 +183,8 @@ const MultiInput = forwardRef((props, ref) => {
 
     let selectedValue = inputValue
     let selectedIndex = 0
-    if(props.list && props.list.length>0){
-      selectedIndex = props.list.indexOf(selectedValue) || 0
+    if(list && list.length>0){
+      selectedIndex = list.indexOf(selectedValue)
     }
     setSelectedIndex(selectedIndex)
     updateParent(selectedValue)
@@ -229,20 +204,35 @@ const MultiInput = forwardRef((props, ref) => {
     if(e.type =="mouseleave"){
         setDropDownDisplay("none")
     }
-  
   }
 
-  const handleDoubleClick = ()=>{
-    props.list && props.list>0 && setOptions(props.list)
-  }
+  const handleDoubleClick = (e)=>{
 
-  const handleFocus = (element)=>{
     props.list && props.list>0 && setOptions(props.list)
     setDropDownDisplay("block")
+    e.target.select()
+   
+  }
+
+  const handleFocus = (e)=>{
+    if(list  && list.length>0){
+      setOptions(list.filter(item=>item))
+    }
+    setDropDownDisplay("block")
+    e.target.select()
+  }
+
+  const handleClick = (e)=>{
+    if(list  && list.length>0){
+      setOptions(list.filter(item=>item))
+    }
+    setDropDownDisplay("block")
+    e.target.select()
+   
   }
 
   const handleBlur=(e)=>{
-   
+    
   }
 
   const inputProps = {
@@ -253,7 +243,7 @@ const MultiInput = forwardRef((props, ref) => {
   }
 
   const handleInputChange=(inputText)=>{
-     
+     console.log(inputText)
       setValue(inputText)
       
       if(props.list && props.list.length>0){
@@ -291,26 +281,16 @@ const MultiInput = forwardRef((props, ref) => {
     }
   }
 
-  const pageStyle = `
-    input:disabled {
-      background: #dddddd;
-    }
-    
-    input:disabled+label {
-      color: red;
-    }
-
-  `
-
   return (
     <div 
+      ref = {containerRef}
       id={id}
       name={name} 
       className="d-flex"
       style={containerstyle}
       onBlur={(e)=>handleBlur(e)}
       onMouseLeave={(e)=>handleHover(e)}
-      onClick={(e)=>handleDropDownToggle(e)}
+      onClick={(e)=>handleClick(e)}
     >
           <div className={formClassList}>
           {type == "textarea" ?
@@ -330,11 +310,11 @@ const MultiInput = forwardRef((props, ref) => {
             :
             type == "file" ?
               <input 
-                ref = {inputRef}
                 className="form-control"
                 id={id}
                 name={name}
                 style={textAreaStyle}
+                ref = {inputRef}
                 type={type}
                 value={value}
                 placeholder={label}
@@ -354,9 +334,9 @@ const MultiInput = forwardRef((props, ref) => {
                 placeholder={label}
                 value={type=="date"? formatDateInput(value):value}
                 onChange={(e)=>handleInputChange(e.target.value)}
-                onBlur={(e)=>handleBlur(e.target.value)}
-                onDoubleClick={(e)=>handleDoubleClick(e.target.value)}
-                onFocus={(e)=>handleFocus(e.target.value)}
+                onBlur={(e)=>handleBlur(e)}
+                onDoubleClick={(e)=>handleDoubleClick(e)}
+                onFocus={(e)=>handleFocus(e)}
                 {...inputProps}
                 >
             </input>
@@ -365,8 +345,8 @@ const MultiInput = forwardRef((props, ref) => {
           </div>
         
 
-         {props.list && props.list.length>0 && type!=="date" &&
-            <div style={{...dropDownStyle, top: inputRef.current.offsetHeight, left:inputRef.current.left}}>
+         {list && list.length>0 && type!=="date" &&
+            <div style={dropDownStyle}>
               {options.map((item,index)=>(
                 <div
                   key={index}
@@ -385,14 +365,13 @@ const MultiInput = forwardRef((props, ref) => {
         {
             props.list && props.list.length>0 && type=="select" && allowAddData && 
             <img 
-              src={appIcons.find(i=>i.name==="add").image} 
+              src={`${generalIcons}/add_icon.png`} 
               alt="Add Icon"
               style={addIconStyle} 
               onClick={(e)=>handleAddData(e)}>
             </img>
         }
 
-        <style>{pageStyle}</style>
     </div>
   )
 })

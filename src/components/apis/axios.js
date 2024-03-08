@@ -244,7 +244,7 @@ export const updateActivityLog = async(app, recordId, userEmail, description)=>{
   }
   
   try{
-    const result = await dbUrl.post("/db/addRecord",{params})
+    const result = await dbUrl.post("/db/addRecord",params)
     // console.log(result)
     const data = await result.data
     return (data)

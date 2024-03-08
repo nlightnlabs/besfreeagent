@@ -86,7 +86,7 @@ const OrderForm = (props)=>{
         }
       }else{
 
-        appName = "orders"
+        appName = "purchase_orders"
 
         orderForm = {
           order_name: finalFormData.order_name,

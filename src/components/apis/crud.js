@@ -84,4 +84,42 @@ export const search = async (searchTerms) => {
     return results
 }
 
+export const getList = async (tableName,fieldName)=>{
+    const environment  = window.environment 
+    let results = []
+    if(environment==="freeagent"){
+        results = await freeAgentApi.getFAList(tableName,fieldName);
+    }else{
+        let response = await nlightnApi.getList(tableName,fieldName)
+        results = await response
+    }
+    return results
+}
+
+  export const getConditionalList = async (tableName,fieldName,conditionalField, condition)=>{
+    const environment  = window.environment 
+    
+    let results = []
+    if(environment==="freeagent"){
+        results = await freeAgentApi.getFAConditionalList(tableName,fieldName,conditionalField,condition);
+    }else{
+        let response = await nlightnApi.getConditionalList(tableName,fieldName,conditionalField,condition)
+        results = await response
+    }
+    return results
+  }
+
+
+  export const getColumnData = async (tableName)=>{
+    const environment  = window.environment 
+    
+    let results = []
+    if(environment==="freeagent"){
+        results = await freeAgentApi.getFAColumnData(tableName);
+    }else{
+        results = await nlightnApi.getColumnData(tableName)
+    }
+    return results
+  }
+
 

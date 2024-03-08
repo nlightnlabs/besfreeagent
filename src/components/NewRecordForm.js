@@ -12,7 +12,7 @@ import axios, {
 import { getValue } from "./apis/axios.js";
 import Attachments from "./Attachments.js";
 import TableInput from "./TableInput.js";
-import { rootPath } from "./apis/fileServer.js";
+import { fileServerRootPath } from "./apis/fileServer.js";
 
 const NewRecordForm = (props) => {
 	const formName = props.formName;
@@ -22,7 +22,7 @@ const NewRecordForm = (props) => {
 	const setUploadFilesRef = props.setUploadFilesRef;
 
 	const [formData, setFormData] = useState(props.formData);
-	const [userData, setUserData] = useState(props.user);
+	const [user, setUser] = useState(props.user);
 	const [appData, setAppData] = useState(props.appData);
 
 	const [sections, setSections] = useState([]);
@@ -41,11 +41,11 @@ const NewRecordForm = (props) => {
 	const [initialValues, setInitialValues] = useState(false);
 	const [formClassList, setFormClassList] = useState("form-group")
 
+	const [tableName, setTableName] = useState("")
+
 	useEffect(() => {
 		getFormFields();
 	}, [props.formName]);
-
-
 
 	const getFormFields = async () => {
 		const params = {
@@ -59,6 +59,8 @@ const NewRecordForm = (props) => {
 
 			// Saving the state.  This is always consistent.
 			setFormElements(formFields);
+
+			setTableName(formFields[0].db_table_name)
 
 			// Calling a function to dynamically pull multiple dropdown lists from db
 			getDropDownLists(formFields);
@@ -222,13 +224,12 @@ const NewRecordForm = (props) => {
 			const updatedFiles = await Promise.all(
 				fileData.map(async (file) => {
 					let fileName = file.name;
-					let filePath = `${rootPath}/user_${userData.id}_${userData.first_name}_${userData.last_name}/${fileName}`;
-					if (userData) {
-						filePath = `${rootPath}/user_${userData.id}_${userData.first_name}_${userData.last_name}/${fileName}`;
-					} else {
-						filePath = rootPath;
-					}
-
+					let filePath = ""
+					if (user) {
+						filePath = `${fileServerRootPath}/${tableName}/user_${user.id}_${user.first_name}_${user.last_name}/${fileName}`;
+					  } else {
+						filePath = `${fileServerRootPath}/${tableName}/general_user/${fileName}`;
+					  }
 					const response = await axios.post(`/getS3FolderUrl`, {
 						filePath: filePath,
 					});
@@ -430,7 +431,7 @@ const NewRecordForm = (props) => {
 													valueColor={item.ui_color}
 													currentAttachments={formData.attachments}
 													prepareAttachments={prepareAttachments}
-													userData={userData}
+													userData={user}
 													readonly={eval(item.ui_readonly) || !allowEdit}
 													disabled={eval(item.ui_disabled) || !allowEdit}
 												/>

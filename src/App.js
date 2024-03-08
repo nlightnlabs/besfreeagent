@@ -45,11 +45,11 @@ function App() {
      
     const initializeFreeAgentConnection = ()=>{
       const FAAppletClient = window.FAAppletClient;
-              let faClient = new FAAppletClient({
-                  appletId: 'nlightnlabs-bes-home',
-              });
-              window.FAClient = faClient;
-              setAppData({...appData,...{["FAClient"]:faClient}})
+      let faClient = new FAAppletClient({
+          appletId: 'nlightnlabs-bes-home',
+      });
+      window.FAClient = faClient;
+      setAppData({...appData,...{["FAClient"]:faClient}})
     }
 
 
@@ -120,11 +120,12 @@ function App() {
 
   const getUserData = async ()=>{
     const response = await crud.getUserData()
-   
     setUser(response.user)
     setUsers(response.users)
     setAppData(prev=>({...prev,user: response.user, users: response.users}))
   }
+
+
 
   const getAppIcons = async (req, res)=>{
     const environment = window.environment
@@ -148,6 +149,7 @@ function App() {
   const getApps = async (req, res)=>{
     const environment = window.environment
     let appName = ""
+    
     if(environment ==="freeagent"){
       appName= "web_app"
     }else{
@@ -174,17 +176,13 @@ function App() {
 
   useEffect(()=>{
     setTimeout(async ()=>{
-      const FAClient = window.FAClient
-      if(FAClient !==null){
         await getUserData()
         await getAppIcons()
         await getApps()
         await getPageData()
         setDisplayPage(true)
-      }
     },500)
-    
-},[window.FAClient])
+},[])
 
 useEffect(()=>{
   if(users.length>0 && appIcons.length>0 && apps.length>0){

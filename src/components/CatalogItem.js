@@ -103,9 +103,9 @@ const CatalogItem = (props)=>{
           </div>
           <div className="d-flex w-100 flex-column p-1"  onClick={(e)=>handleItemClick(e)}>
             {cardDetails.map((obj,index)=>(
-              obj.type==="image"?
+              obj.type==="image" && obj.value !="" && obj.value !=null && JSON.parse(obj.value)?
                 <div key={index} className="d-flex w-100">
-                  <img src={obj.value} style={itemImageStyle}></img>
+                  <img src={JSON.parse(obj.value).url} style={itemImageStyle}></img>
                 </div>
               :
                 <div key={index} >

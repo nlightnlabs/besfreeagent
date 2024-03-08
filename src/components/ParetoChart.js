@@ -56,47 +56,10 @@ const ParetoChart = ({props}) => {
   const secondary_series_marker_shape = props.secondary_series_marker_shape
   const secondary_series_marker_size = props.secondary_series_marker_size
   
-
-    // const chartTitle = props.chartTitle
-    // const categoryLabels = props.categoryLabels
-    // const tableName = props.tableName
-    // const aggregationMethod = props.aggregationMethod
-    // const fieldToAggregate = props.fieldToAggregate
-    // const valueColors = props.valueColors
-    // const barColors = props.barColors
-    // const barValueColors = props.barValueColors
-    // const barDataTitle = props.barDataTitle
-    // const lineColors = props.lineColors
-    // const lineValueColors = props.lineValueColors
-    // const lineDataTitle = props.lineDataTitle
-
-    // const primaryTextFormat = props.primaryTextformat || "quantity"
-    // const primaryTextCurrencySymbol = props.primaryTextformat || "$"
-    // const primaryTextDigits = props.primaryTextDigits || 1
-    // const primaryTextAbbreviate = props.primaryTextAbbreviate || true
-
-    // const secondaryTextFormat = props.secondaryTextFormat || "percent"
-    // const secondaryTextCurrencySymbol = props.secondaryTextCurrencySymbol || "$"
-    // const secondaryTextDigits = props.secondaryTextDigits || 1
-    // const secondaryTextAbbreviate = props.secondaryTextAbbreviate || false
-    
-    // const query = props.query
-
-    const xLimit = props.xLimit
-
     const [data, setData] = useState({})
     const [options, setOptions] = useState({})
 
     const prepareData = async ()=>{
-
-      // let query = ""
-      // if (inputQuery !=""){
-      //   query = inputQuery;
-      // }else if(aggregation_method == "sum"){
-      //   query = `SELECT "${group_by_field}" as label, sum("${fieldToAggregate}") as value from ${tableName} group by "${categoryLabels}" order by sum("${fieldToAggregate}") desc`
-      // }else{
-      //   query = `SELECT "${group_by_field}" as label, count(distinct "id") as value from ${tableName} group by "${categoryLabels}" order by count(distinct "id") desc;`
-      // }
       
         try{
           const response = await getData(query)
@@ -231,18 +194,22 @@ const ParetoChart = ({props}) => {
       let fontSize = 12;
       let xRotation = 0;
     
-      if (numberOfCategories > 5) {
+      if (numberOfCategories > 3) {
         fontSize = 10;
         xRotation = 90;
       }
     
       const options = {
+        responsive: true,
         maintainAspectRatio: false,
         layout: {
           padding: {
-            bottom: 0,
+            left: 10,
+            right: 10,
+            bottom: 10,
           },
           legend: {
+            display: true,
             position: "bottom",
           },
         },

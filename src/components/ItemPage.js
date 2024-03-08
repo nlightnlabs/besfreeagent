@@ -52,10 +52,10 @@ const ItemPage = (props)=>{
       
                         <div>{JSON.stringify(value)}</div>
                     :
-                    typeof value =="string" 
-                    && (value.toLowerCase().includes(".png")||value.includes(".bmp")||value.includes(".jpg")||value.includes(".jpeg") ||value.includes(".gif"))
-                    && (value.toLowerCase().includes("http"))?
-                        <img src={value} style={{maxWidth: "80%", height:"auto", maxHeight: "150px"}} alt=""></img>
+                    key ==="image" && value !="" && value !=null && JSON.parse(value)?
+                    <div>
+                        <img src={JSON.parse(value).url} style={{maxWidth: "80%", height:"auto", maxHeight: "150px"}} alt=""></img>
+                    </div>
                     : 
                     typeof value =="string"?
                         <div>{value.toString()}</div>

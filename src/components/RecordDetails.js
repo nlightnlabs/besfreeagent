@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react'
 import DataEntryFrom from './DataEntryForm.js'
 import Activities from './Activities.js'
 import { generalIcons } from './apis/icons.js'
+import * as nlightnAPI from "./apis/nlightn.js"
 import {deleteRecord, getRecord, getRecords, getData, getTable, updateRecord} from './apis/axios.js'
-import Draggable from 'react-draggable'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 
@@ -12,15 +12,23 @@ const RecordDetails = (props) => {
     const tableName = props.tableName || ""
     const formName =  props.formName || ""
     const recordId = props.recordId || ""
-    const userData = props.userData ||[]
+    const user = props.user || {}
     const tableData = props.tableData || []
-    const updateParentStates = props.updateParentStates
 
     const setShowRecordDetails = props.setShowRecordDetails
     const [recordData, setRecordData] = useState([])
     const [fields, setFields] = useState([])
     const [activities, setActivities] = useState([])
     const [formData, setFormData] = useState([])
+
+    const [forceUpdate, setForceUpdate] = useState(false);
+
+    const updateParentStates = () => {
+      setForceUpdate(prevState => !prevState);
+      props.updateParentStates.forEach(func=>{
+        func()
+      })
+    };
 
     const getRecordData = async ()=>{
         const params={
@@ -29,32 +37,11 @@ const RecordDetails = (props) => {
             idField: 'id'
         }
 
-        const returnedData = await getRecord(params)
-        // console.log(returnedData)
+        const returnedData = await nlightnAPI.getRecord(params)
         setRecordData(returnedData)
         setFields(Object.keys(returnedData))
       }
 
-      const getActivityData = async ()=>{
-        const query = `SELECT A.*, B.first_name, B.last_name from activities as A left join users as B on A.user = B.email where "record_id"='${recordId}' and "app" = '${tableName}' order by "record_created" desc;`
-        const returnedData = await getData(query)
-
-        setActivities(returnedData.sort((a, b) => {
-            return  b.record_created-a.record_created;
-          }));
-      }
-
-      const sortActivities = (data, direction)=>{
-        if(direction=="descending"){
-          setActivities(data.sort((a, b) => {
-            return  b.record_created-a.record_created;
-          }));
-        }else if(direction=="ascending"){
-          setActivities(data.sort((a, b) => {
-            return  b.record_created-a.record_created;
-          }));
-        }
-      }
 
       const iconButtonStyle={
         maxHeight: 30,
@@ -72,16 +59,10 @@ const RecordDetails = (props) => {
 
       useEffect(()=>{
         getRecordData()
-        getActivityData()
       },[props])
 
   return (
     <div className="flex flex-column" style={{height: "100%", width:"100%", overflow: "hidden"}}>
-        <div className="d-flex justify-content-end" style={{backgroundColor: "rgb(50,100,255"}}>
-            <div className="button-group p-1">
-                <img src={`${generalIcons}/close_icon.png`} style={iconButtonStyle}  name="closeButton" onClick={(e)=>{setShowRecordDetails(false)}}></img>
-            </div>
-        </div>
         <div className="d-flex w-100 flex-column p-3">
  
         <div className="row">
@@ -93,10 +74,10 @@ const RecordDetails = (props) => {
                     recordId={recordId}
                     formData={recordData}
                     fields = {fields}
-                    userId={userData.id}
-                    appData={{user: userData}}
+                    userId={user.id}
+                    user = {user}
                     updateParent = {setFormData}
-                    updateParentStates = {[getActivityData, getRecordData, updateParentStates[0]]}
+                    updateParentStates = {[updateParentStates]}
                 />
              </div>
             
@@ -105,8 +86,8 @@ const RecordDetails = (props) => {
                     tableName={tableName}
                     pageTitle={"Activities"}
                     recordId={recordId}
-                    userData={userData}
-                    activities={activities}
+                    user={user}
+                    forceUpdate={forceUpdate ? 'forceUpdate' : 'normal'}
                 />
             </div>
         </div>

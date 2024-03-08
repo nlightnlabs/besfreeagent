@@ -8,6 +8,9 @@ import ValueChart from './ValueChart.js'
 import ParetoChart from './ParetoChart.js';
 import Chart from "chart.js/auto";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import NewRecordForm from './NewRecordForm.js';
+import FloatingPanel from './FloatingPanel.js'
+
 Chart.register(ChartDataLabels)
 
 
@@ -16,8 +19,16 @@ const Records = (props) => {
   const {
     user,
     setUser,
+    users,
+    setUsers,
     userLoggedIn,
     setUserLoggedIn,
+    appIcons,
+    setAppIcons,
+    apps,
+    setApps,
+    selectedApp,
+    setSelectedApp,
     page,
     setPage,
     pages,
@@ -26,23 +37,27 @@ const Records = (props) => {
     setPageName,
     requestType,
     setRequestType,
-    requestTypes,
-    setRequestTypes,
     appData,
     setAppData,
     attachments,
     setAttachments,
     pageList,
     setPageList,
+    requestTypes,
+    setRequestTypes,
+    initialFormData,
+    setInitialFormData,
     tableName,
     setTableName,
     tables,
     setTables,
-    apps,
-    setApps,
-    selectedApp,
-    setSelectedApp,
-  } = useContext(Context)
+    currency,
+    setCurrency,
+    language,
+    setLanguage,
+    currencySymbol,
+    setCurrencySymbol
+} = useContext(Context)
 
   const [data, setData] = useState([])
   const [fields, setFields] = useState([])
@@ -56,13 +71,14 @@ const Records = (props) => {
   const chartsSectionRef = useRef(null)
   const [chartsSectionWindowSize, setChartsSectionWindowSize] = useState({})
 
-  const getTableData = async (req, res)=>{
-    const response = await getTable(tableName)
+  const [showNewRecordForm, setShowNewRecordForm] = useState(false)
 
+  const getTableData = async ()=>{
+    const response = await getTable(tableName)
     setData(response.data.sort((a, b) => {
       return  b.id-a.id;
     }));
-    setFields(Object.keys(response.data[0]))
+    setFields(response.dataTypes)
 }
 
 const getChartProps =  async (req, res)=>{
@@ -91,7 +107,7 @@ useEffect(()=>{
 
 const chartContainerStyle={
   width: (chartsSectionWindowSize.width/3),
-  minWidth: 400, 
+  minWidth: 500, 
   minHeight: 250,
   height: "90%",
   overflowX: "auto",
@@ -113,7 +129,13 @@ const tableContainerStyle = {
   padding: 20
 }
 
+const handleAddRecord = async ()=>{
+  setShowNewRecordForm(true)
+}
 
+const FormDataPanel = {
+
+}
 
 const [pageClass, setPageClass] = useState("flex-container flex-column animate__animated animate__fadeIn animate__duration-0.5s")
 
@@ -123,8 +145,8 @@ const [pageClass, setPageClass] = useState("flex-container flex-column animate__
         <div className="d-flex flex-column bg-light">
             
             <h2 className="ps-3">{toProperCase(tableName.replaceAll("_"," "))}</h2>
-            {/* Charts container */}
 
+            {/* Charts container */}
             <div ref = {chartsSectionRef} className="d-flex flex-wrap justify-content-center" style={{height: "35vh", overflow: 'auto'}}>
             {
               Array.isArray(chartProps) &&
@@ -156,13 +178,45 @@ const [pageClass, setPageClass] = useState("flex-container flex-column animate__
             </div>
             
             {/* Show table container for large screen size */}
-            {data.length>0 &&
-            <div className="d-flex bg-light" style={tableContainerStyle}>
+            {data &&
+            <div className="d-flex bg-light flex-column" style={tableContainerStyle}>
+              <div className="d-flex justify-content-end me-3">
+                <div className="d-flex align-items-center">
+                  <img src={appIcons? appIcons.find(i=>i.name==="add").image:null} style={{height: "30px", width:"30px"}} onClick={(e)=>handleAddRecord(e)}></img>
+                  <div className="ms-1">Add Record</div>
+                </div>
+              </div>
               <Table 
-                userData={appData.user_info}
+                user={user}
                 tableName={tableName}
                 formName={formName}
                 />
+
+                {showNewRecordForm && 
+                <div className="d-flex" style={{height:"100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.5)", position: "absolute", top: 0, left:0}}>
+                  <FloatingPanel
+                    title={""}
+                    top="50vh"
+                    left="50vw"
+                    height="80vh"
+                    width="50vw"
+                    icons={appIcons}
+                    appData={appData}
+                    displayPanel={setShowNewRecordForm}
+                  >
+                  <NewRecordForm
+                      formName = {formName.replace("edit","new")}
+                      updateParent ={{}}
+                      updateParentStates = {{}}
+                      setUploadFilesRef = {()=>{}}
+                      formData = {{}}
+                      setFormData = {()=>{}}
+                      user = {user}
+                      appData = {appData}
+                  />
+                </FloatingPanel>
+                </div>
+                }
             </div>
             }
 
