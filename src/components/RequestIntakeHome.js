@@ -66,7 +66,7 @@ const RequestIntakeHome = (props) => {
     useEffect(()=>{
 
         let appName = ""
-        if(environment === "freegent"){
+        if(environment === "freeagent"){
           appName = "custom_app_52"
         }else{
           appName = "requests"
@@ -84,7 +84,7 @@ const RequestIntakeHome = (props) => {
         console.log("environment", environment)
 
         let appName = ""
-        if(environment === "freegent"){
+        if(environment === "freeagent"){
           appName = "business_unit"
         }else{
           appName = "businesses_units"
@@ -101,7 +101,7 @@ const RequestIntakeHome = (props) => {
         console.log("environment", environment)
 
         let appName = ""
-        if(environment === "freegent"){
+        if(environment === "freeagent"){
           appName = "custom_app_56"
         }else{
           appName = "spend_categories"
@@ -118,7 +118,7 @@ const RequestIntakeHome = (props) => {
         console.log("environment", environment)
         
         let appName = ""
-        if(environment === "freegent"){
+        if(environment === "freeagent"){
           appName = "custom_app_44"
         }else{
           appName = "businesses"
@@ -135,7 +135,7 @@ const RequestIntakeHome = (props) => {
         console.log("environment", environment)
 
         let appName = ""
-        if(environment === "freegent"){
+        if(environment === "freeagent"){
           appName = "custom_app_52"
         }else{
           appName = "requests"
