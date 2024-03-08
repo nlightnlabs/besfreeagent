@@ -5,6 +5,8 @@ import {limitText} from "./functions/formatValue.js"
 
 const CatalogItem = (props)=>{
 
+    const environment = window.environment
+
     let item = props.item
     const appData = props.appData;
     const setAppData = props.setAppData;
@@ -105,7 +107,7 @@ const CatalogItem = (props)=>{
             {cardDetails.map((obj,index)=>(
               obj.type==="image" && obj.value !="" && obj.value !=null && JSON.parse(obj.value)?
                 <div key={index} className="d-flex w-100">
-                  <img src={JSON.parse(obj.value)[0].url} style={itemImageStyle}></img>
+                  <img src={environment === "freeagent"? obj.value : JSON.parse(obj.value)[0].url} style={itemImageStyle}></img>
                 </div>
               :
                 <div key={index} >
