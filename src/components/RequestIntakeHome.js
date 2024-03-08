@@ -87,7 +87,7 @@ const RequestIntakeHome = (props) => {
         if(environment === "freegent"){
           appName = "business_unit"
         }else{
-          appName = "businesses"
+          appName = "businesses_units"
         }
 
         const response = await crud.getData(appName)
