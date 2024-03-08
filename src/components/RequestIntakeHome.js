@@ -81,6 +81,8 @@ const RequestIntakeHome = (props) => {
 
       const getBusinessUnits = async ()=>{
 
+        console.log("environment", environment)
+
         let appName = ""
         if(environment === "freegent"){
           appName = "business_unit"
@@ -95,6 +97,8 @@ const RequestIntakeHome = (props) => {
     
 
       const getCategories = async ()=>{
+
+        console.log("environment", environment)
 
         let appName = ""
         if(environment === "freegent"){
@@ -111,6 +115,8 @@ const RequestIntakeHome = (props) => {
 
       const getBusinesses = async ()=>{
 
+        console.log("environment", environment)
+        
         let appName = ""
         if(environment === "freegent"){
           appName = "custom_app_44"
@@ -125,6 +131,8 @@ const RequestIntakeHome = (props) => {
 
      
       const getRequestDbFieldNames = async ()=>{
+
+        console.log("environment", environment)
 
         let appName = ""
         if(environment === "freegent"){
