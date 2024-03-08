@@ -1,10 +1,10 @@
 import React, {useRef, useState, useEffect} from "react"
 import { toProperCase } from "./functions/formatValue";
-import * as nlightnApi from './apis/nlightn.js'
+import * as crud from './apis/crud.js'
 
 const FloatingPanel = (props) => {
     const { children, title, height, width, displayPanel } = props;
-    const [icons, setIcons] = useState([])
+    const [appIcons, setAppIcons] = useState([])
 
     const panelRef = React.useRef();
     const allowDrag = true
@@ -13,15 +13,21 @@ const FloatingPanel = (props) => {
     const [isDragging, setIsDragging] = React.useState(false);
     const [offset, setOffset] = React.useState({ x: 0, y: 0 });
 
-    const getIcons = async ()=>{
-      const response = await nlightnApi.getTable("icons")
-      const data = response.data
-      console.log(data)
-      setIcons(data)
+    const getAppIcons = async (req, res)=>{
+      const environment = window.environment
+      let appName = ""
+      if(environment ==="freeagent"){
+        appName= "icon"
+      }else{
+        appName="icons"
+      }
+      const response = await crud.getData(appName)
+      setAppIcons(response)
+  
     }
 
     useEffect(()=>{
-      getIcons()
+      getAppIcons()
     },[])
   
     const containerStyle = {
@@ -78,7 +84,7 @@ const FloatingPanel = (props) => {
         <div className="d-flex justify-content-between align-items-center" style={{backgroundColor:"rgb(0,100,255)", height:"40px", overflow:"hidden"}}>
           <div className="d-flex ms-1" style={{fontSize:"20px", color: "white", fontWeight: "bold"}}>{title && toProperCase(title.replaceAll("_"," "))}</div>
           <div className="d-flex">
-            <img src={icons.length>0 ? icons.find(i=>i.name==="close").image : null} style={iconButtonStyle} onClick={(e)=>displayPanel(false)}/>
+            <img src={appIcons.length>0 ? appIcons.find(i=>i.name==="close").image : null} style={iconButtonStyle} onClick={(e)=>displayPanel(false)}/>
           </div>
         </div>
         <div className="d-flex flex-wrap" style={{height: "95%", width: "100%", overflowY:"auto", overflowX: "hidden"}}>
