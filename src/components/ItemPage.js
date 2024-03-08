@@ -53,8 +53,15 @@ const ItemPage = (props)=>{
                         <div>{JSON.stringify(value)}</div>
                     :
                     key ==="image" && value !="" && value !=null && JSON.parse(value)?
-                    <div>
-                        <img src={JSON.parse(value).url} style={{maxWidth: "80%", height:"auto", maxHeight: "150px"}} alt=""></img>
+                    <div className="d-flex w-100 p-1" style={{height:"fit-content", width:"90%", overflowX: "auto"}}>
+                        {JSON.parse(value).map((image,index)=>(
+                                <img 
+                                key={index}
+                                src={image.url} 
+                                alt={`${image.name} icon`} 
+                                style={{height: "100px", width: "auto"}}>
+                              </img>
+                        ))}
                     </div>
                     : 
                     typeof value =="string"?
