@@ -84,6 +84,7 @@ export const getFAAAppRecords = async (appName) => {
                 if (typeof val === "object") {
                     val = JSON.stringify(val);
                 }
+                rowData = { ...rowData, [key]: val };
             });
             return rowData;
         });
