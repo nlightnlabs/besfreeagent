@@ -87,7 +87,7 @@ export const getFAAAppRecords = async (appName) => {
             });
             return rowData;
         });
-
+    
         return result;
     } catch (error) {
         throw new Error("Error fetching data: " + error);

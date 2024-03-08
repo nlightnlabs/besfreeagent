@@ -74,7 +74,7 @@ const Table = (props) => {
         />
         {
           showRecordDetails && 
-          <div className="d-flex" style={{height:"100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.5)", position: "absolute", top: 0, left:0}}>
+          <div className="d-flex" style={{height:"100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.5)", position: "absolute", top: 0, left:0, zIndex:999}}>
             <FloatingPanel
               title={""}
               top="50vh"

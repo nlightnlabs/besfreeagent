@@ -116,18 +116,20 @@ const CatalogItem = (props)=>{
           </div>
 
           {showItemPage && 
-          <FloatingPanel 
-            title = {item.item_name}
-            top ="50vh"
-            left="50vh"
-            height="80%"
-            width="50%"
-            item ={item}
-            appData={appData}
-            displayPanel={setShowItemPage}
-          >
-              <ItemPage item = {item} appData={appData}/>
-          </FloatingPanel>
+          <div className="d-flex" style={{height:"100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.5)", position: "absolute", top: 0, left:0, zIndex:999}}>
+            <FloatingPanel 
+              title = {item.item_name}
+              top ="50vh"
+              left="50vh"
+              height="80%"
+              width="50%"
+              item ={item}
+              appData={appData}
+              displayPanel={setShowItemPage}
+            >
+                <ItemPage item = {item} appData={appData}/>
+            </FloatingPanel>
+          </div>
           }
         </div>
       )

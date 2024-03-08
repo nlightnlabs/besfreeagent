@@ -657,7 +657,6 @@ const RequestIntakeForm = (props) => {
 
 	return (
 		<div className="d-flex" style={pageStyle}>
-			<h1>test</h1>
 			<div className="d-flex flex-column bg-light p-3" style={{width: "25%", minWidth:"200px", height:"100%"}}>
 				
 				{requestSections.length>0 && requestSections.map((item,index)=>(
@@ -679,9 +678,7 @@ const RequestIntakeForm = (props) => {
 			<div className="d-flex" style={{height: "100%", width: "75%"}}>
 
 				<form className= "w-100" name='form' id="form" onSubmit={handleSubmit} noValidate>
-					<input type="file"></input>
-
-
+			
 					{initialValues && (
 						<div
 							className="d-flex flex-column bg-white animate__animated fade-in"

@@ -164,15 +164,17 @@ const RequestIntakeHome = (props) => {
             ))}
         </div>
         {showRequestIntakeModal &&
-      <FloatingPanel
-        title={requestType}
-        top="50vh"
-        left="50vw"
-        height="80vh"
-        width="800px"
-        appData={appData}
-        displayPanel={setShowRequestIntakeModal}
-      >
+        <div className="d-flex" 
+        style={{height:"100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.5)", position: "absolute", top: 0, left:0, zIndex:999}}>
+          <FloatingPanel
+          title={requestType}
+          top="50vh"
+          left="50vw"
+          height="80vh"
+          width="800px"
+          appData={appData}
+          displayPanel={setShowRequestIntakeModal}
+        >
         <div className="d-flex w-100">
           {formName === "request_summary" ?
             <RequestIntakeForm
@@ -199,7 +201,8 @@ const RequestIntakeHome = (props) => {
           }
        
         </div>
-      </FloatingPanel>
+          </FloatingPanel>
+        </div>
     }
     </div>
   )
