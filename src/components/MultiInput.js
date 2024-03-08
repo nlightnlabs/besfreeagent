@@ -45,7 +45,7 @@ const MultiInput = forwardRef((props, ref) => {
   const [dropDownDisplay, setDropDownDisplay] = useState("none")
   const [calendarDisplay, setCalendarDisplay] = useState("none")
   const [datePickerDisplay, setDatePickerDisplay] = useState("none")
-  const [selectedIndex, setSelectedIndex] = useState(props.list ? props.list.indexOf(props.value) : 0)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const [startDate, setStartDate] = useState(new Date());
 
@@ -53,6 +53,13 @@ const MultiInput = forwardRef((props, ref) => {
 
   const inputRef = useRef("")
   const containerRef = useRef("")
+
+  useEffect(()=>{
+    if(list && list.length>0 && value !="" && value !=null){
+      console.log(name, list, list.indexOf(props.value))
+      setSelectedIndex(list.indexOf(props.value))
+    }
+  },[list])
 
   useEffect(()=>{
   
@@ -70,6 +77,8 @@ const MultiInput = forwardRef((props, ref) => {
      }
 
   },[props.readonly, props.disabled, props.label])
+
+  
 
   useEffect(()=>{
     setValue(props.value || "")

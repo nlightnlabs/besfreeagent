@@ -88,7 +88,8 @@ export const getFAAAppRecords = async (appName) => {
             });
             return rowData;
         });
-    
+        console.log("result",result)
+
         return result;
     } catch (error) {
         throw new Error("Error fetching data: " + error);
@@ -121,6 +122,7 @@ export const getFAAAppRecordsSubset = async (appName, fields, filters, order, li
                 }
                 rowData = { ...rowData, [key]: val };
             });
+            console.log("result",result)
             return rowData;
         });
 

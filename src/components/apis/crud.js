@@ -6,8 +6,6 @@ export const getData = async (appName) => {
 
     const environment = window.environment
 
-    console.log(appName)
-
     let response = []
     if(environment==="freeagent"){
         response = await freeAgentApi.getFAAAppRecords(appName);

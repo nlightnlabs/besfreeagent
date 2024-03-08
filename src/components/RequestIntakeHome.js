@@ -81,15 +81,12 @@ const RequestIntakeHome = (props) => {
 
       const getBusinessUnits = async ()=>{
 
-        console.log("environment", environment)
-
         let appName = ""
         if(environment === "freeagent"){
           appName = "business_unit"
         }else{
           appName = "businesses_units"
         }
-
         const response = await crud.getData(appName)
         setBusinessUnits(response)
       }
@@ -97,8 +94,6 @@ const RequestIntakeHome = (props) => {
     
 
       const getCategories = async ()=>{
-
-        console.log("environment", environment)
 
         let appName = ""
         if(environment === "freeagent"){
@@ -114,8 +109,6 @@ const RequestIntakeHome = (props) => {
     
 
       const getBusinesses = async ()=>{
-
-        console.log("environment", environment)
         
         let appName = ""
         if(environment === "freeagent"){
@@ -131,8 +124,6 @@ const RequestIntakeHome = (props) => {
 
      
       const getRequestDbFieldNames = async ()=>{
-
-        console.log("environment", environment)
 
         let appName = ""
         if(environment === "freeagent"){
@@ -155,7 +146,6 @@ const RequestIntakeHome = (props) => {
         setShowRequestIntakeModal(true)
     }
 
-  
       const iconStyle = {
       maxHeight: 50,
       maxWidth: 50,
