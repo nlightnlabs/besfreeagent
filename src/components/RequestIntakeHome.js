@@ -80,6 +80,14 @@ const RequestIntakeHome = (props) => {
 
 
       const getBusinessUnits = async ()=>{
+
+        let appName = ""
+        if(environment === "freegent"){
+          appName = "business_unit"
+        }else{
+          appName = "businesses"
+        }
+
         const response = await crud.getData(appName)
         setBusinessUnits(response)
       }
@@ -87,6 +95,14 @@ const RequestIntakeHome = (props) => {
     
 
       const getCategories = async ()=>{
+
+        let appName = ""
+        if(environment === "freegent"){
+          appName = "custom_app_56"
+        }else{
+          appName = "spend_categories"
+        }
+
         const response = await crud.getData(appName)
         setSpendCategories(response)
       }
@@ -94,6 +110,14 @@ const RequestIntakeHome = (props) => {
     
 
       const getBusinesses = async ()=>{
+
+        let appName = ""
+        if(environment === "freegent"){
+          appName = "custom_app_44"
+        }else{
+          appName = "businesses"
+        }
+
         const response = await crud.getData(appName)
         setBusinesses(response)
       }
@@ -101,6 +125,14 @@ const RequestIntakeHome = (props) => {
 
      
       const getRequestDbFieldNames = async ()=>{
+
+        let appName = ""
+        if(environment === "freegent"){
+          appName = "custom_app_52"
+        }else{
+          appName = "requests"
+        }
+
         const response = await crud.getColumnData(appName)
         setDbFieldData(response)
       }
