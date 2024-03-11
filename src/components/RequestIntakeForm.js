@@ -265,15 +265,19 @@ const RequestIntakeForm = (props) => {
             if((item.ui_component_type === "select" || item.ui_component_type === "table")){
 
               if(item.ui_query !=null && item.ui_query !=""){
-              
+				
                 const query = item.ui_query
+				console.log("dropdown query for ",item.ui_name,item.ui_query)
+
                 const response = await nlightnApi.getData(query)
+				console.log("response for ",item.ui_name,response)
                 
                 let listItems = []
                 response.map(item=>{
                   listItems.push(item.option)
                 })
-    
+
+
                 // Storing each drop down list in an object
                 listData = {
                   name: `${item.ui_id}_list`,
