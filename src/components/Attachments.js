@@ -21,7 +21,7 @@ const Attachments = (props) => {
 
   
     useEffect(() => {
-  
+      console.log(props.name)
       if (props.currentAttachments !== null && props.currentAttachments !== "") {
           if (typeof props.currentAttachments === "string") {
               setAttachments(JSON.parse(props.currentAttachments));
@@ -85,7 +85,7 @@ const Attachments = (props) => {
                 multiple
             ></input>
 
-            {attachments.length > 0 && (
+            {attachments && Array.isArray(attachments) && attachments.length > 0 && (
                 <div className="d-flex flex-column mt-1 p-2 text-primary border border-1 rounded-3">
                     <table className="table table-striped table-borderless p-0" style={{ fontSize: 12 }}>
                         <thead className="position-sticky top-0">

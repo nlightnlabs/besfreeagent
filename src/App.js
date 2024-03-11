@@ -139,7 +139,6 @@ function App() {
     try{
         const response = await crud.getData(appName)
         setAppIcons(response)
-        console.log(response)
         setAppData(prev=>({...prev,appIcons: response}))
     }catch(error){
         console.log(error)

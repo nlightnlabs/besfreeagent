@@ -3,22 +3,15 @@ import "animate.css";
 import React, { useState, useEffect, useContext, useRef, createRef } from "react";
 import {Context} from "./Context.js"
 import { toProperCase, UTCToLocalDate, escapeQuotes } from "./functions/formatValue.js";
-import axios, {
-	getData,
-	getList,
-	getConditionalList,
-	getValue,
-	addRecord,
-	updateActivityLog
-} from "./apis/axios.js";
-import { fileServerRootPath } from "./apis/fileServer.js";
-import {appIcons} from './apis/icons.js'
+import * as crud from './apis/crud.js'
+import * as fileServer from './apis/fileServer.js'
+import * as nlightnApi from './apis/nlightn.js'
+import * as arrayFunctions from './functions/arrayFunctions.js'
 
 import Attachments from "./Attachments.js";
 import MultiInput from "./MultiInput.js";
 import TableInput from "./TableInput.js";
 
-import * as crud from './apis/crud'
 
 const RequestIntakeForm = (props) => {
 
@@ -45,8 +38,6 @@ const RequestIntakeForm = (props) => {
 		setRequestType,
 		appData,
 		setAppData,
-		attachments,
-		setAttachments,
 		pageList,
 		setPageList,
 		requestTypes,
@@ -77,7 +68,6 @@ const RequestIntakeForm = (props) => {
 	const [currentRequestSection, setCurrentRequestSection] = useState("")
 
 	const [formName, setFormName] = useState(props.formName)
-	const userData = user
 
 	const [outputData, setOutputData] = useState({})
 
@@ -101,13 +91,15 @@ const RequestIntakeForm = (props) => {
 	const [uiTriggerFields, setUiTriggerFields] = useState([])
 	const [refresh, setRefresh] = useState(0)
 
-	const [initialValues, setInitialValues] = useState(false);
+	const [renderPage, setRenderPage] = useState(false);
 	const [formClassList, setFormClassList] = useState("form-group")
 
 	const [lastPage, setLastPage] = useState(false)
 
 	const {spendCategories, businessUnits, businesses, dbFieldData} = props.appData
 	const [uiRefreshTriggers, setUIRefreshTriggers] = useState({})
+
+	const [attachments, setAttachments] = useState([])
 	
 	useEffect(()=>{
 	
@@ -115,7 +107,7 @@ const RequestIntakeForm = (props) => {
 			const query = `SELECT * FROM request_flow_forms where "request_type" = '${requestType}';`
 		
 			try {
-				const response = await getData(query);
+				const response = await nlightnApi.getData(query);
 				setRequestTypeData(response)
 				
 				let fieldSet = new Set()
@@ -134,17 +126,19 @@ const RequestIntakeForm = (props) => {
 	},[])
 
 	
-
 	useEffect(() => {	
+		console.log("Starting Form formData: ",formData)
 		getFormFields();
-	}, [formName, props.requestType, userData])
+	}, [formName])
 
 	const getFormFields = async () => {
-		
+		console.log(formName)
 		const query = `SELECT * FROM request_flow_forms where "ui_form_name" = '${formName}';`
+
 	
 		try {
-			const formFields = await getData(query);
+			const formFields = await nlightnApi.getData(query);
+			console.log(formFields)
 			
 			setPageTitle(formFields.find(item=>item.ui_form_name==formName).name)
 			setPageSubTitle(formFields.find(item=>item.ui_form_name==formName).ui_form_description)
@@ -153,474 +147,379 @@ const RequestIntakeForm = (props) => {
 			// Saving the state.  This is always consistent.
 			setFormElements(formFields);
 
-			//Get the sections data
+			// Setup form sections
 			getSections(formFields);
 
-			//Setup initial formdata with default values if any
-			setUpFormData(formFields);
-
+			// Update the current request section (page) every time a form is loaded
 			setCurrentRequestSection(formFields.find(item=>item.ui_form_name===formName).ui_form_description)
+
+			//Create refs for the form
+			createRefs(formFields)
 			
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
 	};
 
+
+	// Function to dynamically create refs based on the names or IDs
+	const refs = useRef({});
+    const createRefs = async (formFields) => {
+    console.log(formFields)
+    const refList = {};
+      formFields.forEach(item => {
+        refList[item.ui_name] = createRef();
+      })
+    refs.current = refList;
+	setUpFormData(formFields)
+    
+    };
+
 	const setUpFormData = async (formFields) => {
 
-    let tempFormData = formData;
-
-		let formInputElements = []
-		if (formFields && formFields.length > 0) {
+		let tempFormData = formData;
 			
-			formFields.map((item) => {
-				if(item.ui_input_type !="output" && item.ui_input_type !="navigation"){
-					formInputElements.push(item)
-				}}
-			)
-			setFormInputElements(formInputElements)
-
-			formInputElements.map((item) =>{
-				try {
+			let formInputElements = []
+			if (formFields && formFields.length > 0) {
+				
+				await Promise.all(formFields.map((item) => {
+					if(item.ui_input_type !="output" && item.ui_input_type !="navigation"){
+						formInputElements.push(item)
+					}}
+				))
+				setFormInputElements(formInputElements)
+	
+				formInputElements.map((item) =>{
 					let value = item.ui_default_value
-					if(item.ui_input_type =="table"){
-						value=JSON.parse(value)
-					}else{
-						value = eval(value)
+					try {
+						if(item.ui_input_type =="table"){
+							value=JSON.parse(value)
+						}else{
+							value = eval(value)
+						}
+					} catch (error) {
+						value = item.ui_default_value
 					}
 					tempFormData = {
 						...tempFormData,
-						...{ [item.ui_id]: {value: value, db_field_name: item.ui_id}}
+						...{[item.ui_name]:value}
 					}
-
-				} catch (error) {
-					console.log(error);
-				}
-			})
-			setFormData((prevState) => ({ ...prevState, ...tempFormData }));
-			calculateForm(formInputElements, tempFormData);	
-		}
-	};
-
-	const calculateForm = async (formDataFields, updatedFormData) => {
-
-		let formData = updatedFormData;
-	
-		formDataFields.map(async (item) => {
-
-			let value = formData[item.ui_id].value
-			
-			try {
-				if (item.ui_calculation_type == "formula") {
-					value = eval(item.ui_formula);
-				}
-
-				if(item.ui_calculation_type == "fetch"){
-					const tableName = item.ui_reference_data_table;
-					const fieldName = item.ui_reference_data_field;
-
-					const conditionalField = item.ui_reference_data_conditional_field
-					let conditionalValue = item.ui_reference_data_conditional_value
-					if(conditionalField !=null && conditionalValue !=null){
-						if(conditionalValue.search(".")>0){
-							conditionalValue = eval(conditionalValue)
-						}
-					}
-					value = await getValue(tableName,fieldName,conditionalField,conditionalValue)
-				}
-				formData = {...formData, [item.ui_id] : {...formData[item.ui_id],["value"]: value}}
-
-				setFormData((prevState) => ({ ...prevState, ...formData }));
-				setInitialValues(true);
-				getDropDownLists(formDataFields,formData);
-				
-			} catch (error) {
-				console.log(error);
-			}
-            });
-
-        };
-
-	const getDropDownLists = async (formDataFields,updatedFormData) => {
-		
-		await formDataFields
-
-		if (formDataFields && formDataFields.length > 0) {
-			
-			let tempDropdownLists = [];
-			let listData = {};
-
-			formDataFields.map((item) => {
-
-				let conditionalValue = item.ui_reference_data_conditional_value
-
-				if(conditionalValue !=null){
-					if(conditionalValue.search(".")>0){
-						conditionalValue = eval(conditionalValue)
-					}else{
-						conditionalValue =conditionalValue
-					}
-				}
-
-				if (
-					item.ui_reference_data_table != null &&
-					item.ui_reference_data_field != null &&
-					(item.ui_component_type === "select" || item.ui_component_type === "table")
-				) {
-
-					let dataTable = item.ui_reference_data_table
-					if((item.ui_reference_data_table).search("()=>")>0){
-						dataTable = eval(item.ui_reference_data_table)()
-					}
-
-					if(item.ui_reference_data_conditional_field !=null && conditionalValue !=null){
-
-
-						const getListItems = async () => {
-
-							try {
-								const response = await crud.getConditionalList(
-									dataTable,
-									item.ui_reference_data_field,
-									item.ui_reference_data_conditional_field,
-									eval(conditionalValue)
-								);
-								
-								// Storing each drop down list in an object
-								listData = {
-									name: `${item.ui_id}_list`,
-									listItems: response,
-								};
-							
-								if(tempDropdownLists.find(i=>i.name===listData.name)){		
-									tempDropdownLists.find(i=>i.name===listData.name).listItems = listData.listItems
-								}else{
-									tempDropdownLists.push(listData);
-								}
-										
-								//Add each list to the array of dropdown lists
-								setDropdownLists(tempDropdownLists);
-
-							} catch (error) {
-								//console.log(error);
-							}
-						};
-						getListItems();
-
-					}else{
-						const getListItems = async () => {
-
-							try {
-								const response = await crud.getList(
-									dataTable,
-									item.ui_reference_data_field
-								);
-								const listItems = await response;
-	
-								// Storing each drop down list in an object
-								listData = {
-									name: `${item.ui_id}_list`,
-									listItems: listItems,
-								};
-
-								if(tempDropdownLists.find(i=>i.name===listData.name)){		
-									tempDropdownLists.find(i=>i.name===listData.name).listItems = listData.listItems
-								}else{
-									tempDropdownLists.push(listData);
-								}
-										
-								//Add each list to the array of dropdown lists
-								setDropdownLists(tempDropdownLists);
-
-							} catch (error) {
-								//console.log(error);
-							}
-						};
-						getListItems();
-					}
-				}
-			});
-
-		}
-	};
-
-	useEffect(()=>{
-		const refreshView = async ()=>{
-			await calculateForm(formInputElements,formData)
-			setRefresh(refresh+1)
-		}
-		refreshView()
-	},[uiRefreshTriggers])
-
-
-	const getSections = (formFields) => {
-		let sectionSet = new Set();
-		formFields.map((items) => {
-			sectionSet.add(items.ui_form_section);
-		});
-
-		let sectionList = [];
-		sectionSet.forEach((item) => {
-			let visible = formFields.filter((r) => r.ui_form_section == item)[0].ui_section_visible;
-			let title_visible = formFields.filter((r) => r.ui_form_section == item)[0].ui_section_title_visible;
-			sectionList.push({ name: item, visible: visible, title_visible: title_visible });
-		});
-
-		setSections(sectionList);
-	};
-
-	const prepareAttachments = (fileData) => {
-		setAttachments([...attachments,...fileData]);
-		setFormData({...formData, ["attachments"]: {...formData["attachments"],["value"]: fileData}});
-	};
-
-
-
-	const uploadFiles = async () => {
-		let fileData = attachments;
-
-		const upload = async () => {
-			const updatedFiles = await Promise.all(
-				fileData.map(async (file) => {
-					let fileName = file.name;
-					let filePath = ""
-					if (user) {
-					  filePath = `${fileServerRootPath}/requests/user_${user.id}_${user.first_name}_${user.last_name}/${fileName}`;
-					} else {
-					  filePath = `${fileServerRootPath}/requests/general_user/${fileName}`;
-					}
-
-					const response = await axios.post(`/getS3FolderUrl`, {
-						filePath: filePath,
-					});
-					const url = await response.data;
-					const fileURL = await url.split("?")[0];
-
-					await fetch(url, {
-						method: "PUT",
-						headers: {
-							"Content-Type": file.type,
-						},
-						body: file.data,
-					});
-					return {
-						...file,
-						...{
-							["name"]: file.name,
-							["type"]: file.type,
-							["size"]: file.size,
-							["url"]: fileURL,
-						},
-					};
 				})
-			);
+			}
+		setFormData(tempFormData);
+		calculateForm(formFields,formInputElements, tempFormData)
+	};
+    
+    
+    const calculateForm = async (formFields,formInputElements, formData) => {
+		let updatedFormData = formData;
+		
+		console.log(formData)
 
-			//console.log(updatedFiles)
+		// Use Promise.all to await all async operations in map function
+		await Promise.all(formInputElements.map(async (item) => {
+		  
+		  let value = formData[item.ui_name];
 
-			setAttachments([...attachments, ...updatedFiles]);
+		  try {
+			if (item.ui_calculation_type === "formula") {
+				value = eval(item.ui_formula);
+			}
+	  
+			if (item.ui_calculation_type === "fetch") {
+			  const tableName = item.ui_reference_data_table;
+			  const fieldName = item.ui_reference_data_field;
+			  const conditionalField = item.ui_reference_data_conditional_field;
+			  const conditionalValue = eval(item.ui_reference_data_conditional_value);
+			  value = await crud.getValue(tableName, fieldName, conditionalField, conditionalValue);
+			}
+	
+			console.log()
+			updatedFormData = { ...updatedFormData, ...{ [item.ui_name]: value } };
 
-			let updatedDataWithAttachments = {...updatedData, ["attachments"]: {...updatedData["attachments"],["value"]: updatedFiles}};
-			setUpdatedData({...updatedData, ["attachments"]: {...updatedData["attachments"],["value"]: updatedFiles}});
+		  } catch (error) {
+			console.log(error);
+			value = formData[item.ui_name];
+		  }
+		}));
+	  
+		// Run after all async operations in map function are completed
+		setInitialFormData(updatedFormData);
+		setFormData(updatedFormData);
+		getDropDownLists(formFields,formInputElements);
+	  };
+	
+	
+    const getDropDownLists = async (formFields,formInputElements) => {
+      
+      if (formInputElements.length > 0) {
+        
+        let tempDropdownLists = [];
+        let listData = {};
 
-			let formDataWithAttachments = {...formData, ["attachments"]: {...formData["attachments"],["value"]: updatedFiles}};
-			//console.log(formDataWithAttachments)
-			
-			setFormData({...formData, ["attachments"]: {...formData["attachments"],["value"]: updatedFiles}});
-			return { formDataWithAttachments, updatedDataWithAttachments };
-		};
+        await Promise.all(
+          
+			formInputElements.map(async (item) => {
+            
+            if((item.ui_component_type === "select" || item.ui_component_type === "table")){
 
-		const output = await upload();
-		return output;
+              if(item.ui_query !=null && item.ui_query !=""){
+              
+                const query = item.ui_query
+                const response = await nlightnApi.getData(query)
+                
+                let listItems = []
+                response.map(item=>{
+                  listItems.push(item.option)
+                })
+    
+                // Storing each drop down list in an object
+                listData = {
+                  name: `${item.ui_id}_list`,
+                  listItems: listItems,
+                };
+
+                  //Add each list to the array of dropdown lists
+                if(tempDropdownLists.find(i=>i.name===listData.name)){		
+                  tempDropdownLists.find(i=>i.name===listData.name).listItems = listData.listItems
+                }else{
+                  tempDropdownLists.push(listData);
+                }
+    
+              }else{
+                  let conditionalValue = item.ui_reference_data_conditional_value
+          
+                  if(conditionalValue !=null){
+                    if(conditionalValue.search(".")>0){
+                      conditionalValue = eval(conditionalValue)
+                    }else{
+                      conditionalValue =conditionalValue
+                    }
+                  }
+          
+                  if (
+                    item.ui_reference_data_table != null &&
+                    item.ui_reference_data_field != null
+                  ) {
+          
+                    let dataTable = item.ui_reference_data_table
+                    if((item.ui_reference_data_table).search("()=>")>0){
+                      dataTable = eval(item.ui_reference_data_table)()
+                    }
+          
+                    if(item.ui_reference_data_conditional_field !=null && conditionalValue !=null){
+                     
+                      const response = await nlightnApi.getConditionalList(
+                        dataTable,
+                        item.ui_reference_data_field,
+                        item.ui_reference_data_conditional_field,
+                        eval(conditionalValue)
+                      );
+                      
+                      // Storing each drop down list in an object
+                      listData = {
+                        name: `${item.ui_id}_list`,
+                        listItems: response,
+                      };
+                      
+                        //Add each list to the array of dropdown lists
+                      if(tempDropdownLists.find(i=>i.name===listData.name)){		
+                        tempDropdownLists.find(i=>i.name===listData.name).listItems = listData.listItems
+                      }else{
+                        tempDropdownLists.push(listData);
+                      }
+
+                    }else{
+                      const response = await nlightnApi.getList(
+                        dataTable,
+                        item.ui_reference_data_field
+                      );
+                      const listItems = await response;
+        
+                      // Storing each drop down list in an object
+                      listData = {
+                        name: `${item.ui_id}_list`,
+                        listItems: listItems,
+                      };
+                      if(tempDropdownLists.find(i=>i.name===listData.name)){		
+                        tempDropdownLists.find(i=>i.name===listData.name).listItems = listData.listItems
+                      }else{
+                        tempDropdownLists.push(listData);
+                      }        
+                    }
+                  }
+              };
+            }
+        }))
+        setDropdownLists(tempDropdownLists); 
+      }
+    };
+
+
+    const getSections = (formFields)=>{
+      console.log("getting sections with formFields for", formName)
+      let sectionSet = new Set()
+      formFields.map(items=>{
+        sectionSet.add(items.ui_form_section)
+      })
+
+      let sectionList = []
+      sectionSet.forEach(item=>{
+        let visible = formFields.filter(r=>r.ui_form_section == item)[0].ui_section_visible
+        sectionList.push({name: item, visible: visible})
+      })
+
+	  console.log("sectionList: ",sectionList)
+      setSections(sectionList)
+	  setRenderPage(true)
+    }
+
+    useEffect(()=>{
+      calculateForm(formElements, formInputElements, formData);
+    },[uiRefreshTriggers])
+
+
+	// Handle changes to standard input elements
+	const handleChange = (e) => {
+		const {name, value} = e.target
+		let updatedFormData = { ...formData, ...{[name]:value}};
+		console.log(updatedFormData)
+		setFormData(updatedFormData)
+
+		calculateForm(formElements,formInputElements, updatedFormData);
 	};
 
 
+	// Temporarily hold any attachments until they need submittal later
+	const prepareAttachments = (e)=>{
+		console.log(e)
+        console.log(e.name)
+        console.log(e.fileData)
+        const fieldName = e.name
+        const fileData = e.fileData
+        setAttachments([...attachments,{ui_name: fieldName, fileData: fileData}]);
+    }
+	
+	// Create urls in AWS S3 buckets for attachments and then upload them before submittal
+    const getAttachments = async () => {
+
+      let formDataWithAttachments = formData;
+      let updatedAttachments = attachments;
+    
+      await Promise.all(attachments.map(async (item, index) => {
+
+		console.log(attachments)
+        let updatedFileData = item.fileData;
+    
+        await Promise.all(
+          updatedFileData.map(async (file, fileIndex) => {
+      
+            let filePath = user
+              ? `${fileServer.fileServerRootPath}/${tableName}/user_${user.id}_${user.first_name}_${user.last_name}/${file.name}`
+              : `${fileServer.fileServerRootPath}/${tableName}/general_user/${file.name}`;
+            const url = await fileServer.uploadFile(filePath,file)
+    
+            let updatedFile = {...file, ...{["url"]: url}};
+            delete updatedFile.data
+            console.log(updatedFile)
+            updatedFileData[fileIndex] = updatedFile;
+    
+          }))
+
+		updatedAttachments[index] = updatedFileData
+
+		formDataWithAttachments = {...formData,...{[item.ui_name]:updatedFileData}};
+		console.log("formDataWithAttachments",formDataWithAttachments)
+      }));
+    
+      return formDataWithAttachments
+    };
+    
+	// Execute save upon final submmittal by adding the record in the data base
+    const handleSave = async () => {
+
+      if(JSON.stringify(initialData) !== JSON.stringify(formData)){
+
+        let finalFormData = formData;
+		console.log("finalFormData",finalFormData)
+
+        //Get urls for any attachments and upload attachments to the file server
+        if(attachments.length>0){
+			finalFormData = await getAttachments();
+        }
+		console.log("finalFormData with attachments",finalFormData)
+        
+		let recordToSendToDb = finalFormData
+
+        // Stringify all fields that hold arrays or javascript objects to flatting the data
+        await Promise.all(Object.keys(recordToSendToDb).map(fieldName=>{
+		 let val = recordToSendToDb[fieldName]
+          if(typeof val ==="object"){
+            recordToSendToDb = {...recordToSendToDb, ...{[fieldName]:JSON.stringify(recordToSendToDb[fieldName])}}
+          }
+		  console.log(recordToSendToDb)
+        }))
+		recordToSendToDb["request_date"] = UTCToLocalDate(new Date())
+		recordToSendToDb["request_type"] = requestType
+		recordToSendToDb["requester_user_id"] = user.id
+		recordToSendToDb["requester"] = user.full_name
+		recordToSendToDb["status"] = "Open"
+		recordToSendToDb["stage"] = "Reviewing"
+
+        console.log("recordToSendToDb",recordToSendToDb)
+
+        //update database table with updated record data
+		  let appName = ""
+			if(environment ==="freeagent"){
+				appName = "custom_app_52"
+		  	}else{
+				appName = "requests"
+		  	}
+		
+		 console.log(appName)
+		 console.log(recordToSendToDb)
+          const newRecordInDb= await crud.addRecord(appName,recordToSendToDb)
+          console.log("newRecordInDb",newRecordInDb)
+         
+          let successfullyAdded = false
+          if(newRecordInDb.id !== null && newRecordInDb.id !== ""){
+            successfullyAdded = true;
+          }
+       
+          if(successfullyAdded){     
+				setFormData(finalFormData)
+			  if(environment !="freeagent"){
+				 // Update activity log
+				 const activityUpdateResponse = await nlightnApi.updateActivityLog("requests", newRecordInDb.id, user.email, "Request submitted")
+				 console.log(activityUpdateResponse)
+			  }
+			}
+			else{
+				alert("Unable to update record. Please check inputs.")
+			}
+          }
+		  
+		  else{
+              alert("Nothing to save.  Form is not was not edited")
+          }
+      }
+
+
+	// Saves form data and navigates to next page, prior page, or final page
 	const handleSubmit =async (e, nextPage)=>{
 		
 		console.log(formData)
-		
 		e.preventDefault();
-		const form = e.target
 
 		if(lastPage){
-		
-			const getRecordId = async ()=>{
-				const getNewRecordIDQuery = `Select id from requests where requester_user_id ='${user.id}' order by id desc limit 1;`
-				console.log(getNewRecordIDQuery)
-		
-				try{  
-				const responseId = await getData(getNewRecordIDQuery)
-				console.log(responseId)
-				const recordId = await responseId[0].id
-				console.log(recordId)
-			
-				// Update activity log
-				updateActivityLog("requests", recordId, user.email, "New request submitted")
-				
-				}catch(error){
-					console.log(error)
-				}
-			}
-
-			const addNewRequestToDb = async (formData)=>{
-
-				// Prepare line items
-				const getLineItems = async ()=>{
-					try{
-						let lineItems = []
-						if(formData["items"].value.length>0){
-							formData["items"].value.map((item)=>{
-								if(Object.values(item)[0] !==null && Object.values(item)[0]!==""){
-									lineItems.push(item)
-								}
-							})
-						}
-						return lineItems
-					}catch(error){
-						return ""
-					}
-				}
-				const  lineItems = await getLineItems()
-				
-				let stringifiedFormData = {}
-				Object.entries(formData).map(([key,val])=>{
-					console.log("key",key)
-					console.log("val",val)
-					let db_key = formData[key].db_field_name
-					let db_value = val.value
-
-					console.log("db_key",db_key)
-					console.log("db_value",db_value)
-
-					if(key==="items"){
-						console.log(lineItems)
-						db_value = JSON.stringify(lineItems)
-						console.log(db_value)
-					}else if(typeof db_value ==="object"){
-						db_value = escapeQuotes(JSON.stringify(db_value))
-					}else{
-						db_value = db_value
-					}
-					stringifiedFormData = {...stringifiedFormData,...{[db_key]:db_value}}
-				})
-
-				const generateRequestDate =async ()=>{
-					const utcDate = new Date();
-					const year = utcDate.getUTCFullYear();
-					const month = String(utcDate.getUTCMonth() + 1).padStart(2, '0');
-					const day = String(utcDate.getUTCDate()).padStart(2, '0');
-					const requestDate = `${year}-${month}-${day}`;
-					return requestDate
-				}
-				const requestDate = await generateRequestDate()
-
-				const environment = window.environment
-				let appName = ""
-				
-				if(environment ==="freeagent"){
-					appName = "custom_app_52"
-
-					console.log("stringifiedFormData: ",stringifiedFormData)
-					Object.entries(stringifiedFormData).map(([key,value])=>{
-						
-						if(key ==="subcategory"){
-							try{
-								stringifiedFormData[key] = spendCategories.find(i=>i.subcategory.toLowerCase()===value.toLowerCase()).id
-							}catch(error){
-								delete stringifiedFormData[key]
-							}
-						}
-
-						if(key ==="business_unit"){
-							try{
-								stringifiedFormData[key] = businessUnits.find(i=>i.name.toLowerCase()===value.toLowerCase()).id
-							}catch(error){
-								delete stringifiedFormData[key]
-							}
-							
-						}
-
-						if(key ==="supplier"){
-							try{
-								stringifiedFormData[key] = businesses.find(i=>i.name.toLowerCase()===value.toLowerCase()).id
-							}catch(error){
-								delete stringifiedFormData[key]
-							}
-						}
-					})
-
-					
-					stringifiedFormData = {...stringifiedFormData,
-						...{["requester"]:user.id},
-						...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
-						...{["request_date"]: requestDate},
-						...{["stage"]:"Draft"},
-						...{["status"]:"Open"},
-					}
-
-					console.log("freeagent stringifiedFormData", stringifiedFormData)
-					
-				}else{
-					
-					appName = "requests"
-
-					stringifiedFormData = {...stringifiedFormData,
-						...{["requester_user_id"]:user.id},
-						...{["requester"]:user.full_name},
-						...{["request_type"]: toProperCase(requestType.replaceAll("_"," "))},
-						...{["request_date"]: requestDate},
-						...{["stage"]:"Draft"},
-						...{["status"]:"Open"}
-					}
-				}
-
-				// Only record fields that match fields in the backend database
-				Object.keys(stringifiedFormData).map(field=>{
-					if(!dbFieldData.fieldList.includes(field)){
-						delete stringifiedFormData[field]
-					}
-				})
-				console.log("final stringifiedFormData", stringifiedFormData)
-
-				try {
-					console.log("Adding record: ", stringifiedFormData)
-					const addedRequestResponse = await crud.addRecord(appName,stringifiedFormData)
-					console.log(addedRequestResponse)
-					if(environment !=="freeagent"){
-						getRecordId()
-					}
-				}catch(error){
-					console.log(error)
-				}
-			}
-
-			if(attachments.length>0){
-				const response = await uploadFiles()
-				let formDataWithAttachments = await response.formDataWithAttachments				
-				addNewRequestToDb(formDataWithAttachments)
-			}else{
-				console.log("adding new request with formData: ", formData)
-				addNewRequestToDb(formData)
-			}
-
-			// setFormClassList('form-group was-validated')
+			await handleSave()
 			setFormName(nextPage)
 		}else{
 			setFormName(nextPage)
 		}
 	}
 		
-
-
-	const handleChange = (e) => {
-		
-		const { name, value } = e.target;
-		const elementName = name.name;
-		setUpdatedData({...updatedData, [elementName]: {...formData[elementName],["value"]: value}});
-		setFormData({...formData, [elementName]: {...formData[elementName],["value"]: value}});
-		let updatedFormData = {...formData, [elementName]: {...formData[elementName],["value"]: value}};
-		calculateForm(formInputElements, updatedFormData);
-	};
-
+	
 	const editProps = () => {
 		if (allowEdit) {
 			setInputFill("white");
@@ -655,6 +554,13 @@ const RequestIntakeForm = (props) => {
 		width: "100%",
 	};
 
+	const [showAttachment, setShowAttachment] = useState(false)
+	const [selectedAttachment, setSelectedAttachment] = useState(null)
+	const handleShowAttachment = (e, attachment)=>{
+		setSelectedAttachment(attachment)
+		setShowAttachment(true)
+	}
+
 	return (
 		<div className="d-flex" style={pageStyle}>
 			<div className="d-flex flex-column bg-light p-3" style={{width: "25%", minWidth:"200px", height:"100%"}}>
@@ -679,12 +585,12 @@ const RequestIntakeForm = (props) => {
 
 				<form className= "w-100" name='form' id="form" onSubmit={handleSubmit} noValidate>
 			
-					{initialValues && (
+					{renderPage && (
 						<div
 							className="d-flex flex-column bg-white animate__animated fade-in"
 							style={{ height: "100%", width: "100%"}}
 						>
-							
+						
 						{sections.map((section, sectionIndex) =>
 							section.name == "navigation" && section.visible ? 
 								<div key={sectionIndex} className="d-flex justify-content-end mb-3 p-3">
@@ -718,161 +624,207 @@ const RequestIntakeForm = (props) => {
 											{toProperCase(section.name.replaceAll("_", " "))}
 										</div>
 									}
-									{formElements.map((item, index) =>
-										item.ui_form_section === section.name &&
-										item.ui_component_visible &&
-										(item.ui_component_type === "input" ||
-										item.ui_component_type === "select") &&
-										item.ui_input_type !== "file" ? (
-											<div key={index} className="d-flex flex-column mb-3">
-												<MultiInput
-													id={{ id: item.ui_id, section: item.ui_form_section }}
-													name={{
-														name: item.ui_name,
-														section: item.ui_form_section,
-													}}
-													className={item.ui_classname}
-													label={item.ui_label}
-													type={item.ui_input_type}
-													value={formData[item.ui_id].value}
-													valueColor={item.ui_color}
-													inputFill={item.ui_backgroundColor}
-													fill={item.ui_backgroundColor}
-													border={border}
-													readonly={eval(item.ui_readonly) || !allowEdit}
-													disabled={eval(item.ui_disabled) || !allowEdit}
-													onClick={eval(item.ui_onclick)}
-													onChange={eval(item.ui_onchange)}
-													onBlur={eval(item.ui_onblur)}
-													onMouseOver={eval(item.ui_onmouseover)}
-													onMouseLeave={eval(item.ui_mouseLeave)}
-													list={
-														dropdownLists.find((l) => l.name === `${item.ui_id}_list`)?
-														dropdownLists.find((l) => l.name === `${item.ui_id}_list`).listItems
-														: null
-													}
-													allowAddData={item.ui_allow_add_data}
-												/>
-											</div>
-										) 
-										:
-										 item.ui_form_section === section.name &&
-											item.ui_component_visible &&
-											item.ui_component_type === "input" && 
-											item.ui_input_type === "file"? (
-											<div key={index} className="d-flex flex-column mb-3">
-												<Attachments
-													id={{ id: item.ui_id, section: item.ui_form_section }}
-													name={{
-														name: item.ui_name,
-														section: item.ui_form_section,
-													}}
-													onChange={(e) => handleChange(e)}
-													valueColor={item.ui_color}
-													currentAttachments={formData[item.ui_id].value !==null? formData[item.ui_id].value:""}
-													prepareAttachments={prepareAttachments}
-													userData={userData}
-													readonly={eval(item.ui_readonly) || !allowEdit}
-													disabled={eval(item.ui_disabled) || !allowEdit}
-												/>
-											</div>
-										) 
-										:
-										item.ui_form_section === section.name &&
-											item.ui_component_visible &&
-											item.ui_component_type == "table" ? (
-											<div key={index} className="d-flex flex-column mb-3">
-												<TableInput
-													id={{ id: item.ui_id, section: item.ui_form_section }}
-													name={{
-														name: item.ui_name,
-														section: item.ui_form_section,
-													}}
-													onChange={(e) => handleChange(e)}
-													valueColor={item.ui_color}
-													valueSize={item.ui_font_size}
-													valueWeight={item.ui_font_weight}
-													valueFill={item.ui_background_color}
-													initialTableData={formData[item.ui_id].value}
-													list={
-														dropdownLists.find((l) => l.name === `${item.ui_id}_list`) !=null?
-														dropdownLists.find((l) => l.name === `${item.ui_id}_list`).listItems
-														:null
-													}
-													readonly={eval(item.ui_readonly) || !allowEdit}
-													disabled={eval(item.ui_disabled) || !allowEdit}
-												/>
-											</div>
-										) 
-										:
-										item.ui_form_section === section.name &&
-										item.ui_component_visible &&
-										item.ui_component_type == "img"?
-										<div key={index} className={item.ui_classname}>
-											<img src={appIcons>0? appIcons.find(i=>i.name===item.ui_default_value).image:null} alt={item.label} style={JSON.parse(item.ui_style)}></img>
-											{item.ui_className}
+									{
+									formElements.map((item,index)=>(
+										
+										// Standard Input or select element
+										item.ui_form_section === section.name && 
+										item.ui_component_visible && 
+										(item.ui_component_type === "input" || item.ui_component_type=="select") && 
+										item.ui_input_type!=="file" && item.ui_input_type!=="image"?
+										<div key={index} ref={refs.current[item.ui_name]} className="d-flex flex-column mb-3">
+										  <MultiInput
+										  id={item.ui_id}
+										  name={item.ui_name}
+										  className={item.ui_classname}
+										  label={item.ui_label}
+										  type={item.ui_input_type}
+										  value={formData[item.ui_name]}
+										  valueColor = {item.ui_color}
+										  inputFill = {item.ui_backgroundColor}
+										  fill={item.ui_backgroundColor}
+										  border={border}
+										  readonly = {eval(item.ui_readonly) || !allowEdit}
+										  disabled = {eval(item.ui_disabled) || !allowEdit}
+										  onClick = {eval(item.ui_onclick)}
+										  onChange = {eval(item.ui_onchange)}
+										  onBlur = {eval(item.ui_onblur)}
+										  onMouseOver = {eval(item.ui_onmouseover)}
+										  onMouseLeave = {eval(item.ui_mouseLeave)}
+										  list={dropdownLists.find(l=>l.name===`${item.ui_id}_list`) !=null? dropdownLists.find(l=>l.name===`${item.ui_id}_list`).listItems:null}
+										  allowAddData = {item.ui_allow_add_data}       
+										/>
+										</div>
+									  : 
+
+									  // File attachment
+									  item.ui_form_section === section.name && 
+									  item.ui_component_visible &&  
+									  item.ui_component_type=="input" &&
+									  item.ui_input_type=="file" ?
+									  	<div key={index} ref={refs.current[item.ui_name]}   className="d-flex flex-column mb-3">
+										  <Attachments 
+											id={item.ui_id}
+											name={item.ui_name}
+											onChange = {prepareAttachments}
+											valueColor = {item.ui_color}
+											currentAttachments = {formData[item.ui_name]}
+											user = {user}
+											readonly = {eval(item.ui_readonly) || !allowEdit}
+											disabled = {eval(item.ui_disabled) || !allowEdit}
+										  />
+										</div>
+									  : 
+
+									   // Image attachment with preview up on upload
+										item.ui_form_section === section.name && 
+										item.ui_component_visible &&  
+										item.ui_component_type=="input" &&
+										item.ui_input_type=="image" ?
+									  	<div key={index} ref={refs.current[item.ui_name]}  className="d-flex flex-column mb-3">
+										  {
+										   JSON.parse(formData[item.ui_name]) && formData[item.ui_name] !="" && formData[item].value !=null?(
+											   <div className="d-flex w-100 p-1" style={{height:"fit-content", width:"90%", overflowX: "auto"}}>
+											  {JSON.parse(formData[item.ui_name]).map((att,index)=>(
+													 <img 
+													  key={index}
+													  src={att.url} 
+													  alt={`${att.name} icon`} 
+													  style={{height: "100px", width: "auto"}}>
+													</img>
+											  ))}
+											   </div>
+											  )
+											:
+											null
+										  }
+										  <Attachments 
+											id={item.ui_id}
+											name={item.ui_name}
+											className={item.ui_classname}
+											label={item.ui_label}
+											onChange = {prepareAttachments}
+											valueColor = {item.ui_color}
+											currentAttachments = {formData[item.ui_name]}
+											user = {user}
+											readonly = {eval(item.ui_readonly) || !allowEdit}
+											disabled = {eval(item.ui_disabled) || !allowEdit}
+										  />
+										</div>
+									  :  
+
+									  // Table input
+										item.ui_form_section === section.name && 
+										item.ui_component_visible && 
+										item.ui_component_type=="table" && 
+										initialFormData[item.ui_id] !=null && initialFormData[item.ui_id] !=""?
+										<div key={index} ref={refs.current[item.ui_name]}   className="d-flex flex-column mb-3">
+										  <TableInput
+											id={item.ui_id}
+											name={item.ui_name}
+											onChange = {handleChange}
+											valueColor = {item.ui_color}
+											valueSize = {item.ui_font_size}
+											valueWeight = {item.ui_font_weight}
+											valueFill = {item.ui_background_color}
+											initialTableData = {formData[item.ui_id]}
+											list={dropdownLists.find(l=>l.name===`${item.ui_id}_list`) !=null? dropdownLists.find(l=>l.name===`${item.ui_id}_list`).listItems:null}
+											readonly = {eval(item.ui_readonly) || !allowEdit}
+											disabled = {eval(item.ui_disabled) || !allowEdit}
+										  />
 										</div>
 										:
 										
+										// Title Output
 										item.ui_form_section === section.name &&
 										item.ui_component_visible &&
 										item.ui_input_type=="output" &&
 										item.ui_component_type == "title"?
-										<div className={item.ui_classname} style={item.style}>{item.ui_default_value}</div>
+										<div className={item.ui_classname} style={JSON.parse(item.ui_style)}>{item.ui_default_value}</div>
 
 										:
 
+										// Title Output
+										item.ui_form_section === section.name &&
+										item.ui_component_visible &&
+										item.ui_input_type=="output" &&
+										item.ui_component_type == "image"?
+										<div className={item.ui_classname}>
+											<img 
+												src={appIcons.find(i=>i.name===item.ui_default_value).image}
+												style={JSON.parse(item.ui_style)}
+											></img>
+										</div>
+										:
+
+										// Tabular output based json data
 										item.ui_form_section === section.name &&
 										item.ui_component_visible &&
 										item.ui_input_type == "output"&&
 										item.ui_component_type == "json_table"?
-										
-										<div key={index} className="flex-container" style={JSON.parse(item.ui_style)}>
+										<div key={index} className="flex-container" style={{position:"relative"}}>
 											{
 												Object.entries(eval(item.ui_default_value)).map(([key,value],fieldIndex)=>(
-													value.value !=null &&
-														<div key={fieldIndex} className="row">
-														<div className="col-3 text-left" style={{color: "gray"}}>{toProperCase(key.replaceAll("_"," "))}: </div>
+													value !=null &&
+													<div key={fieldIndex} className="row">
 														{
-															typeof value.value == "string"?
-															<div className="col text-left" style={{color: "black"}}>{value.value}</div>
-															:
-															typeof value.value =="object" && Array.isArray(value.value) && key =="attachments"?
-															<div className="col-8" style={{color: "black"}}>
-																{(value.value).map((row, rowIndex)=>(
-																	<div>
-																		<a key={rowIndex} style={{color: "blue"}} href={row.url}>{row.name}</a>
-																	</div>
-																))}
+															typeof value == "string"?
+															<div className="d-flex " style={JSON.parse(item.ui_style)}>
+																<div className="col-3 text-left" style={{color: "gray"}}>{toProperCase(key.replaceAll("_"," "))}: </div>
+																<div className="col text-left" style={{color: "black"}}>{value}</div>
 															</div>
 															:
-															typeof value.value =="object" && Array.isArray(value.value)?
-															<div className="col-8" style={{color: "black"}}>
-																
-																<table className="table table-bordered table-striped text-center">
-																	<thead>
-																		<tr>
-																			{Object.keys((value.value)[0]).map((header,headerIndex)=>(
-																				<th scope="col" className="w-50">{toProperCase(header.replaceAll("_"," "))}</th>
-																			))}
-																		</tr>
-																	</thead>
-																	<tbody>
-																	{(value.value).map((row, rowIndex)=>(
-																		(Object.values(row))[0].length>0 &&
-																			<tr key={rowIndex}>
-																				{Object.values(row).map((val,itemIndex)=>(
-																					<td key={itemIndex}>{val}</td>
-																				))
-																		}	
-																			</tr>
+															typeof value =="object" && Array.isArray(value) && key =="attachments"?
+																<div className="d-flex " style={JSON.parse(item.ui_style)}>
+																	<div className="col-3 text-left" style={{color: "gray"}}>{toProperCase(key.replaceAll("_"," "))}: </div>
+																	<div className="col-8" style={{color: "black"}}>
+																	{(value).map((row, rowIndex)=>(
+																		<div title="Click to preview" key={rowIndex}  name={row.name} style={{color: "blue", cursor:"pointer"}}  onClick={(e)=>handleShowAttachment(e, row)}>{row.name}</div>
 																	))}
-																	</tbody>
-																</table>
+																	{showAttachment && 
+																		<div className="d-flex justify-content-center p-3 bg-light flex-column">
+																			<div className="d-flex p-1">
+																				<div>Preview of {selectedAttachment.name}</div>
+																				<img src={appIcons.find(i=>i.name==="close").image} 
+																					style={{height:"30px", width:"30px", cursor:"pointer"}}
+																					onClick={(e)=>setShowAttachment(false)}
+																					title="Close Preview"
+																				>
+																				</img>
+																			</div>
+																			<img src={selectedAttachment.url}></img>
+																		</div>
+																	}
+																</div>
 															</div>
+															
 															:
-															typeof value.value =="object" ?
-															<div> {JSON.stringify(value.value)}</div>
+															typeof value =="object" && Array.isArray(value) && !arrayFunctions.arrayIsEmpty(value) ?
+															<div className="d-flex " style={JSON.parse(item.ui_style)}>
+																<div className="col-3 text-left" style={{color: "gray"}}>{toProperCase(key.replaceAll("_"," "))}: </div>
+																	<div className="col-8" style={{color: "black"}}>
+																	<table className="table table-bordered table-striped text-center">
+																		<thead>
+																			<tr>
+																				{Object.keys((value)[0]).map((header,headerIndex)=>(
+																					<th scope="col" className="w-50">{toProperCase(header.replaceAll("_"," "))}</th>
+																				))}
+																			</tr>
+																		</thead>
+																		<tbody>
+																		{(value).map((row, rowIndex)=>(
+																			(Object.values(row))[0].length>0 &&
+																				<tr key={rowIndex}>
+																					{Object.values(row).map((val,itemIndex)=>(
+																						<td key={itemIndex}>{val}</td>
+																					))
+																			}	
+																				</tr>
+																		))}
+																		</tbody>
+																	</table>
+																</div>
+															</div>
 															:
 															null
 														}
@@ -884,7 +836,8 @@ const RequestIntakeForm = (props) => {
 										</div>
 
 										:
-
+										
+										// Rendered output based on html code
 										item.ui_form_section === section.name &&
 										item.ui_component_visible &&
 										item.ui_input_type=="output" &&
@@ -894,7 +847,7 @@ const RequestIntakeForm = (props) => {
 										/>
 																			
 										: null
-									)}
+									))}
 									
 								</div>
 							) : null

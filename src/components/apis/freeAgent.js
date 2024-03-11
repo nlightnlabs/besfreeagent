@@ -15,15 +15,63 @@ export const dbUrl = axios.create({
 //General Query
 export const queryFA = async (appName)=>{
     
-    // query should be an object like this:
-    // {query: "query{listEntityValues(entity: \"app_system_name_in_freeagent\", limit: 100){ entity_values {id, field_values} } }"}
     const query = {query: `query{listEntityValues(entity: \"${appName}\", limit: 100){ entity_values {id, field_values} } }`}
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
         console.log(response);
-        const data = response.data;
-        return data;
+        const data = response.data.listEntityValues.entity_values;
+
+        const result = data.map(record => {
+            let rowData = { id: record.id };
+            Object.entries(record.field_values).forEach(([key, value]) => {
+                let val = value.value;
+                if(value.type==="reference"){
+                    val = value.display_value
+                }
+                if (typeof val === "object") {
+                    val = JSON.stringify(val);
+                }
+                rowData = { ...rowData, [key]: val };
+            });
+            return rowData;
+        });
+        console.log("result",result)
+
+        return result;
+    } catch (error) {
+        throw new Error("Error fetching data: " + error);
+    }
+}
+
+//Get value
+export const getFAValue = async (appName,fieldName,conditionalField,conditionalValue)=>{
+    
+    const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], filters: [{field_name: \"${conditionalField}\", operator: \"equals\",values:[\"${conditionalValue}\"}]],limit: 1){ entity_values {id, field_values} } }`}
+    console.log(query)
+
+    try {
+        const response = await dbUrl.post("/freeAgent/query", query);
+        console.log(response);
+
+        const data = response.data.listEntityValues.entity_values;
+        const result = data.map(record => {
+            let rowData = { id: record.id };
+            Object.entries(record.field_values).forEach(([key, value]) => {
+                let val = value.value;
+                if(value.type==="reference"){
+                    val = value.display_value
+                }
+                if (typeof val === "object") {
+                    val = JSON.stringify(val);
+                }
+                rowData = { ...rowData, [key]: val };
+            });
+            return rowData;
+        });
+        console.log("result",result)
+
+        return result;
     } catch (error) {
         throw new Error("Error fetching data: " + error);
     }
@@ -34,6 +82,21 @@ export const queryFA = async (appName)=>{
 export const getFAUsers = async ()=>{
 
     const query = {query: "query{getTeamMembers(active: true) {agents {id, full_name, teamId, email_address, access_level, status, job_title, roles {id, name, import, export, bulk_edit, bulk_delete, task_delete, is_admin}, subteams {id, name, description}}}}"}
+    
+    try {
+        const response = await dbUrl.post("/freeAgent/query",query);
+        console.log(response);
+        const data = response.data.getTeamMembers.agents;
+        return data;
+    } catch (error) {
+        throw new Error("Error fetching data: " + error);
+    }
+}
+
+//Get Free Agent User 
+export const getFAUser = async ()=>{
+
+    const query = {query: "query{getUserInfo(){id}}"}
     
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
@@ -203,6 +266,7 @@ export const deleteFARecord = async (appName, recordId) => {
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
         console.log(response);
+        return response
     } catch (error) {
         throw new Error("Error fetching data: " + error);
     }

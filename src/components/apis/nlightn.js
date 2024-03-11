@@ -3,9 +3,6 @@ console.log(`Environment: ${process.env.NODE_ENV}`);
 
 export const baseURL = process.env.NODE_ENV==="production" ? "https://nlightnlabs.net" : "http://localhost:3001"
 
-export default axios.create({
-  baseURL,
-})
 
 export const dbUrl = axios.create({
   baseURL,
@@ -98,17 +95,30 @@ export const getRecords = async (req, res)=>{
   }
 }
 
+//Look up a single value
+export const getValue = async (tableName,lookupField, conditionalField,conditionalValue)=>{
+  
+  try{
+    const result = await dbUrl.get(`/db/value/${tableName}/${lookupField}/${conditionalField}/${conditionalValue}`)
+    //console.log(result)
+    const data = await result.data
+    return (data)
+  }catch(error){
+    //console.log(error)
+  }
+}
+
 
 //Create New Record
 export const addRecord = async (tableName, formData)=>{
   if(tableName.length > 0 && Object.entries(formData).length>0){
     try{
       const result = await dbUrl.post("/db/addRecord",{tableName, formData})
-      //console.log(result)
+      console.log(result)
       const data = await result.data
       return (data)
     }catch(error){
-      //console.log(error)
+      console.log(error)
     }
   }else{
     alert("Please provide information for the new record")
@@ -294,13 +304,10 @@ export const updateActivityLog = async(app, recordId, userEmail, description)=>{
     "description":description
   }
   
-  const params = {
-    tableName: "activities",
-    formData:formData
-  }
-  
+  const tableName = "activities"
+
   try{
-    const result = await dbUrl.post("/db/addRecord",{params})
+    const result = await dbUrl.post("/db/addRecord",{tableName, formData})
     // console.log(result)
     const data = await result.data
     return (data)
@@ -309,6 +316,22 @@ export const updateActivityLog = async(app, recordId, userEmail, description)=>{
   }
 }
 
+
+export const convertAudioToText = async (audioFile) => {
+  try {
+    const formData = new FormData();
+    formData.append('audio', audioFile);
+
+    const response = await dbUrl.post('/api/convertAudioToText', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data.transcription;
+  } catch (error) {
+    console.error('Error transcribing audio:', error);
+  }
+};
 
 
 

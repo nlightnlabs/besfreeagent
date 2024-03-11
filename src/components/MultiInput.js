@@ -56,7 +56,6 @@ const MultiInput = forwardRef((props, ref) => {
 
   useEffect(()=>{
     if(list && list.length>0 && value !="" && value !=null){
-      console.log(name, list, list.indexOf(props.value))
       setSelectedIndex(list.indexOf(props.value))
     }
   },[list])
@@ -232,12 +231,11 @@ const MultiInput = forwardRef((props, ref) => {
   }
 
   const handleClick = (e)=>{
+    
     if(list  && list.length>0){
       setOptions(list.filter(item=>item))
     }
     setDropDownDisplay("block")
-    e.target.select()
-   
   }
 
   const handleBlur=(e)=>{
@@ -252,7 +250,7 @@ const MultiInput = forwardRef((props, ref) => {
   }
 
   const handleInputChange=(inputText)=>{
-     console.log(inputText)
+    
       setValue(inputText)
       
       if(props.list && props.list.length>0){

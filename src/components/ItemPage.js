@@ -1,18 +1,11 @@
-import React, {useRef, useState, useEffect} from "react"
+import React from "react"
 import { toProperCase } from "./functions/formatValue"
 
 const ItemPage = (props)=>{
+
+    const environment = window.environment
     
     const item = props.item
-
-    const tableStyle={
-      fontSize: "12px",
-      padding: "2px"
-    }
-
-    const cellStyle={
-      padding: "2px"
-    }
 
     const headerStyle={
       fontWeight: "bold",
@@ -20,11 +13,11 @@ const ItemPage = (props)=>{
     }
 
     return(
-      <div className="flex-container flex-column bg-white p-3" style={{width:"100%"}}>
+      <div className="flex-container flex-column bg-white p-3" style={{width:"100%", fontSize: "14px"}}>
         {
-          Object.entries(item).map(([key,value])=>(
+          Object.entries(item).map(([key,value],index)=>(
               value !=null && value !="" && 
-                <div key={key} className="row">
+                <div key={key} className="row p-3" style={{borderBottom: "1px solid lightgray"}}>
                   <div className="col-3 p-1" style={{color: "gray"}}>{toProperCase(key.replaceAll("_"," "))}: </div>
                   <div className="col-9 p-1">
                     {
@@ -52,16 +45,28 @@ const ItemPage = (props)=>{
       
                         <div>{JSON.stringify(value)}</div>
                     :
-                    key ==="image" && value !="" && value !=null && JSON.parse(value)?
+                    key ==="image" && value !="" && value !=null?
                     <div className="d-flex w-100 p-1" style={{height:"fit-content", width:"90%", overflowX: "auto"}}>
-                        {JSON.parse(value).map((image,index)=>(
-                                <img 
-                                key={index}
-                                src={image.url} 
-                                alt={`${image.name} icon`} 
-                                style={{height: "100px", width: "auto"}}>
-                              </img>
-                        ))}
+                        {environment ==="freeagent" ?
+                          <img 
+                            src={value} 
+                            alt={"item image"} 
+                            style={{height: "100px", width: "auto"}}>
+                          </img>
+                        :
+                        JSON.parse(value) ? 
+                          JSON.parse(value).map((image,index)=>(
+                            <img 
+                            key={index}
+                            src={image.url} 
+                            alt={`${image.name} icon`} 
+                            style={{height: "100px", width: "auto"}}>
+                          </img>
+                          ))
+                          :
+                          null
+                        }
+                        
                     </div>
                     : 
                     typeof value =="string"?

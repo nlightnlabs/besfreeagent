@@ -39,7 +39,7 @@ const DataEntryForm = (props) => {
     const[initialValues, setInitialValues] = useState(false)
     const [uiRefreshTriggers, setUIRefreshTriggers] = useState({})
     
-    const refs = useRef({});
+    
 
     useEffect(()=>{
       getFormFields();
@@ -66,8 +66,9 @@ const DataEntryForm = (props) => {
 
     
     
-  // Function to dynamically create refs based on the names or IDs
-  const createRefs = async (formFields) => {
+    // Function to dynamically create refs based on the names or IDs
+    const refs = useRef({});
+    const createRefs = async (formFields) => {
     console.log(formFields)
     const refList = {};
       formFields.forEach(item => {
@@ -75,7 +76,7 @@ const DataEntryForm = (props) => {
       })
     refs.current = refList;
     getFormData(formFields)
-  };
+    };
     
     
     const getFormData = async (formFields) => {
@@ -86,7 +87,7 @@ const DataEntryForm = (props) => {
           recordId: recordId,
           idField: "id",
         };
-    
+ 
         const formData = await getRecord(params);
         setFormData(formData);
         calculateForm(updatedFormFields, formData);
@@ -303,7 +304,6 @@ const DataEntryForm = (props) => {
       return { formDataWithAttachments, updatedDataWithAttachments };
     };
     
-
     const handleSave = async (req, res) => {
 
       if(JSON.stringify(initialData) !== JSON.stringify(formData)){
@@ -374,7 +374,6 @@ const DataEntryForm = (props) => {
       console.log(updatedFormData)
       calculateForm(formElements, updatedFormData);
     }
-
 
     const editProps = ()=>{
       if(allowEdit){

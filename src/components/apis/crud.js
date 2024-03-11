@@ -2,6 +2,35 @@
 import * as nlightnApi from './nlightn.js';
 import * as freeAgentApi from './freeAgent.js'
 
+export const queryData = async (query) => {
+
+    const environment = window.environment
+
+    let response = []
+    if(environment==="freeagent"){
+        response = await freeAgentApi.queryFA(query);
+        return response
+    }else{
+        response = await nlightnApi.getData(query)
+        return response[0]
+    }
+};
+
+export const getValue = async (tableName,fieldName,conditionalField,conditionalValue) => {
+
+    const environment = window.environment
+
+    let response = []
+    if(environment==="freeagent"){
+        response = await freeAgentApi.getFAValue(tableName,fieldName,conditionalField,conditionalValue);
+        return response
+    }else{
+        response = await nlightnApi.getValue(tableName,fieldName,conditionalField,conditionalValue)
+        return response
+    }
+};
+
+
 export const getData = async (appName) => {
 
     const environment = window.environment
@@ -20,30 +49,35 @@ export const getData = async (appName) => {
 export const updateRecord = async (appName, selectedRecordId, formData) => {
 
     const environment = window.environment
+    let response = null
     if(environment === "freeagent"){
-        await freeAgentApi.updateFARecord(appName, selectedRecordId, formData)
+        response = await freeAgentApi.updateFARecord(appName, selectedRecordId, formData)
     }else{
-        await nlightnApi.updateRecord(appName,"id", selectedRecordId,formData)
+        response = await nlightnApi.updateRecord(appName,"id", selectedRecordId,formData)
     }
 }
 
 
 export const addRecord = async (appName, updatedForm) => {
     const environment = window.environment
+    let response = null
     if(environment == "freeagent"){
-        await freeAgentApi.addFARecord(appName, updatedForm)
+        response = await freeAgentApi.addFARecord(appName, updatedForm)
     }else{
-       nlightnApi.addRecord(appName, updatedForm)
+        response = await nlightnApi.addRecord(appName, updatedForm)
     }
+    return response
 }
 
 export const deleteRecord = async (appName, selectedRecordId) => {
     const environment = window.environment
+    let response = null
     if(environment == "freeagent"){
-            await freeAgentApi.deleteFARecord(appName, selectedRecordId)
+        response = await freeAgentApi.deleteFARecord(appName, selectedRecordId)
     }else{
-        await nlightnApi.deleteRecord(appName,"id",selectedRecordId)
+        response = await nlightnApi.deleteRecord(appName,"id",selectedRecordId)
     }
+    return response
 }
 
 export const getUserData = async () => {

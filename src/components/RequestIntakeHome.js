@@ -65,12 +65,6 @@ const RequestIntakeHome = (props) => {
 
     useEffect(()=>{
 
-        let appName = ""
-        if(environment === "freeagent"){
-          appName = "custom_app_52"
-        }else{
-          appName = "requests"
-        }
 
       const getRequestStypes = async ()=>{
         const response = await nlightnApi.getTable("request_flow_types")
@@ -131,7 +125,6 @@ const RequestIntakeHome = (props) => {
         }else{
           appName = "requests"
         }
-
         const response = await crud.getColumnData(appName)
         setDbFieldData(response)
       }
@@ -198,8 +191,6 @@ const RequestIntakeHome = (props) => {
         style={{height:"100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.5)", position: "absolute", top: 0, left:0, zIndex:999}}>
           <FloatingPanel
           title={requestType}
-          top="50vh"
-          left="50vw"
           height="80vh"
           width="800px"
           appData={appData}
