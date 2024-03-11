@@ -82,6 +82,7 @@ const RequestIntakeHome = (props) => {
           appName = "businesses_units"
         }
         const response = await crud.getData(appName)
+        console.log("businesses_units",response)
         setBusinessUnits(response)
       }
       getBusinessUnits()
@@ -97,6 +98,7 @@ const RequestIntakeHome = (props) => {
         }
 
         const response = await crud.getData(appName)
+        console.log("spend_categories",response)
         setSpendCategories(response)
       }
       getCategories()
@@ -112,6 +114,7 @@ const RequestIntakeHome = (props) => {
         }
 
         const response = await crud.getData(appName)
+        console.log("businesses",response)
         setBusinesses(response)
       }
       getBusinesses()

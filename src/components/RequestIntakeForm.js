@@ -108,6 +108,7 @@ const RequestIntakeForm = (props) => {
 		
 			try {
 				const response = await nlightnApi.getData(query);
+				console.log("request_flow_forms",response)
 				setRequestTypeData(response)
 				
 				let fieldSet = new Set()
@@ -138,7 +139,7 @@ const RequestIntakeForm = (props) => {
 	
 		try {
 			const formFields = await nlightnApi.getData(query);
-			console.log(formFields)
+			console.log("formFields",formFields)
 			
 			setPageTitle(formFields.find(item=>item.ui_form_name==formName).name)
 			setPageSubTitle(formFields.find(item=>item.ui_form_name==formName).ui_form_description)
@@ -351,6 +352,7 @@ const RequestIntakeForm = (props) => {
               };
             }
         }))
+		console.log("tempDropdownLists",tempDropdownLists)
         setDropdownLists(tempDropdownLists); 
       }
     };
