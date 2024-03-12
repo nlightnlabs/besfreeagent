@@ -283,7 +283,6 @@ export const getFAList = async (appName,fieldName)=>{
     try{
       const response = await dbUrl.post("/freeAgent/query", query);
       const data = response.data.listEntityValues.entity_values;
-      console.log("list response",data)
 
        let set = new Set()
         data.map(record => {
@@ -309,11 +308,11 @@ export const getFAList = async (appName,fieldName)=>{
 //   Get Conditional List
   export const getFAConditionalList = async (appName,fieldName,conditionalField, condition)=>{
 
-    console.log(appName,fieldName)
+    console.log(appName,fieldName,conditionalField,condition)
 
      // query{listEntityValues(entity: \"custom_app_56\", fields: [\"subcategory\"], filters : [{field_name : \"category\", operator : \"equals\", values : [\"Furniture\"]}]){ entity_values {id, field_values} } }"}
     const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], filters : [{field_name : \"${conditionalField}\", operator : \"equals\", values : [\"${condition}\"]}]){ entity_values {id, field_values} } }`}
-    console.log("free agent query:", query)
+    console.log(`free agent conditional query for ${fieldName}:`, query)
 
     try{
         const response = await dbUrl.post("/freeAgent/query", query);
