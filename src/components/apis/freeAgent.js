@@ -15,7 +15,7 @@ export const dbUrl = axios.create({
 //General Query
 export const queryFA = async (appName)=>{
     
-    const query = {query: `query{listEntityValues(entity: \"${appName}\", limit: 100){ entity_values {id, field_values} } }`}
+    const query = {query: `query{listEntityValues(entity: \"${appName}\", "order" : [["seq_id","ASC"]]){ entity_values {id, field_values} } }`}
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
@@ -128,7 +128,7 @@ export const getFAApps = async ()=>{
 //Standard function to get all records from a FreeAgent App
 export const getFAAAppRecords = async (appName) => {
 
-    const query = {query: `query{listEntityValues(entity: \"${appName}\"){ entity_values {id, field_values} } }`}
+    const query = {query: `query{listEntityValues(entity: \"${appName}\", order : [["seq_id","ASC"]]){ entity_values {id, field_values} } }`}
     // {query: "query{listEntityValues(entity: \"app_system_name_in_freeagent\", limit: 100){ entity_values {id, field_values} } }"}
 
     try {
@@ -277,7 +277,7 @@ export const getFAList = async (appName,fieldName)=>{
     
     console.log(appName,fieldName)
 
-    const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"]){ entity_values {id, field_values} } }`}
+    const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], order : [["seq_id","ASC"]]){ entity_values {id, field_values} } }`}
     console.log("free agent query:", query)
 
     try{
@@ -311,7 +311,7 @@ export const getFAList = async (appName,fieldName)=>{
     console.log(appName,fieldName,conditionalField,condition)
 
      // query{listEntityValues(entity: \"custom_app_56\", fields: [\"subcategory\"], filters : [{field_name : \"category\", operator : \"equals\", values : [\"Furniture\"]}]){ entity_values {id, field_values} } }"}
-    const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], filters : [{field_name : \"${conditionalField}\", operator : \"equals\", values : [\"${condition}\"]}]){ entity_values {id, field_values} } }`}
+    const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], filters : [{field_name : \"${conditionalField}\", operator : \"equals\", values : [\"${condition}\"]}], order : [["seq_id","ASC"]]){ entity_values {id, field_values} } }`}
     console.log(`free agent conditional query for ${fieldName}:`, query)
 
     try{
