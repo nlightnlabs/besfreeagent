@@ -283,6 +283,7 @@ export const getFAList = async (appName,fieldName)=>{
     try{
       const response = await dbUrl.post("/freeAgent/query", query);
       const data = response.data.listEntityValues.entity_values;
+      console.log(`freeAgent list query response for ${fieldName}`,data)
 
        let set = new Set()
         data.map(record => {
