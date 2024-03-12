@@ -467,12 +467,13 @@ const RequestIntakeForm = (props) => {
         // Stringify all fields that hold arrays or javascript objects to flatting the data
         await Promise.all(Object.keys(recordToSendToDb).map(fieldName=>{
 		 let val = recordToSendToDb[fieldName]
-          if(typeof val ==="object" && environment === "freeagent"){
-			recordToSendToDb = {...recordToSendToDb, ...{[fieldName]:arrayObjectToString(val)}}
-		  }else{	
-            recordToSendToDb = {...recordToSendToDb, ...{[fieldName]:JSON.stringify(val)}}
-          }
-
+          if(typeof val ==="object" && val !=null){
+			if (environment ==="freeagent"){
+				recordToSendToDb = {...recordToSendToDb, ...{[fieldName]:arrayObjectToString(val)}}
+			}else{
+				recordToSendToDb = {...recordToSendToDb, ...{[fieldName]:JSON.stringify(val)}}
+			}
+		  }
         }))
 		recordToSendToDb["request_date"] = formatDateInput(new Date())
 		recordToSendToDb["request_type"] = requestType
