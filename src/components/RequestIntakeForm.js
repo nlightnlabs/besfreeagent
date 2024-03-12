@@ -295,18 +295,20 @@ const RequestIntakeForm = (props) => {
     
               }else{
                   let conditionalValue = item.ui_reference_data_conditional_value
-          
-                  if(conditionalValue !=null){
+				  console.log("conditionalValue",conditionalValue)
+
+                  if(conditionalValue !=null && conditionalValue !=""){
                     if(conditionalValue.search(".")>0){
                       conditionalValue = eval(conditionalValue)
+					  console.log("conditionalValue",conditionalValue)
                     }else{
                       conditionalValue =conditionalValue
                     }
                   }
           
                   if (
-                    item.ui_reference_data_table != null &&
-                    item.ui_reference_data_field != null
+                    item.ui_reference_data_table != null && item.ui_reference_data_table != "" && 
+                    item.ui_reference_data_field != null && item.ui_reference_data_field != ""
                   ) {
           
                     let dataTable = item.ui_reference_data_table
@@ -314,7 +316,8 @@ const RequestIntakeForm = (props) => {
                       dataTable = eval(item.ui_reference_data_table)()
                     }
           
-                    if(item.ui_reference_data_conditional_field !=null && conditionalValue !=null){
+                    if(item.ui_reference_data_conditional_field !=null && item.ui_reference_data_conditional_field !="" && 
+					conditionalValue !=null && conditionalValue !=""){
                      
                       const response = await crud.getConditionalList(
                         dataTable,
