@@ -383,6 +383,7 @@ const RequestIntakeForm = (props) => {
     }
 
     useEffect(()=>{
+		console.log(uiRefreshTriggers)
       calculateForm(formElements, formInputElements, formData);
     },[uiRefreshTriggers])
 
