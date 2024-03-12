@@ -10,3 +10,29 @@ export const arrayIsEmpty = (arr)=> {
     return true; // All objects have empty values
 }
 
+export const arrayObjectToString = (arrayObj)=>{
+    console.log(arrayObj)
+    let str=""
+    arrayObj.map((item, index)=>{
+      let itemString = ""
+      Object.entries(item).map(([key,value],kevalueindex)=>{
+        let updatedValue = value.replaceAll("'","\\'").replaceAll('"','\\"')
+        let keyValueString = `${key}:${updatedValue}`
+        if(kevalueindex ==0){
+            itemString = keyValueString
+        }else{
+            itemString = `${itemString},${keyValueString}`
+        }
+      })
+      itemString = `{${itemString}}`
+      if(index ==0){
+            str = itemString
+        }else{
+            str = `${str},${itemString}`
+        }
+    })
+    let result = `[${str}]`
+    return result
+    
+  }
+

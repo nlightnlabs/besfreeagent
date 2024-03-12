@@ -116,7 +116,8 @@ export const UTCToLocalDate =(utcDateString)=>{
 export const formatDateInput = (inputValue)=>{
   let dateValue = new Date(inputValue);  
   let dd = String(dateValue.getDate()).padStart(2, '0'); 
-  let mm = String(dateValue.getMonth() + 1).padStart(2, '0'); let yyyy = dateValue.getFullYear(); 
+  let mm = String(dateValue.getMonth() + 1).padStart(2, '0'); 
+  let yyyy = dateValue.getFullYear(); 
   let formattedDate = yyyy + '-' + mm + '-' + dd; 
   return formattedDate
 }
@@ -148,3 +149,5 @@ export const escapeQuotes = (inputString) =>{
   return escapedString;
   
 }
+
+

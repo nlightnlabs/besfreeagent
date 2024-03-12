@@ -7,7 +7,8 @@ import * as crud from './apis/crud.js'
 import * as fileServer from './apis/fileServer.js'
 import * as nlightnApi from './apis/nlightn.js'
 import * as arrayFunctions from './functions/arrayFunctions.js'
-import Spinner from './Spinner.js'
+import { formatDateInput } from "./functions/formatValue.js";
+import { arrayObjectToString } from "./functions/arrayFunctions.js";
 
 import Attachments from "./Attachments.js";
 import MultiInput from "./MultiInput.js";
@@ -466,12 +467,14 @@ const RequestIntakeForm = (props) => {
         // Stringify all fields that hold arrays or javascript objects to flatting the data
         await Promise.all(Object.keys(recordToSendToDb).map(fieldName=>{
 		 let val = recordToSendToDb[fieldName]
-          if(typeof val ==="object"){
-            recordToSendToDb = {...recordToSendToDb, ...{[fieldName]:JSON.stringify(recordToSendToDb[fieldName])}}
+          if(typeof val ==="object" && environment === "freeagent"){
+			recordToSendToDb = {...recordToSendToDb, ...{[fieldName]:arrayObjectToString(val)}}
+		  }else{	
+            recordToSendToDb = {...recordToSendToDb, ...{[fieldName]:JSON.stringify(val)}}
           }
-		  console.log(recordToSendToDb)
+
         }))
-		recordToSendToDb["request_date"] = UTCToLocalDate(new Date())
+		recordToSendToDb["request_date"] = formatDateInput(new Date())
 		recordToSendToDb["request_type"] = requestType
 		recordToSendToDb["requester_user_id"] = user.id
 		recordToSendToDb["requester"] = user.full_name
@@ -484,6 +487,9 @@ const RequestIntakeForm = (props) => {
 		  let appName = ""
 			if(environment ==="freeagent"){
 				appName = "custom_app_52"
+
+				delete recordToSendToDb.requester_user_id 
+				recordToSendToDb["requester"] = user.id
 
 				if(recordToSendToDb.subcategory && recordToSendToDb.subcategory != null && recordToSendToDb.subcategory != ""){
 					try{
