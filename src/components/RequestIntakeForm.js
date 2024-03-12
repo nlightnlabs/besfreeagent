@@ -269,7 +269,7 @@ const RequestIntakeForm = (props) => {
                 const query = item.ui_query
 				console.log("dropdown query for ",item.ui_name,item.ui_query)
 
-                const response = await nlightnApi.getData(query)
+                const response = await crud.getData(query)
 				console.log("response for ",item.ui_name,response)
                 
                 let listItems = []
@@ -314,7 +314,7 @@ const RequestIntakeForm = (props) => {
           
                     if(item.ui_reference_data_conditional_field !=null && conditionalValue !=null){
                      
-                      const response = await nlightnApi.getConditionalList(
+                      const response = await crud.getConditionalList(
                         dataTable,
                         item.ui_reference_data_field,
                         item.ui_reference_data_conditional_field,
@@ -335,7 +335,7 @@ const RequestIntakeForm = (props) => {
                       }
 
                     }else{
-                      const response = await nlightnApi.getList(
+                      const response = await crud.getList(
                         dataTable,
                         item.ui_reference_data_field
                       );
