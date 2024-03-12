@@ -97,7 +97,7 @@ const RequestIntakeForm = (props) => {
 
 	const [lastPage, setLastPage] = useState(false)
 
-	const {spendCategories, businessUnits, businesses, dbFieldData} = props.appData
+	const {spendCategories, businessUnits, businesses, products, dbFieldData} = props.appData
 	const [uiRefreshTriggers, setUIRefreshTriggers] = useState({})
 
 	const [attachments, setAttachments] = useState([])
@@ -323,7 +323,7 @@ const RequestIntakeForm = (props) => {
                         dataTable,
                         item.ui_reference_data_field,
                         item.ui_reference_data_conditional_field,
-                        eval(conditionalValue)
+                        conditionalValue
                       );
                       
                       // Storing each drop down list in an object
@@ -484,32 +484,66 @@ const RequestIntakeForm = (props) => {
 		  let appName = ""
 			if(environment ==="freeagent"){
 				appName = "custom_app_52"
+
+				if(recordToSendToDb.subcategory && recordToSendToDb.subcategory != null && recordToSendToDb.subcategory != ""){
+					try{
+						recordToSendToDb.subcategory = spendCategories.find(i=>i.subcategory===recordToSendToDb.subcategory).id
+					}catch(e){
+						delete recordToSendToDb.subcategory 
+					}
+				}
+
+				if(recordToSendToDb.supplier && recordToSendToDb.supplier != null && recordToSendToDb.supplier != ""){
+					try{
+						recordToSendToDb.supplier = businesses.find(i=>i.registered_name===recordToSendToDb.supplier).id
+					}catch(e){
+						delete recordToSendToDb.supplier 
+					}
+				}
+
+				if(recordToSendToDb.subcategory && recordToSendToDb.subcategory != null && recordToSendToDb.subcategory != ""){
+					try{
+						recordToSendToDb.business_unit = businessUnits.find(i=>i.name===recordToSendToDb.business_unit).id
+					}catch(e){
+						delete recordToSendToDb.business_unit 
+					}
+				}
+
+				if(recordToSendToDb.product && recordToSendToDb.product != null && recordToSendToDb.product != ""){
+					try{
+						recordToSendToDb.product = products.find(i=>i.item_name===recordToSendToDb.product).id
+					}catch(e){
+						delete recordToSendToDb.product 
+					}
+				}
+				
+				
 		  	}else{
 				appName = "requests"
 		  	}
 		
-		 console.log(appName)
-		 console.log(recordToSendToDb)
-          const newRecordInDb= await crud.addRecord(appName,recordToSendToDb)
-          console.log("newRecordInDb",newRecordInDb)
-         
-          let successfullyAdded = false
-          if(newRecordInDb.id !== null && newRecordInDb.id !== ""){
-            successfullyAdded = true;
-          }
-       
-          if(successfullyAdded){     
+			console.log(appName)
+			console.log("recordToSendToDb",recordToSendToDb)
+			const newRecordInDb= await crud.addRecord(appName,recordToSendToDb)
+			console.log("newRecordInDb",newRecordInDb)
+			
+			let successfullyAdded = false
+			if(newRecordInDb.id !== null && newRecordInDb.id !== ""){
+				successfullyAdded = true;
+			}
+		
+			if(successfullyAdded){     
 				setFormData(finalFormData)
-			  if(environment !="freeagent"){
-				 // Update activity log
-				 const activityUpdateResponse = await nlightnApi.updateActivityLog("requests", newRecordInDb.id, user.email, "Request submitted")
-				 console.log(activityUpdateResponse)
-			  }
+				if(environment !="freeagent"){
+					// Update activity log
+					const activityUpdateResponse = await nlightnApi.updateActivityLog("requests", newRecordInDb.id, user.email, "Request submitted")
+					console.log(activityUpdateResponse)
+				}
+				}
+				else{
+					alert("Unable to update record. Please check inputs.")
+				}
 			}
-			else{
-				alert("Unable to update record. Please check inputs.")
-			}
-          }
 		  
 		  else{
               alert("Nothing to save.  Form is not was not edited")

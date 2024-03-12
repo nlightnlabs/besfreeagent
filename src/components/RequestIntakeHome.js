@@ -62,6 +62,7 @@ const RequestIntakeHome = (props) => {
     const [spendCategories, setSpendCategories] = useState([])
     const [businessUnits, setBusinessUnits] = useState([])
     const [businesses, setBusinesses] = useState([])
+    const [products, setProducts] = useState([])
     const [dbFieldData, setDbFieldData]= useState([])
     const [loading, setLoading] = useState(true)
 
@@ -120,6 +121,21 @@ const RequestIntakeHome = (props) => {
         setBusinesses(response)
       }
       getBusinesses()
+
+      const getProducts = async ()=>{
+        
+        let appName = ""
+        if(environment === "freeagent"){
+          appName = "custom_app_22"
+        }else{
+          appName = "catalog_items"
+        }
+
+        const response = await crud.getData(appName)
+        console.log("products",response)
+        setProducts(response)
+      }
+      getProducts()
 
      
       const getRequestDbFieldNames = async ()=>{
@@ -211,7 +227,7 @@ const RequestIntakeHome = (props) => {
               setFormName = {setFormName}
               formData = {formData}
               setFormData = {setFormData}
-              appData ={{...appData,...{spendCategories},...{businessUnits},...{businesses},...{dbFieldData}}}
+              appData ={{...appData,...{spendCategories},...{businessUnits},...{businesses},...{products},...{dbFieldData}}}
               setShowRequestIntakeModal = {setShowRequestIntakeModal}
             />
           :
@@ -222,7 +238,7 @@ const RequestIntakeHome = (props) => {
               setFormName = {setFormName}
               formData = {formData}
               setFormData = {setFormData}
-              appData ={{...appData,...{spendCategories},...{businessUnits},...{businesses},...{dbFieldData}}}
+              appData ={{...appData,...{spendCategories},...{businessUnits},...{businesses},...{products},...{dbFieldData}}}
               setShowRequestIntakeModal = {setShowRequestIntakeModal}
             />
           }
