@@ -6,6 +6,7 @@ import FloatingPanel from './FloatingPanel.js';
 import * as crud from './apis/crud.js'
 import * as nlightnApi from './apis/nlightn'
 
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const RequestIntakeHome = (props) => {
@@ -62,6 +63,7 @@ const RequestIntakeHome = (props) => {
     const [businessUnits, setBusinessUnits] = useState([])
     const [businesses, setBusinesses] = useState([])
     const [dbFieldData, setDbFieldData]= useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(()=>{
 
@@ -134,6 +136,7 @@ const RequestIntakeHome = (props) => {
       getRequestDbFieldNames()
 
     },[])
+
 
     const handleSelect = (e)=>{
         const selectedRequestType = e.target.id
@@ -228,6 +231,7 @@ const RequestIntakeHome = (props) => {
           </FloatingPanel>
         </div>
     }
+      
     </div>
   )
 }

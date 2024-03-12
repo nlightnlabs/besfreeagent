@@ -7,6 +7,7 @@ import * as crud from './apis/crud.js'
 import * as fileServer from './apis/fileServer.js'
 import * as nlightnApi from './apis/nlightn.js'
 import * as arrayFunctions from './functions/arrayFunctions.js'
+import Spinner from './Spinner.js'
 
 import Attachments from "./Attachments.js";
 import MultiInput from "./MultiInput.js";
@@ -100,9 +101,10 @@ const RequestIntakeForm = (props) => {
 	const [uiRefreshTriggers, setUIRefreshTriggers] = useState({})
 
 	const [attachments, setAttachments] = useState([])
-	
+
+
 	useEffect(()=>{
-	
+
 		const getRequestTypeSections = async ()=>{
 			const query = `SELECT * FROM request_flow_forms where "request_type" = '${requestType}';`
 		
@@ -567,6 +569,7 @@ const RequestIntakeForm = (props) => {
 		setShowAttachment(true)
 	}
 
+
 	return (
 		<div className="d-flex" style={pageStyle}>
 			<div className="d-flex flex-column bg-light p-3" style={{width: "25%", minWidth:"200px", height:"100%"}}>
@@ -862,7 +865,8 @@ const RequestIntakeForm = (props) => {
 						
 					)}
 				</form>
-			</div>
+			</div>			
+
 		</div>
         
 	);
