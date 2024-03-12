@@ -274,12 +274,32 @@ export const deleteFARecord = async (appName, recordId) => {
 
 //Get List
 export const getFAList = async (appName,fieldName)=>{
+    
+    console.log(appName,fieldName)
+
     const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"]){ entity_values {id, field_values} } }`}
     console.log("free agent query:", query)
+
     try{
-      const result = await dbUrl.post("/freeAgent/query", query);
-      const data = await result.data
-      return (data)
+      const response = await dbUrl.post("/freeAgent/query", query);
+      const data = response.data.listEntityValues.entity_values;
+      console.log("list response",data)
+
+       let set = new Set()
+        data.map(record => {
+            let item = record.field_values[fieldName]
+            let value = item.value
+            if(item.type==="reference" || item.type==="reference_join"){
+                value = item.display_value
+            }
+            if (typeof value === "object") {
+                value = JSON.stringify(value);
+            }
+            set.add(value)
+        });
+        let result = Array.from(set)
+        return (result)
+
     }catch(error){
       console.log(error)
     }
@@ -288,16 +308,36 @@ export const getFAList = async (appName,fieldName)=>{
 
 //   Get Conditional List
   export const getFAConditionalList = async (appName,fieldName,conditionalField, condition)=>{
-    
+
+    console.log(appName,fieldName)
+
+     // query{listEntityValues(entity: \"custom_app_56\", fields: [\"subcategory\"], filters : [{field_name : \"category\", operator : \"equals\", values : [\"Furniture\"]}]){ entity_values {id, field_values} } }"}
     const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], filters : [{field_name : \"${conditionalField}\", operator : \"equals\", values : [\"${condition}\"]}]){ entity_values {id, field_values} } }`}
-    
     console.log("free agent query:", query)
+
     try{
-      const result = await dbUrl.post("/freeAgent/query", query);
-      const data = await result.data
-      return (data)
+        const response = await dbUrl.post("/freeAgent/query", query);
+        const data = response.data.listEntityValues.entity_values;
+        console.log("list response",data)
+  
+         let set = new Set()
+          data.map(record => {
+              let item = record.field_values[fieldName]
+              let value = item.value
+              if(item.type==="reference" || item.type==="reference_join"){
+                  value = item.display_value
+              }
+              if (typeof value === "object") {
+                  value = JSON.stringify(value);
+              }
+              set.add(value)
+          });
+          let result = Array.from(set)
+          return (result)
+
     }catch(error){
       console.log(error)
+      return []
     }
   }
 
