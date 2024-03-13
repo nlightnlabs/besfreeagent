@@ -390,10 +390,8 @@ const getCatalogItems = async ()=>{
             width="60vw"
             appData={appData}
             displayPanel={setShowOrderForm}
-            cart={cart} 
-            resetCart={resetCart}
         >
-          <OrderForm appData={appData} setAppData={setAppData} setShowOrderForm={setShowOrderForm} cart={cart} />
+          <OrderForm appData={appData} setAppData={setAppData} setShowOrderForm={setShowOrderForm} cart={cart} resetCart={resetCart}/>
         </FloatingPanel>
       }
 

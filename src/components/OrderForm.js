@@ -110,15 +110,12 @@ const OrderForm = (props)=>{
           ship_to_address: facilities.data.find(record=>record.name===finalFormData.ship_to_location).address, 
           need_by: formatDateInput(finalFormData.need_by),
           notes: finalFormData.notes,
-          items: (JSON.stringify(finalFormData.items)).toString()
         }
         console.log(orderForm)
       }
 
-      
-      
+      let lineItems = []
       if(environment ==="freeagent"){
-        let lineItems = []
         finalFormData.items.map(item=>{
           let itemData = {
             catalog_item: item.id,
@@ -127,10 +124,20 @@ const OrderForm = (props)=>{
           lineItems.push(itemData)
         })
         console.log("lineItems",lineItems)
-        
         orderForm = {...orderForm,...{["items"]:arrayObjectToString(lineItems)}}
-        console.log("orderForm",orderForm)
+      }else{
+        finalFormData.items.map(item=>{
+          let itemData = {
+            catalog_item: item.item_name,
+            quantity: item.quantity,
+          }
+          lineItems.push(itemData)
+        })
+        console.log("lineItems",lineItems)
+        orderForm = {...orderForm,...{["items"]:JSON.stringify(lineItems)}}
       }
+      
+      console.log("orderForm",orderForm)
 
       let newRecord ={}
       newRecord = await crud.addRecord(appName, orderForm)
