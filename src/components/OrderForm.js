@@ -113,22 +113,14 @@ const OrderForm = (props)=>{
         console.log(orderForm)
       }
 
-      const newRecord = await crud.addRecord(appName, orderForm)
-      
-      if(newRecord.id !=null && newRecord.id !=""){
-        finalFormData.items.map( async (item)=>{
-          if(environment ==="freeagent"){
-            let itemFormData = {
-              parent_id: newRecord.id,
-              id: item.id
-            }
-            const newLineItem = await crud.addRecord(`${appName}_catalog_items`, itemFormData)
-            console.log(newLineItem)
-          }
-        })
+      let newRecord ={}
+      if(environment ==="freeagent"){
+        newRecord = await freeAgentApi.addFARecordWithLineItems(appName, orderForm,`${appName}_catalog_items`, items)
+      }else{
+        newRecord = await nlightnApi.addRecord(appName, orderForm)
       }
+      console.log(newRecord)
         
-      
       alert(`Order has been created and is being reviewed`)
       resetCart()
       setShowOrderForm(false)

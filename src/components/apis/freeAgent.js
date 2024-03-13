@@ -224,6 +224,55 @@ export const addFARecord = async (appName, formData)=>{
     } catch (error) {
         throw new Error("Error fetching data: " + error);
     }
+}
+
+//Standard function to add a new record in a FreeAgent App
+export const addFARecordWithLineItems = async (appName, formData, lineItemAppName, lineItems)=>{
+    let record = formData
+    delete record.id
+    delete record.seq_id
+
+    let updatedFormData = "";
+    let i=0;
+    (Object.entries(record).map(([key,val])=>{
+        if(i==0){
+            updatedFormData = `${key}:\"${val}\"`
+        }else{
+            updatedFormData = `${updatedFormData}, ${key}:\"${val}\"`
+        }
+        i = i+1;
+    }))
+
+    let children = []
+    lineItems.map(item=>{
+        let lineItemFieldValues = "";
+        let l=0;
+        (Object.entries(lineItemFormData).map(([key,val])=>{
+            if(l==0){
+                lineItemFieldValues = `${key}:\"${val}\"`
+            }else{
+                lineItemFieldValues = `${lineItemFieldValues}, ${key}:\"${val}\"`
+            }
+            l= l+1;
+        }))
+        let lineItemData = {
+            entity: `\"${lineItemAppName}\"`,
+            field_values: lineItemFieldValues
+        }
+        children.push(lineItemData).toString()
+    })
+
+    const query = {query: `upsertCompositeEntity{createEntity(entity: \"${appName}\",field_values: {${updatedFormData},children: ${children}}){entity_value {id, field_values}children{id, field_values}}}`}
+    console.log("free agent new record with line item query:", query)
+
+    try {
+        const response = await dbUrl.post("/freeAgent/query", query);
+        const data = response.data.upsertCompositeEntity.entity_value;
+        console.log(data)
+        return(data)
+    } catch (error) {
+        throw new Error("Error fetching data: " + error);
+    }
 
 }
 
