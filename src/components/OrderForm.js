@@ -118,18 +118,20 @@ const OrderForm = (props)=>{
       if(environment ==="freeagent"){
         finalFormData.items.map(item=>{
           let itemData = {
-            catalog_item: item.id,
+            item_name: catalogItems.find(i=>i.id === item.id).item_name,
             quantity: item.quantity,
+            catalog_item_id: item.id,
           }
           lineItems.push(itemData)
         })
         console.log("lineItems",lineItems)
-        orderForm = {...orderForm,...{["items"]:arrayObjectToString(lineItems)}}
+        orderForm = {...orderForm,...{["items"]:JSON.stringify(lineItems)}}
       }else{
         finalFormData.items.map(item=>{
           let itemData = {
-            catalog_item: item.item_name,
+            item_name: catalogItems.find(i=>i.id === item.id).item_name,
             quantity: item.quantity,
+            catalog_item_id: item.id,
           }
           lineItems.push(itemData)
         })
