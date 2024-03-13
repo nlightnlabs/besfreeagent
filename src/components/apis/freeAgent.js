@@ -26,7 +26,7 @@ export const queryFA = async (appName)=>{
             let rowData = { id: record.id };
             Object.entries(record.field_values).forEach(([key, value]) => {
                 let val = value.value;
-                if(value.type==="reference"){
+                if(value.type==="reference" || value.type==="reference_join"){
                     val = value.display_value
                 }
                 if (typeof val === "object") {
