@@ -17,16 +17,21 @@ export const arrayObjectToString = (arrayObj)=>{
       let itemString = ""
       Object.entries(item).map(([key,value],kevalueindex)=>{
         console.log("value",value)
-        let updatedValue = value.toString().replace( /["'"]/g,"\\'").replace( /['"']/g,'\\"')
+        let updatedValue =""
+        if(value !=null & value!="" & typeof value !="object"){
+            updatedValue = value.toString().replace( /["'"]/g,"\\'").replace( /['"']/g,'\\"')
+        }else{
+            updatedValue=null
+        }
         let keyValueString = `${key}:${updatedValue}`
         if(kevalueindex ==0){
             itemString = keyValueString
         }else{
             itemString = `${itemString},${keyValueString}`
-        }
-      })
-      itemString = `{${itemString}}`
-      if(index ==0){
+        }    
+    })
+    itemString = `{${itemString}}`
+    if(index ==0){
             str = itemString
         }else{
             str = `${str},${itemString}`
