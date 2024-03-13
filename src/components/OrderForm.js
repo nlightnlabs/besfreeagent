@@ -22,6 +22,7 @@ const OrderForm = (props)=>{
     const environment = appData.environment
     const addRecord = appData.addRecord
     const setShowOrderForm = props.setShowOrderForm
+    const catalogItems = appData.catalogItems
 
     const [formElements, setFormElements] = useState([
       {id: "order_name", name:"order_name", label: "Provide a subject or name for the order", placeholder:"Provide a subject or name for the order", type:"input", value: `Purchase Order for ${user.full_name} on ${UTCToLocalDate(new Date())}`, list: null},
