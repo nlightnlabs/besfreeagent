@@ -401,8 +401,6 @@ const getCatalogItems = async ()=>{
         <div className="d-flex flex-column justify-content-center bg-light shadow p-3 text-center border border-3 rounded-3" 
         style={{...loadingModalStyle,left: position.x + "px", top: position.y + "px"}}>
             <Spinner/>
-            <div>Loading...</div> 
-            <div>Please wait...</div> 
         </div>
       }
 
