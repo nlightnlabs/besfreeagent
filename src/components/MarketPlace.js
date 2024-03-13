@@ -151,7 +151,7 @@ const getBusinessUnits = async ()=>{
 
   let appName = ""
   if(environment =="freeagent"){
-    appName = "custom_app_44"
+    appName = "business_unit"
   }else{
     appName = "business_units" 
   }
