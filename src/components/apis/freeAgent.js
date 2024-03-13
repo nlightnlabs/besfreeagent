@@ -259,7 +259,9 @@ export const addFARecordWithLineItems = async (appName, formData, lineItemAppNam
         children.push(lineItemData)
     })
 
-    const query = {query: `upsertCompositeEntity{createEntity(entity: \"${appName}\",field_values: {${updatedFormData},children: ${children.toString()}}){entity_value {id, field_values}children{id, field_values}}}`}
+    console.log("Children to string: ",children.toString())
+
+    const query = {query: `upsertCompositeEntity(entity: \"${appName}\",field_values: {${updatedFormData}},children: [${children.toString()}]){entity_value {id, field_values}children{id, field_values}}}`}
     console.log("free agent new record with line item query:", query)
 
     try {
