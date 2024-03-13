@@ -90,7 +90,7 @@ const OrderForm = (props)=>{
           ship_to_location: facilities.data.find(record=>record.name===finalFormData.ship_to_location).id, 
           need_by: formatDateInput(finalFormData.need_by),
           notes: finalFormData.notes,
-          items: arrayObjectToString(finalFormData.items)
+          // items: arrayObjectToString(finalFormData.items)
         }
       }else{
 
@@ -114,8 +114,19 @@ const OrderForm = (props)=>{
       }
 
       const newRecord = await crud.addRecord(appName, orderForm)
-      console.log("newRecord",newRecord)
-
+      console.log("newRecord",newRecord).then(
+        finalFormData.items.map( async (item)=>{
+          if(environment ==="freeagent"){
+            let itemFormData = {
+              parent_id: newRecord.id,
+              id: item.id
+            }
+            const newLineItem = await crud.addRecord(`${appName}_catalog_items`, itemFormData)
+            console.log(newLineItem)
+          }
+        })
+      )
+      
       alert(`Order has been created and is being reviewed`)
       resetCart()
       setShowOrderForm(false)
