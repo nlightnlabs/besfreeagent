@@ -116,30 +116,17 @@ const OrderForm = (props)=>{
       }
 
       let lineItems = []
-      if(environment ==="freeagent"){
-        finalFormData.items.map(item=>{
-          let itemData = {
-            item_name: catalogItems.find(i=>i.id === item.id).item_name,
-            quantity: item.quantity,
-            catalog_item_id: item.id,
-          }
-          lineItems.push(itemData)
-        })
-        console.log("lineItems",lineItems)
-        orderForm = {...orderForm,...{["items"]:JSON.stringify(lineItems)}}
-      }else{
-        finalFormData.items.map(item=>{
-          let itemData = {
-            item_name: catalogItems.find(i=>i.id === item.id).item_name,
-            quantity: item.quantity,
-            catalog_item_id: item.id,
-          }
-          lineItems.push(itemData)
-        })
-        console.log("lineItems",lineItems)
-        orderForm = {...orderForm,...{["items"]:JSON.stringify(lineItems)}}
-      }
+      finalFormData.items.map(item=>{
+        let itemData = {
+          item_name: catalogItems.find(i=>i.id === item.id).item_name,
+          quantity: item.quantity,
+          catalog_item_id: item.id,
+        }
+        lineItems.push(itemData)
+      })
+      console.log("lineItems",lineItems)
       
+      orderForm = {...orderForm,...{["items"]:JSON.stringify(lineItems)}}
       console.log("orderForm",orderForm)
 
       let newRecord ={}

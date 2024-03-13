@@ -231,6 +231,7 @@ const getCatalogItems = async ()=>{
   }
   const data = await crud.getData(appName)
   console.log(`data retreived from ${environment} api: `, data)
+  setAppData(prev=>({...prev,catalogItems:data}))
 
   let items = []
   data.map(item=>{
