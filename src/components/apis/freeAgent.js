@@ -255,14 +255,11 @@ export const addFARecordWithLineItems = async (appName, formData, lineItemAppNam
             }
             l= l+1;
         }))
-        let lineItemData = {
-            entity: `\"${lineItemAppName}\"`,
-            field_values: lineItemFieldValues
-        }
-        children.push(lineItemData).toString()
+        let lineItemData = `{entity: \"${lineItemAppName}\",field_values: ${lineItemFieldValues}}`
+        children.push(lineItemData)
     })
 
-    const query = {query: `upsertCompositeEntity{createEntity(entity: \"${appName}\",field_values: {${updatedFormData},children: ${children}}){entity_value {id, field_values}children{id, field_values}}}`}
+    const query = {query: `upsertCompositeEntity{createEntity(entity: \"${appName}\",field_values: {${updatedFormData},children: ${children.toString()}}){entity_value {id, field_values}children{id, field_values}}}`}
     console.log("free agent new record with line item query:", query)
 
     try {
