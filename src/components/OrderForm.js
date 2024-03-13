@@ -115,6 +115,14 @@ const OrderForm = (props)=>{
 
       let newRecord ={}
       if(environment ==="freeagent"){
+        let lineItems = []
+        items.map(item=>{
+          let itemData = {
+            catalog_item: item.id,
+            quantity: item.quantity,
+          }
+          lineItems.push(itemData)
+        })
         newRecord = await freeAgentApi.addFARecordWithLineItems(appName, orderForm,`${appName}_catalog_items`, items)
       }else{
         newRecord = await nlightnApi.addRecord(appName, orderForm)

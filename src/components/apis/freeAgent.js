@@ -247,7 +247,7 @@ export const addFARecordWithLineItems = async (appName, formData, lineItemAppNam
     lineItems.map(item=>{
         let lineItemFieldValues = "";
         let l=0;
-        (Object.entries(lineItemFormData).map(([key,val])=>{
+        (Object.entries(item).map(([key,val])=>{
             if(l==0){
                 lineItemFieldValues = `${key}:\"${val}\"`
             }else{
