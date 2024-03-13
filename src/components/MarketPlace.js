@@ -33,6 +33,7 @@ function MarketPlace() {
     facilities:{},
     businessUnits:{},
     countries:{},
+    businesses:{},
     filterCriteria:[],
     filteredItems: [],
     totalAmount:0,
@@ -194,6 +195,30 @@ const getFacilities = async ()=>{
   }));
 }
 
+const getBusinesses = async ()=>{
+  const environment = window.environment
+
+  let appName = ""
+  if(environment =="freeagent"){
+    appName = "custom_app_44"
+  }else{
+    appName = "businesses" 
+  }
+  const data = await crud.getData(appName)
+
+  let fieldSet = new Set()
+  data.map(item=>{
+    fieldSet.add(item.company_name)
+  })
+  let fieldList = Array.from(fieldSet).sort();
+  let result = { data: data, list: fieldList};
+
+  setAppData(prevAppData => ({
+    ...prevAppData,
+    businesses: result
+  }));
+}
+
 const getCatalogItems = async ()=>{
 
   const environment = window.environment
@@ -233,6 +258,7 @@ const getCatalogItems = async ()=>{
         await getBusinessUnits();
         await getFacilities();
         await getCatalogItems();
+        await getBusinesses();
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {
