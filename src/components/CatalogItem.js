@@ -44,18 +44,6 @@ const CatalogItem = (props)=>{
       }
     }
 
-    // const getSupplierName = (supplier)=>{
-    //   const environment = window.environment
-    //   console.log("supplier", supplier)
-    //   console.log(businesses.data)
-    //   if(environment ==="freeagent"){
-    //     let supplierName = businesses.data.find(i=>i.id===supplier).company_name
-    //     return supplierName
-    //   }else{
-    //     return supplier
-    //   }
-    // }
-
  
      const cardDetails=[
           {order: 1, name:"image", type:"image", value: item.image, label:"", color:"rgb(0,0,0)", fontSize:"18px", fontWeight: "bold", section:"header"},
