@@ -44,23 +44,23 @@ const CatalogItem = (props)=>{
       }
     }
 
-    const getSupplierName = (supplier)=>{
-      const environment = window.environment
-      console.log("supplier", supplier)
-      console.log(businesses.data)
-      if(environment ==="freeagent"){
-        let supplierName = businesses.data.find(i=>i.id===supplier).company_name
-        return supplierName
-      }else{
-        return supplier
-      }
-    }
+    // const getSupplierName = (supplier)=>{
+    //   const environment = window.environment
+    //   console.log("supplier", supplier)
+    //   console.log(businesses.data)
+    //   if(environment ==="freeagent"){
+    //     let supplierName = businesses.data.find(i=>i.id===supplier).company_name
+    //     return supplierName
+    //   }else{
+    //     return supplier
+    //   }
+    // }
 
  
      const cardDetails=[
           {order: 1, name:"image", type:"image", value: item.image, label:"", color:"rgb(0,0,0)", fontSize:"18px", fontWeight: "bold", section:"header"},
           {order: 2, name:"item_name", type:"text", value: item.item_name, label:"", color:"rgb(0,0,0)", fontSize:"18px",fontWeight: "bold", section:"header"},
-          {order: 3, name:"supplier", type:"text", value: item.supplier, label: getSupplierName(item.supplier), color:"rgb(0,150,200)", fontSize:"16px", fontWeight: "normal", section:"header"},
+          {order: 3, name:"supplier", type:"text", value: item.supplier, label: "", color:"rgb(0,150,200)", fontSize:"16px", fontWeight: "normal", section:"header"},
           {order: 4, name:"price", type:"text", value: `${countries.length>0 && countries.find(r=>r.currency_name===item.currency).currency_symbol}${Number(item.price).toLocaleString()}`, label:`/${item.unit_of_measure}`, color:"rgb(0,0,0)", fontSize:"14px",fontWeight: "bold", section:"body"},
           {order: 5, name:"savings_persent", type:"text", value: `${(item.savings_percent*100).toFixed(1)}%`, label:"negotiated savings", color:"rgb(0,200,0)", fontSize:"14px", fontWeight: "bold", section:"body"},
           {order: 6, name:"star_rating", type:"text", value: item.star_rating, label:"community rating", color:"rgb(255,200,0)", fontSize:"14px", section:"body"},
