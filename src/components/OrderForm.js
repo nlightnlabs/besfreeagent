@@ -2,6 +2,7 @@ import React, {useRef, useState, useEffect} from "react"
 import MultiInput from "./MultiInput"
 import { UTCToLocalDate } from "./functions/formatValue.js"
 import * as crud from './apis/crud.js'
+import { arrayObjectToString } from "./functions/arrayFunctions.js"
 
 const OrderForm = (props)=>{
 
@@ -55,6 +56,8 @@ const OrderForm = (props)=>{
      
       const environment = window.environment
 
+      console.log("formData",formData)
+
       const allValuesAreEmptyOrNull = Object.values(formData).every(obj => obj === "" || obj === null);
       if(allValuesAreEmptyOrNull){
         alert("Form as not been completed.  Please provide sufficient information")
@@ -71,6 +74,8 @@ const OrderForm = (props)=>{
       let appName = ""
       let orderForm = {}
 
+      console.log("finalFormData", finalFormData)
+
       if(environment === "freeagent"){
         
         appName = "custom_app_15"
@@ -84,7 +89,8 @@ const OrderForm = (props)=>{
           business_units: businessUnits.data.find(record=>record.name===finalFormData.business_unit).id, 
           ship_to_location: facilities.data.find(record=>record.name===finalFormData.ship_to_location).id, 
           need_by: formatDateInput(finalFormData.need_by),
-          notes: finalFormData.notes
+          notes: finalFormData.notes,
+          items: arrayObjectToString(finalFormData.items)
         }
       }else{
 
@@ -109,7 +115,7 @@ const OrderForm = (props)=>{
 
       await crud.addRecord(appName, orderForm)
 
-      alert(`Order has been created and is being reviewed: ${JSON.stringify(finalFormData)}`)
+      alert(`Order has been created and is being reviewed`)
       resetCart()
       setShowOrderForm(false)
     }
