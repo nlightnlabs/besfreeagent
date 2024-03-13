@@ -131,7 +131,6 @@ const RequestIntakeForm = (props) => {
 
 	
 	useEffect(() => {	
-		console.log("Starting Form formData: ",formData)
 		getFormFields();
 	}, [formName])
 

@@ -1,8 +1,6 @@
 import axios from "axios";
-console.log(`Environment: ${process.env.NODE_ENV}`);
 
 export const baseURL = process.env.NODE_ENV==="production" ? "https://nlightnlabs.net" : "http://localhost:3001"
-
 
 export const dbUrl = axios.create({
   baseURL,

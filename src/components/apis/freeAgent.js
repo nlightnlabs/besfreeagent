@@ -1,5 +1,4 @@
 import axios from "axios";
-console.log(`Environment: ${process.env.NODE_ENV}`);
 
 export const baseURL = process.env.NODE_ENV==="production" ? "https://nlightnlabs.net" : "http://localhost:3001"
 
@@ -19,7 +18,7 @@ export const queryFA = async (appName)=>{
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
-        console.log(response);
+   
         const data = response.data.listEntityValues.entity_values;
 
         const result = data.map(record => {
@@ -36,7 +35,6 @@ export const queryFA = async (appName)=>{
             });
             return rowData;
         });
-        console.log("result",result)
 
         return result;
     } catch (error) {
@@ -48,11 +46,9 @@ export const queryFA = async (appName)=>{
 export const getFAValue = async (appName,fieldName,conditionalField,conditionalValue)=>{
     
     const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], filters: [{field_name: \"${conditionalField}\", operator: \"equals\",values:[\"${conditionalValue}\"}]],limit: 1){ entity_values {id, field_values} } }`}
-    console.log(query)
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
-        console.log(response);
 
         const data = response.data.listEntityValues.entity_values;
         const result = data.map(record => {
@@ -69,7 +65,6 @@ export const getFAValue = async (appName,fieldName,conditionalField,conditionalV
             });
             return rowData;
         });
-        console.log("result",result)
 
         return result;
     } catch (error) {
@@ -85,8 +80,7 @@ export const getFAUsers = async ()=>{
     
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
-        console.log(response);
-        const data = response.data.getTeamMembers.agents;
+     
         return data;
     } catch (error) {
         throw new Error("Error fetching data: " + error);
@@ -100,7 +94,7 @@ export const getFAUser = async ()=>{
     
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
-        console.log(response);
+       
         const data = response.data.getTeamMembers.agents;
         return data;
     } catch (error) {
@@ -116,7 +110,7 @@ export const getFAApps = async ()=>{
     
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
-        console.log(response);
+
         const data = response.data.getEntities;
         return data;
     } catch (error) {
@@ -129,11 +123,8 @@ export const getFAApps = async ()=>{
 export const getFAAAppRecords = async (appName) => {
 
     const query = {query: `query{listEntityValues(entity: \"${appName}\", order : [["seq_id","ASC"]]){ entity_values {id, field_values} } }`}
-    // {query: "query{listEntityValues(entity: \"app_system_name_in_freeagent\", limit: 100){ entity_values {id, field_values} } }"}
-
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
-        console.log(response);
 
         const data = response.data.listEntityValues.entity_values;
 
@@ -151,7 +142,6 @@ export const getFAAAppRecords = async (appName) => {
             });
             return rowData;
         });
-        console.log("result",result)
 
         return result;
     } catch (error) {
@@ -168,10 +158,8 @@ export const getFAAAppRecordsSubset = async (appName, fields, filters, order, li
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
-        console.log(response);
 
         const data = response.data.listEntityValues.entity_values;
-        console.log(data)
 
         const result = data.map(record => {
             let rowData = { id: record.id };
@@ -185,7 +173,6 @@ export const getFAAAppRecordsSubset = async (appName, fields, filters, order, li
                 }
                 rowData = { ...rowData, [key]: val };
             });
-            console.log("result",result)
             return rowData;
         });
 
@@ -211,15 +198,13 @@ export const addFARecord = async (appName, formData)=>{
         }
         i = i+1;
     }))
-    console.log(updatedFormData)
 
     const query = {query: `mutation{createEntity(entity: \"${appName}\",field_values: {${updatedFormData}}){entity_value {id, seq_id, field_values}}}`}
-    console.log("free agent query:", query)
+
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
         const data = response.data.createEntity.entity_value;
-        console.log(data)
         return(data)
     } catch (error) {
         throw new Error("Error fetching data: " + error);
@@ -259,15 +244,11 @@ export const addFARecordWithLineItems = async (appName, formData, lineItemAppNam
         children.push(lineItemData)
     })
 
-    console.log("Children to string: ",children.toString())
-
     const query = {query: `upsertCompositeEntity(entity: \"${appName}\",field_values: {${updatedFormData}},children: [${children.toString()}]){entity_value {id, field_values}children{id, field_values}}}`}
-    console.log("free agent new record with line item query:", query)
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
         const data = response.data.upsertCompositeEntity.entity_value;
-        console.log(data)
         return(data)
     } catch (error) {
         throw new Error("Error fetching data: " + error);
@@ -289,16 +270,14 @@ export const updateFARecord = async (appName, recordId, formData) => {
         }
         i = i+1;
     }))
-    console.log(updatedFormData)
 
     const query = {query: `mutation{updateEntity(entity: \"${appName}\", id: \"${recordId}\",field_values: {${updatedFormData}}){entity_value {id, seq_id, field_values}}}`}
-    console.log(query)
+ 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
-        console.log(response);
+     
         let data = response.data.updateEntity.entity_value;
         let updatedRecord = {id: recordId}
-        console.log({...updatedRecord,data})
         return(data)
     } catch (error) {
         throw new Error("Error fetching data: " + error);
@@ -310,10 +289,8 @@ export const updateFARecord = async (appName, recordId, formData) => {
 //Update or delete a record in a Free Agent app
 export const deleteFARecord = async (appName, recordId) => { 
     const query = {query: `mutation{deleteEntity(entity: \"${appName}\", id: \"${recordId}\"){ entity_value {id} }}`}
-    console.log(query)
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
-        console.log(response);
         return response
     } catch (error) {
         throw new Error("Error fetching data: " + error);
@@ -322,17 +299,13 @@ export const deleteFARecord = async (appName, recordId) => {
 
 //Get List
 export const getFAList = async (appName,fieldName)=>{
-    
-    console.log(appName,fieldName)
 
     const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], order : [[\"seq_id\",\"ASC\"]]){ entity_values {id, field_values} } }`}
-    console.log("free agent query:", query)
 
     try{
       const response = await dbUrl.post("/freeAgent/query", query);
       const data = response.data.listEntityValues.entity_values;
-      console.log(`freeAgent list query response for ${fieldName}`,data)
-
+     
        let set = new Set()
         data.map(record => {
             let item = record.field_values[fieldName]
@@ -357,16 +330,12 @@ export const getFAList = async (appName,fieldName)=>{
 //   Get Conditional List
   export const getFAConditionalList = async (appName,fieldName,conditionalField, condition)=>{
 
-    console.log(appName,fieldName,conditionalField,condition)
-
      // query{listEntityValues(entity: \"custom_app_56\", fields: [\"subcategory\"], filters : [{field_name : \"category\", operator : \"equals\", values : [\"Furniture\"]}]){ entity_values {id, field_values} } }"}
     const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: [\"${fieldName}\"], filters : [{field_name : \"${conditionalField}\", operator : \"equals\", values : [\"${condition}\"]}], order : [[\"seq_id\",\"ASC\"]]){ entity_values {id, field_values} } }`}
-    console.log(`free agent conditional query for ${fieldName}:`, query)
 
     try{
         const response = await dbUrl.post("/freeAgent/query", query);
         const data = response.data.listEntityValues.entity_values;
-        console.log("list response",data)
   
          let set = new Set()
           data.map(record => {
@@ -393,7 +362,7 @@ export const getFAList = async (appName,fieldName)=>{
   export const getFAColumnData = async (appName)=>{
 
     const query = {query: `query{getFields(entity: \"${appName}\",show_hidden:${false}){id, name, name_label, main_type, is_required, is_visible, is_unique, default_value, catalog_type_id, reference_field_id, reference_fa_entity_id, reference_fa_entity_name}`}
-    console.log("free agent query:", query)
+    
     try{
       const result = await dbUrl.post("/freeAgent/query", query);
       const data = await result.data
