@@ -113,7 +113,8 @@ const OrderForm = (props)=>{
         console.log(orderForm)
       }
 
-      await crud.addRecord(appName, orderForm)
+      const newRecord = await crud.addRecord(appName, orderForm)
+      console.log("newRecord",newRecord)
 
       alert(`Order has been created and is being reviewed`)
       resetCart()
