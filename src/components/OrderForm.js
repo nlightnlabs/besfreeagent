@@ -114,7 +114,8 @@ const OrderForm = (props)=>{
       }
 
       const newRecord = await crud.addRecord(appName, orderForm)
-      console.log("newRecord",newRecord).then(
+      
+      if(newRecord.id !=null && newRecord.id !=""){
         finalFormData.items.map( async (item)=>{
           if(environment ==="freeagent"){
             let itemFormData = {
@@ -125,7 +126,8 @@ const OrderForm = (props)=>{
             console.log(newLineItem)
           }
         })
-      )
+      }
+        
       
       alert(`Order has been created and is being reviewed`)
       resetCart()
