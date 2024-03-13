@@ -1,8 +1,10 @@
 import React, {useRef, useState, useEffect} from "react"
 import MultiInput from "./MultiInput"
 import { UTCToLocalDate } from "./functions/formatValue.js"
-import * as crud from './apis/crud.js'
+import * as freeAgentApi from './apis/freeAgent.js'
+import * as nlightnApi from './apis/nlightn.js'
 import { arrayObjectToString } from "./functions/arrayFunctions.js"
+import * as crud from './apis/crud.js'
 
 const OrderForm = (props)=>{
 
@@ -123,7 +125,7 @@ const OrderForm = (props)=>{
           }
           lineItems.push(itemData)
         })
-        newRecord = await freeAgentApi.addFARecordWithLineItems(appName, orderForm,`${appName}_catalog_items`, items)
+        newRecord = await freeAgentApi.addFARecordWithLineItems(appName, orderForm,`${appName}_catalog_items`, lineItems)
       }else{
         newRecord = await nlightnApi.addRecord(appName, orderForm)
       }
