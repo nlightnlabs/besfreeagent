@@ -50,7 +50,7 @@ const CatalogItem = (props)=>{
           {order: 2, name:"item_name", type:"text", value: item.item_name, label:"", color:"rgb(0,0,0)", fontSize:"18px",fontWeight: "bold", section:"header"},
           {order: 3, name:"supplier", type:"text", value: item.supplier, label: "", color:"rgb(0,150,200)", fontSize:"16px", fontWeight: "normal", section:"header"},
           {order: 4, name:"price", type:"text", value: `${countries.length>0 && countries.find(r=>r.currency_name===item.currency).currency_symbol}${Number(item.price).toLocaleString()}`, label:`/${item.unit_of_measure}`, color:"rgb(0,0,0)", fontSize:"14px",fontWeight: "bold", section:"body"},
-          {order: 5, name:"savings_persent", type:"text", value: `${(item.savings_percent*100).toFixed(1)}%`, label:"negotiated savings", color:"rgb(0,200,0)", fontSize:"14px", fontWeight: "bold", section:"body"},
+          {order: 5, name:"savings", type:"text", value: item.savings, label:"negotiated savings", color:"rgb(0,200,0)", fontSize:"14px", fontWeight: "bold", section:"body"},
           {order: 6, name:"star_rating", type:"text", value: item.star_rating, label:"community rating", color:"rgb(255,200,0)", fontSize:"14px", section:"body"},
           {order: 7, name:"quantity_in_stock", type:"text", value: item.quantity_in_stock, label:"in stock", color:"rgb(0,0,0)", fontSize:"14px", section:"body"},
           {order: 8, name:"lead_time", type:"text", value: item.lead_time, label:"estimated lead time", color:"rgb(0,0,0)", fontSize:"14px", section:"body"},
