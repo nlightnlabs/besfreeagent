@@ -126,7 +126,12 @@ const OrderForm = (props)=>{
       })
       console.log("lineItems",lineItems)
       
-      orderForm = {...orderForm,...{["items"]:JSON.stringify(lineItems)}}
+
+      if(environment ==="freeagent"){
+        orderForm = {...orderForm,...{["items"]:arrayObjectToString(lineItems)}}
+      }else{
+        orderForm = {...orderForm,...{["items"]:JSON.stringify(lineItems)}}
+      }
       console.log("orderForm",orderForm)
 
       let newRecord ={}
