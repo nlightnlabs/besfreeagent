@@ -16,7 +16,7 @@ export const arrayObjectToString = (arrayObj)=>{
     arrayObj.map((item, index)=>{
       let itemString = ""
       Object.entries(item).map(([key,value],kevalueindex)=>{
-        console.log(value)
+        console.log("value",value)
         let updatedValue = value.replace( /["'"]/g,"\\'").replace( /['"']/g,'\\"')
         let keyValueString = `${key}:${updatedValue}`
         if(kevalueindex ==0){
