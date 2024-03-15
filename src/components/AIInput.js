@@ -1,31 +1,29 @@
 import React, {useState, useEffect} from 'react'
 import * as crud from './apis/crud.js'
+import * as nlightnApi from './apis/nlightn.js'
+
 import "bootstrap/dist/css/bootstrap.min.css"
+import VoiceRecorder from './VoiceRecorder.js'
 import VoiceRecord from './VoiceRecord.js'
-import MultiInput from './MultiInput.js'
 
 const AIInput = () => {
 
     const [prompt, setPrompt] = useState("")
     const [microphoneIcon, setMicrophoneIcon] = useState("")
     const [showVoiceRecorder, setShowVoiceRecorder] = useState(false)
-
     const [transcription, setTranscription] =useState("")
-
-    const translateVoiceToText = async (e)=>{
-        let text = ""
-        return text
-    }
 
     const handleChange = async (e)=>{
         const {name, value} = e.target
         setPrompt(value)
-        setTranscription(value)
     }
 
     useEffect(()=>{
-        const getIcon = async ()=>{
+        setPrompt(transcription)
+    },[transcription])
 
+    useEffect(()=>{
+        const getIcon = async ()=>{
             const environment = window.environment
             let appName = ""
             if(environment ==="freeagent"){
@@ -40,47 +38,39 @@ const AIInput = () => {
         getIcon()
     },[])
 
+
   return (
-    <div className="d-flex flex-column flex-wrap">
-            <div className="d-flex form-floating w-100  m-1">
-                <MultiInput
-                    id="prompt"
-                    name="prompt"
-                    value = {prompt}
-                    onChange={(e)=>handleChange(e)}
-                    label="What do you need?"
-                    placeholder="What do you need?"
-                />
-            </div>
-        <div className="d-flex">
-            <div className="d-flex m-1 align-items-center m-1">
-                <img src={microphoneIcon ? microphoneIcon : null} 
-                style={{height: "30px", width: "30px", cursor: "pointer"}}
-                onClick={(e)=>setShowVoiceRecorder(true)}></img>
+    <div className="d-flex flex-column w-75 align-items-center">
+        
+        <h3 className="mt-5">What do you need?</h3>
+
+        <div className="d-flex w-100 flex-column align-items-center">
+            
+            <textarea name="prompt" 
+                onChange={(e)=>handleChange(e)} 
+                value={prompt} 
+                className="form-control m-1 w-100 mb-3"
+                style={{color: "rgb(0,150,225)", fontSize: "24px", height:"200px", border:"3px solid rgba(200,225,255,0.5)"}}
+                resize ="none"
+            >    
+            </textarea>
+
+            <div className="d-flex p-1 border border-1 rounded-3 shadow-sm m-1" onClick={(e)=>setShowVoiceRecorder(!showVoiceRecorder)}>
+                <img src={microphoneIcon} style={{height: "50px", width: "50px", cursor: "pointer"}}></img>
             </div>
 
             {showVoiceRecorder && 
-            <div className="d-flex w-100 m-1">
-                <VoiceRecord
-                    transcription = {transcription}
-                    setTranscription = {setPrompt}
-                    setShowPanel = {setShowVoiceRecorder}
-                />
-            </div>
-            }
-        </div>
-
-        {/* {showVoiceRecorder && 
-            <FloatingPanel height={300} width={300} displayPanel={setShowVoiceRecorder}>
-                <div className="d-flex bg-white flex-column" style={{height:"100%", width:"100%"}}>
-                    <div className="d-flex w-100 p-1 mb-3 align-items-center">Say what your need</div>
-                    <div className="d-flex p-1" style={{height: "200px", overflowY:"auto", color: "rgb(0,150,225)"}}>
-                        {voicePrompt}
-                    </div>
+                <div className="d-flex justify-content-center w-100">
+                    <VoiceRecord
+                        setTranscription = {setTranscription} 
+                        display={showVoiceRecorder}
+                        setDisplay = {setShowVoiceRecorder}
+                    />
                 </div>
-            </FloatingPanel>
-        } */}
+            }
 
+        </div>
+        
     </div>
   )
 }

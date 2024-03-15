@@ -315,20 +315,22 @@ export const updateActivityLog = async(app, recordId, userEmail, description)=>{
 }
 
 
-export const convertAudioToText = async (audioFile) => {
-  try {
-    const formData = new FormData();
-    formData.append('audio', audioFile);
+export const convertAudioToText = async (audioBlob) => {
 
-    const response = await dbUrl.post('/api/convertAudioToText', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data.transcription;
+  console.log('audioBlob:', audioBlob); // Log audioBlob to check its content
+
+// Create a new FormData object
+const formData = new FormData();
+// Append data to the formData object
+formData.append('file', audioBlob, 'audio.wav');
+
+  try {
+    const response = await dbUrl.post('/openAIWhisper', formData)
+    return response.data.text
   } catch (error) {
-    console.error('Error transcribing audio:', error);
+    console.error('Error sending data to backend:', error);
   }
+ 
 };
 
 

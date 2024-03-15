@@ -80,7 +80,7 @@ export const getFAUsers = async ()=>{
     
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
-     
+        const data = response
         return data;
     } catch (error) {
         throw new Error("Error fetching data: " + error);

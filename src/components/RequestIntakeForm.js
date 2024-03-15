@@ -13,6 +13,7 @@ import { arrayObjectToString } from "./functions/arrayFunctions.js";
 import Attachments from "./Attachments.js";
 import MultiInput from "./MultiInput.js";
 import TableInput from "./TableInput.js";
+import AIInput from "./AIInput.js";
 
 
 const RequestIntakeForm = (props) => {
@@ -102,6 +103,8 @@ const RequestIntakeForm = (props) => {
 	const [uiRefreshTriggers, setUIRefreshTriggers] = useState({})
 
 	const [attachments, setAttachments] = useState([])
+
+	const [transcription, setTranscription] = useState("")
 
 
 	useEffect(()=>{
@@ -237,9 +240,8 @@ const RequestIntakeForm = (props) => {
 			  value = await crud.getValue(tableName, fieldName, conditionalField, conditionalValue);
 			}
 	
-			console.log()
 			updatedFormData = { ...updatedFormData, ...{ [item.ui_name]: value } };
-
+			
 		  } catch (error) {
 			console.log(error);
 			value = formData[item.ui_name];
@@ -247,13 +249,14 @@ const RequestIntakeForm = (props) => {
 		}));
 	  
 		// Run after all async operations in map function are completed
+		console.log("formData",updatedFormData)
 		setInitialFormData(updatedFormData);
 		setFormData(updatedFormData);
-		getDropDownLists(formFields,formInputElements);
+		getDropDownLists(formFields,formInputElements,formData);
 	  };
 	
 	
-    const getDropDownLists = async (formFields,formInputElements) => {
+    const getDropDownLists = async (formFields,formInputElements,formData) => {
       
       if (formInputElements.length > 0) {
         
@@ -294,11 +297,16 @@ const RequestIntakeForm = (props) => {
                 }
     
               }else{
+				  
                   let conditionalValue = item.ui_reference_data_conditional_value
 				  console.log("conditionalValue",conditionalValue)
 
+				  console.log(item.ui_reference_data_conditional_value)
+
                   if(conditionalValue !=null && conditionalValue !=""){
-                    if(conditionalValue.search(".")>0){
+					console.log(conditionalValue)
+
+                    if(conditionalValue.includes(".")){
                       conditionalValue = eval(conditionalValue)
 					  console.log("conditionalValue",conditionalValue)
                     }else{
@@ -315,10 +323,10 @@ const RequestIntakeForm = (props) => {
                     if((item.ui_reference_data_table).search("()=>")>0){
                       dataTable = eval(item.ui_reference_data_table)()
                     }
+
           
-                    if(item.ui_reference_data_conditional_field !=null && item.ui_reference_data_conditional_field !="" && 
-					conditionalValue !=null && conditionalValue !=""){
-                     
+                    if(item.ui_reference_data_conditional_field !=null && item.ui_reference_data_conditional_field !="" && conditionalValue !=null && conditionalValue !=""){
+					
                       const response = await crud.getConditionalList(
                         dataTable,
                         item.ui_reference_data_field,
@@ -361,14 +369,14 @@ const RequestIntakeForm = (props) => {
               };
             }
         }))
-		console.log("tempDropdownLists",tempDropdownLists)
+		// console.log("tempDropdownLists",tempDropdownLists)
         setDropdownLists(tempDropdownLists); 
       }
     };
 
 
     const getSections = (formFields)=>{
-      console.log("getting sections with formFields for", formName)
+    //   console.log("getting sections with formFields for", formName)
       let sectionSet = new Set()
       formFields.map(items=>{
         sectionSet.add(items.ui_form_section)
@@ -380,13 +388,13 @@ const RequestIntakeForm = (props) => {
         sectionList.push({name: item, visible: visible})
       })
 
-	  console.log("sectionList: ",sectionList)
+	//   console.log("sectionList: ",sectionList)
       setSections(sectionList)
 	  setRenderPage(true)
     }
 
     useEffect(()=>{
-		console.log(uiRefreshTriggers)
+	//   console.log(uiRefreshTriggers)
       calculateForm(formElements, formInputElements, formData);
     },[uiRefreshTriggers])
 
@@ -395,7 +403,7 @@ const RequestIntakeForm = (props) => {
 	const handleChange = (e) => {
 		const {name, value} = e.target
 		let updatedFormData = { ...formData, ...{[name]:value}};
-		console.log(updatedFormData)
+		// console.log(updatedFormData)
 		setFormData(updatedFormData)
 
 		calculateForm(formElements,formInputElements, updatedFormData);
@@ -404,9 +412,6 @@ const RequestIntakeForm = (props) => {
 
 	// Temporarily hold any attachments until they need submittal later
 	const prepareAttachments = (e)=>{
-		console.log(e)
-        console.log(e.name)
-        console.log(e.fileData)
         const fieldName = e.name
         const fileData = e.fileData
         setAttachments([...attachments,{ui_name: fieldName, fileData: fileData}]);
@@ -420,7 +425,7 @@ const RequestIntakeForm = (props) => {
     
       await Promise.all(attachments.map(async (item, index) => {
 
-		console.log(attachments)
+		// console.log(attachments)
         let updatedFileData = item.fileData;
     
         await Promise.all(
@@ -433,7 +438,7 @@ const RequestIntakeForm = (props) => {
     
             let updatedFile = {...file, ...{["url"]: url}};
             delete updatedFile.data
-            console.log(updatedFile)
+            // console.log(updatedFile)
             updatedFileData[fileIndex] = updatedFile;
     
           }))
@@ -441,7 +446,7 @@ const RequestIntakeForm = (props) => {
 		updatedAttachments[index] = updatedFileData
 
 		formDataWithAttachments = {...formData,...{[item.ui_name]:updatedFileData}};
-		console.log("formDataWithAttachments",formDataWithAttachments)
+		// console.log("formDataWithAttachments",formDataWithAttachments)
       }));
     
       return formDataWithAttachments
@@ -453,13 +458,13 @@ const RequestIntakeForm = (props) => {
       if(JSON.stringify(initialData) !== JSON.stringify(formData)){
 
         let finalFormData = formData;
-		console.log("finalFormData",finalFormData)
+		// console.log("finalFormData",finalFormData)
 
         //Get urls for any attachments and upload attachments to the file server
         if(attachments.length>0){
 			finalFormData = await getAttachments();
         }
-		console.log("finalFormData with attachments",finalFormData)
+		// console.log("finalFormData with attachments",finalFormData)
         
 		let recordToSendToDb = finalFormData
 
@@ -481,7 +486,7 @@ const RequestIntakeForm = (props) => {
 		recordToSendToDb["status"] = "Open"
 		recordToSendToDb["stage"] = "Reviewing"
 
-        console.log("recordToSendToDb",recordToSendToDb)
+        // console.log("recordToSendToDb",recordToSendToDb)
 
         //update database table with updated record data
 		  let appName = ""
@@ -529,9 +534,9 @@ const RequestIntakeForm = (props) => {
 		  	}
 		
 			console.log(appName)
-			console.log("recordToSendToDb",recordToSendToDb)
+			// console.log("recordToSendToDb",recordToSendToDb)
 			const newRecordInDb= await crud.addRecord(appName,recordToSendToDb)
-			console.log("newRecordInDb",newRecordInDb)
+			// console.log("newRecordInDb",newRecordInDb)
 			
 			let successfullyAdded = false
 			if(newRecordInDb.id !== null && newRecordInDb.id !== ""){
@@ -543,7 +548,7 @@ const RequestIntakeForm = (props) => {
 				if(environment !="freeagent"){
 					// Update activity log
 					const activityUpdateResponse = await nlightnApi.updateActivityLog("requests", newRecordInDb.id, user.email, "Request submitted")
-					console.log(activityUpdateResponse)
+					// console.log(activityUpdateResponse)
 				}
 				}
 				else{
@@ -560,7 +565,7 @@ const RequestIntakeForm = (props) => {
 	// Saves form data and navigates to next page, prior page, or final page
 	const handleSubmit =async (e, nextPage)=>{
 		
-		console.log(formData)
+		// console.log(formData)
 		e.preventDefault();
 
 		if(lastPage){
@@ -569,6 +574,7 @@ const RequestIntakeForm = (props) => {
 		}else{
 			setFormName(nextPage)
 		}
+		
 	}
 		
 	
@@ -635,15 +641,19 @@ const RequestIntakeForm = (props) => {
 			</div>
 
 			<div className="d-flex" style={{height: "100%", width: "75%"}}>
-
-				<form className= "w-100" name='form' id="form" onSubmit={handleSubmit} noValidate>
+				
+				{/* <form className= "w-100" name='form' id="form" noValidate> */}
 			
 					{renderPage && (
 						<div
 							className="d-flex flex-column bg-white animate__animated fade-in"
 							style={{ height: "100%", width: "100%"}}
 						>
-						
+						<div className="d-flex justify-content-center mb-3">
+							<AIInput
+								setTranscription = {setTranscription}
+							/>
+						</div>
 						{sections.map((section, sectionIndex) =>
 							section.name == "navigation" && section.visible ? 
 								<div key={sectionIndex} className="d-flex justify-content-end mb-3 p-3">
@@ -908,7 +918,7 @@ const RequestIntakeForm = (props) => {
 					</div>
 						
 					)}
-				</form>
+				{/* </form> */}
 			</div>			
 
 		</div>
