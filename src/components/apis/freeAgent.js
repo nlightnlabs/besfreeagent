@@ -80,7 +80,8 @@ export const getFAUsers = async ()=>{
     
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
-        const data = response.getTeamMembers.agents
+        const data = response.data.getTeamMembers.agents
+        console.log(data);
         return data;
     } catch (error) {
         throw new Error("Error fetching data: " + error);
@@ -96,7 +97,7 @@ export const getFAUser = async ()=>{
         const response = await dbUrl.post("/freeAgent/query",query);
        
         const data = response.data.getUserInfo;
-        console.log(data)
+        console.log(data);
         return data;
     } catch (error) {
         throw new Error("Error fetching data: " + error);
