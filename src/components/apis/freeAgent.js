@@ -95,7 +95,7 @@ export const getFAUser = async ()=>{
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
        
-        const data = response.data.getTeamMembers.agents;
+        const data = response.data.getUserInfo;
         return data;
     } catch (error) {
         throw new Error("Error fetching data: " + error);
