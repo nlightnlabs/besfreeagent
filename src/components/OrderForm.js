@@ -34,6 +34,12 @@ const OrderForm = (props)=>{
       {id: "notes", name:"notes", label: "Provide any additional notes", placeholder:"Provide any additional notes",type:"textarea", value: "", list: null}
     ])
 
+    useEffect(()=>{
+      console.log("appData",appData)
+      console.log("user", user)
+      console.log("users",users)
+    },[])
+
     const [formData, setFormData] = useState({})
     useEffect(()=>{
       {formElements.map((formItem,index) => (

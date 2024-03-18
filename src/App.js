@@ -204,6 +204,7 @@ function App() {
     })
     let fieldList = Array.from(fieldSet).sort();
     let result = { data: users, list: fieldList};
+    setUsers(users)
 
     setAppData(prevAppData => ({
       ...prevAppData,
