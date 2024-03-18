@@ -191,8 +191,10 @@ function App() {
 
     const response = await crud.getUserData()
     const users = response.users
+
+    let currentUserFullname = "Amy Williams"
     
-    const user = response.user
+    const user = users.find(i=>i.full_name==="Amy Williams")
     setUser(user)
 
     console.log(user)

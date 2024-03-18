@@ -7,6 +7,8 @@ import StatusListBox from './StatusListBox.js';
 import RequestIntakeHome from './RequestIntakeHome.js';
 import Apps from './Apps.js';
 import * as crud from "./apis/crud.js"
+import Spinner from './Spinner.js';
+import FloatingPanel from './FloatingPanel.js';
 
 
 const Home = (props) => {
@@ -55,15 +57,11 @@ const Home = (props) => {
 }= useContext(Context)
 
 
-  useEffect(()=>{
-      getAnnouncements()
-      getRequests()
-},[])
-
   const [announcements, setAnnouncements] = useState([])
   const [requests, setRequests] = useState([])
   const [searchTerms, setSearchTerms] = useState("")
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
+  const [loading, setLoading] = useState(true)
   
   const getAnnouncements = async (req, res)=>{
     const environment = window.environment
@@ -101,6 +99,32 @@ const Home = (props) => {
         setRequests([])
     }
   }
+
+
+  useEffect(()=>{
+
+    const environment = window.environment 
+
+    const loadData = async () => {
+      try {
+        await getAnnouncements();
+        getRequests();
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    setLoading(true);
+    if(environment !="freeagent"){
+      loadData()
+    }else{
+      setTimeout(()=>{
+        loadData()
+      },100)
+    }
+},[])
 
   const handleSelectedApp =(e,app)=>{
     const environment = window.environment
@@ -173,7 +197,9 @@ const Home = (props) => {
   const [bannerWidth, setBannerWidth] = useState("100%")
   const [contentWidth, setContentWidth] = useState("100%")
   useEffect(()=>{
-    setBannerWidth(bannerRef.current.clientWidth)
+    if(bannerRef.current){
+      setBannerWidth(bannerRef.current.clientWidth)
+    }
   },[bannerRef, announcements])
 
   useEffect(()=>{
@@ -230,10 +256,11 @@ const Home = (props) => {
  
 return(
     <div className={pageClass} style={{height:"100vh", width: "100vw", backgroundColor: "white"}}>
-        
+      
     {/* News Banner */}
     
-    <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
+    {!loading && 
+      <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
       <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
       style={{ height: "auto", width: "100%", overflow: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
           {announcements.length > 0 && (
@@ -246,9 +273,11 @@ return(
               />
           )}
       </div>
-  </div>
+    </div>
+    }
 
     {/* Content section */}
+    {!loading && 
     <div className="d-flex justify-content-center" style={{height: "80%"}}>
     
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:"90%", minHeight:"300px"}}>
@@ -284,12 +313,17 @@ return(
               />
               </div>
           </div>
+          </div>
+          </div>
+        }
 
+      {loading && 
+        <FloatingPanel>
+          <Spinner/>
+        </FloatingPanel>
 
-      </div>
-        
+      }
     </div>
-</div>
 )
 }
 

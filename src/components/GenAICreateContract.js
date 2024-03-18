@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { askGPT, getList} from './apis/nlightn.js'
-import {toProperCase} from './functions/formatValue.js'
+import {UTCToLocalDate, toProperCase} from './functions/formatValue.js'
 import Spinner from './Spinner.js'
 import {Context} from './Context.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -62,16 +62,16 @@ const prepareFormData = async ()=>{
     setBusinesses(business_names)
 
     let form_data = [
-        {id: 1, section: "contract_details", name: "type", label: "What type of contract is this?", list: await contract_types, value:"", type:"text"},
-        {id: 2, section: "contract_details", name: "term_length", label: "How long is the contract for?", list: null, value:"",  type:"text"},
-        {id: 3, section: "contract_details", name: "effective_date", label: "What is the effective start date?", list: null, value:"",  type:"date"},
+        {id: 1, section: "contract_details", name: "type", label: "What type of contract is this?", list: await contract_types, value:contractTypes[5], type:"text"},
+        {id: 2, section: "contract_details", name: "term_length", label: "How long is the contract for?", list: null, value:"2 years",  type:"text"},
+        {id: 3, section: "contract_details", name: "effective_date", label: "What is the effective start date?", list: null, value: UTCToLocalDate(new Date()),  type:"date"},
         {id: 4, section: "contract_details", name: "contract_description_terms_and_notes", label: "Description about the terms and notes", list: null, value:"",  type:"textarea"},
         {id: 5, section: "counter_party_info", name: "counter_party_company_name", label: "Company name to be on contract", list: business_names, value:"",  type:"text"},
         {id: 6, section: "counter_party_info", name: "counter_party_representative_name", label: "Name of contract owner at the counter party", list: null, value:"", type:"text"},
         {id: 7, section: "counter_party_info", name: "counter_party_representative_title", label: "Title of contract at the counter party", list: null, value:"", type:"text"},
         {id: 8, section: "my_company_info", name: "my_company_name", label: "Company name to be on contract", list: null, value: user.company_name,  type:"text"},
-        {id: 9, section: "my_company_info", name: "my_company_representative_name", label: "Name of contract owner", list: null, value:user.full_name, type:"text"},
-        {id: 10, section: "my_company_info", name: "my_company_representative_title", label: "Title of the contract owner", list: null, value:user.job_title, type:"text"},
+        {id: 9, section: "my_company_info", name: "my_company_representative_name", label: "Name of contract owner", list: null, value: user.full_name, type:"text"},
+        {id: 10, section: "my_company_info", name: "my_company_representative_title", label: "Title of the contract owner", list: null, value: user.job_title, type:"text"},
       ]
       setFormData(form_data)
 
@@ -144,7 +144,7 @@ const handleInputChange = (e)=>{
             {/* Form Input */}
             <div className="d-flex flex-column" style={{height: 500, overflowY:"auto"}}>
                 {sections.map((section,index)=>(
-                    <div className="d-flex flex-column p-1">
+                    <div key={index} className="d-flex flex-column p-1">
                         {toProperCase(section.replaceAll("_"," "))}
                     {
                     formData && formData.map((item,index)=>(
