@@ -2,7 +2,7 @@ import React, {useState, useContext, useEffect, useRef} from 'react';
 import {Context } from './Context.js';
 import "bootstrap/dist/css/bootstrap.min.css"
 import Table from './Table.js';
-import { getTable, getRecords } from './apis/axios.js';
+import { getTable, getRecords } from './apis/nlightn.js';
 import { toProperCase } from './functions/formatValue.js';
 import ValueChart from './ValueChart.js'
 import ParetoChart from './ParetoChart.js';

@@ -107,6 +107,7 @@ const Home = (props) => {
     const environment = window.environment
     
     const parentId = e.currentTarget.parentElement.id; 
+    console.log("parentId",parentId)
     setSelectedApp(parentId)
     
     if(environment == "freeagent"){
