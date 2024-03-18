@@ -33,7 +33,7 @@ const AIInput = (props) => {
             }else{
                 appName = "icons"
             }
-            const iconDataResponse = await crud.getData("icons")
+            const iconDataResponse = await crud.getData(appName)
             console.log(iconDataResponse)
             setMicrophoneIcon(iconDataResponse.find(i=>i.name==="microphone").image)
         }
