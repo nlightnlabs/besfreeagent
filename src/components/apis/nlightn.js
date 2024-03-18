@@ -202,12 +202,8 @@ export const askGPT = async (prompt)=>{
 
   console.log(prompt)
 
-  const params = {
-    prompt: prompt
-  }
-
   try{
-    const response = await dbUrl.post("/openai/gpt/ask",{params})
+    const response = await dbUrl.post("/openai/gpt/ask",{prompt})
     return (response.data)
   }catch(error){
     // console.log(error)
@@ -230,14 +226,10 @@ export const gptClassify = async (text, list)=>{
 }
 
 //Generate Image
-export const generateImage = async (req)=>{
-
-  const params = {
-    prompt: req
-  }
+export const generateImage = async (prompt)=>{
 
   try{
-    const result = await dbUrl.post("/openai/dalle/image",{params})
+    const result = await dbUrl.post("/openai/dalle/image",{prompt})
     // console.log(result)
     return (result.data[0].url)
   }catch(error){
@@ -246,18 +238,12 @@ export const generateImage = async (req)=>{
 }
 
 //Scan Document
-export const scanInvoice = async ({args})=>{
+export const scanInvoice = async (documentText, record)=>{
   
-  const {documentText, record} = args
-
   const prompt = `The following is an invoice received from a supplier: ${documentText}. Fill in the values in this javascript object: ${JSON.stringify(record)} based on the information in the invoice. Leave a value blank if it can not be determined based on the invoice document received. Return response as javascript object. Be sure to return a properly structured json object with closed brackets and array sub elements if needed.`
 
-  const params = {
-    prompt: prompt
-  }
-
   try{
-    const result = await dbUrl.post("/openai/gpt",{params})
+    const result = await dbUrl.post("/openai/gpt",{prompt})
     return (JSON.parse(result.data))
   }catch(error){
     // console.log(error)
