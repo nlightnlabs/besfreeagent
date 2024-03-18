@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext, useRef} from 'react'
 import {Context} from "./Context"
-import { scanInvoice } from './apis/axios'
+import { scanInvoice } from './apis/nlightn'
 import {toProperCase} from './functions/formatValue'
 import { Document, Page, pdfjs } from 'react-pdf';
 import MultiInput from './MultiInput';
@@ -197,13 +197,13 @@ const GenAIScanInvoice = (props) => {
                     <img src={`${appIcons}/trash_icon.png`} style={buttonIconStyle} onClick={handleRefresh}></img>
                 </div>
                 <div className="d-flex flex-column p-3" style={{height: "90%", overflowY:"auto"}}>
-                {Object.entries(formData).map(([key,value])=>(
+                {Object.entries(formData).map(([key,value])=>( 
                     <MultiInput
                         key={key}
                         id={key}
                         name={key}
                         label={toProperCase(key.replaceAll("_"," "))}
-                        value={value}
+                        value={typeof value ==="string" || typeof value ==="number"? value : JSON.stringify(value)}
                         onChange={handleInputChange}
                         marginBottom={"10px"}
                     />

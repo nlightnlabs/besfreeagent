@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { askGPT } from './apis/axios.js'
+import { askGPT } from './apis/nlightn.js'
 import {appIcons, generalIcons} from './apis/icons.js'
 import Spinner from './Spinner.js'
 
@@ -16,8 +16,8 @@ const GenAIAskQuestion = () => {
 
     try{
         const result = await askGPT(prompt)
-        console.log(result.data)
-        setResponse(result.data)
+        console.log(result)
+        setResponse(result)
         let dialogue = {prompt:prompt,response:result.data}
         setThread([...thread,dialogue])
         setWaiting(false)

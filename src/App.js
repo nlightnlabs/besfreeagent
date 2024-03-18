@@ -118,13 +118,6 @@ function App() {
     overflow: "hidden"
   }
 
-  const getUserData = async ()=>{
-    const response = await crud.getUserData()
-    setUser(response.user)
-    setUsers(response.users)
-    setAppData(prev=>({...prev,user: response.user, users: response.users}))
-  }
-
 
 
   const getAppIcons = async (req, res)=>{
@@ -170,6 +163,138 @@ function App() {
     }
   }
 
+  const getEmployeeData = async () => { 
+    const environment = window.environment
+    let appName = ""
+    if(environment =="freeagent"){
+      appName = "custom_app_35"
+    }else{
+      appName = "users" 
+    }
+    const data = await crud.getData(appName)
+  
+    let fieldSet = new Set()
+    data.map(item=>{
+      fieldSet.add(item.full_name)
+    })
+    let fieldList = Array.from(fieldSet).sort();
+    let result = { data: data, list: fieldList};
+  
+    setAppData(prevAppData => ({
+      ...prevAppData,
+      employees: result
+    }));
+  };
+
+
+  const getUserData = async () => {
+
+    let fieldSet = new Set()
+    users.map(item=>{
+      fieldSet.add(item.full_name)
+    })
+    let fieldList = Array.from(fieldSet).sort();
+    let result = { data: users, list: fieldList};
+ 
+    setAppData(prevAppData => ({
+      ...prevAppData,
+      user: user,
+      users: result
+    }));
+};
+
+const getCurrencies = async ()=>{
+  const environment = window.environment
+
+  let appName = ""
+  if(environment =="freeagent"){
+    appName = "custom_app_10"
+  }else{
+    appName = "countries" 
+  }
+  const data = await crud.getData(appName)
+
+  setAppData(prevAppData => ({
+    ...prevAppData,
+    countries: data
+  }));
+}
+
+const getBusinessUnits = async ()=>{
+
+  const environment = window.environment
+
+  let appName = ""
+  if(environment =="freeagent"){
+    appName = "business_unit"
+  }else{
+    appName = "business_units" 
+  }
+  const data = await crud.getData(appName)
+
+  let fieldSet = new Set()
+  data.map(item=>{
+    fieldSet.add(item.name)
+  })
+  let fieldList = Array.from(fieldSet).sort();
+  let result = { data: data, list: fieldList};
+
+  setAppData(prevAppData => ({
+    ...prevAppData,
+    businessUnits: result
+  }));
+
+}
+    
+const getFacilities = async ()=>{
+  const environment = window.environment
+
+  let appName = ""
+  if(environment =="freeagent"){
+    appName = "custom_app_51"
+  }else{
+    appName = "facilities" 
+  }
+  const data = await crud.getData(appName)
+
+  let fieldSet = new Set()
+  data.map(item=>{
+    fieldSet.add(item.name)
+  })
+  let fieldList = Array.from(fieldSet).sort();
+  let result = { data: data, list: fieldList};
+
+  setAppData(prevAppData => ({
+    ...prevAppData,
+    facilities: result
+  }));
+}
+
+const getBusinesses = async ()=>{
+  const environment = window.environment
+
+  let appName = ""
+  if(environment =="freeagent"){
+    appName = "custom_app_44"
+  }else{
+    appName = "businesses" 
+  }
+  const data = await crud.getData(appName)
+
+  let fieldSet = new Set()
+  data.map(item=>{
+    fieldSet.add(item.company_name)
+  })
+  let fieldList = Array.from(fieldSet).sort();
+  let result = { data: data, list: fieldList};
+
+  setAppData(prevAppData => ({
+    ...prevAppData,
+    businesses: result
+  }));
+}
+
+
   const getPageData = async()=>{
     setPages(pageData)
   }
@@ -180,6 +305,11 @@ function App() {
         await getAppIcons()
         await getApps()
         await getPageData()
+        getEmployeeData()
+        getBusinesses()
+        getBusinessUnits()
+        getFacilities()
+        getCurrencies()
         setDisplayPage(true)
     },500)
 },[])

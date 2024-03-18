@@ -75,7 +75,6 @@ const Home = (props) => {
     }
     try{
       const response = await crud.getData(appName)
-    
         setAnnouncements(response)
         setHlightedAnnouncement(response[0]);
     }catch(error){
@@ -113,7 +112,7 @@ const Home = (props) => {
     if(environment == "freeagent"){
       
       if(parentId =="gen_ai"){
-        const nextPage = app.default_component
+        const nextPage = app.home_page_link
         setPage(pages.filter(x=>x.name===nextPage)[0])
         setPageList([...pageList,nextPage])
         setPageName(nextPage)

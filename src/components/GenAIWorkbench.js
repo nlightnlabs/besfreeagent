@@ -46,21 +46,21 @@ const GenAIWorkbench = (props) => {
             <div style={titleStyle}>GenAI Workbench</div>
         </div>
         
-        <div className="d-flex" style={{width: "100%", height: "100%", overflow:"hidden", backgroundImage:"linear-gradient(180deg, white, rgba(0,200,0,0.25),rgba(0,0,220,0.25), rgba(200,0,220,0.25)"}}>
+        <div className="d-flex" style={{width: "100%", height: "100%", overflow:"hidden", backgroundImage:"linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0),rgba(0,0,0,0), rgba(0,0,0,0)"}}>
             <div 
                 className="d-flex flex-column p-3" 
                 style={{width: 250, height: "100%", backgroundColor: "rgba(255,255,255,0.5)"}}
             >
-                <button id="askButton" className="btn btn-outline-success mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Ask Question")}>Ask Question</button>
-                <button id="summarizeDocumentButton" className="btn btn-outline-success mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Summarize Document")}>Summarize Document</button>
-                <button id="generateImageButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Generate Image")}>Generate Image</button>
-                <button id="scanInvoiceButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Scan Invoice")}>Scan Invoice</button>
-                <button id="generateImageButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Contract")}>Create Contract</button>
-                <button id="createSalesPitchButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Sales Pitch")}>Create Sales Pitch</button>
-                <button id="analyzeSpendButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Analyze Spend")}>Analyze Spend</button>
-                <button id="prepareBudgetButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Budget")}>Prepare Budget</button>
-                <button id="prepareSourcingEventButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Sourcing Event")}>Prepare Sourcing Event</button>
-                <button id="convertImageButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Convert Image")}>Convert Image</button>
+                <button id="askButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Ask Question")}>Ask Question</button>
+                <button id="summarizeDocumentButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Summarize Document")}>Summarize Document</button>
+                <button id="generateImageButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Generate Image")}>Generate Image</button>
+                <button id="scanInvoiceButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Scan Invoice")}>Scan Invoice</button>
+                <button id="generateImageButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Contract")}>Create Contract</button>
+                <button id="createSalesPitchButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Sales Pitch")}>Create Sales Pitch</button>
+                <button id="analyzeSpendButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Analyze Spend")}>Analyze Spend</button>
+                <button id="prepareBudgetButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Budget")}>Prepare Budget</button>
+                <button id="prepareSourcingEventButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Sourcing Event")}>Prepare Sourcing Event</button>
+                <button id="convertImageButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Convert Image")}>Convert Image</button>
             </div>
             
             <div className="d-flex w-100 flex-column">

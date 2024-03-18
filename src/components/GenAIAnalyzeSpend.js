@@ -63,6 +63,38 @@ const GenAIAnalyzeSpend = () => {
     setShowPullInternalDataWindow(true)
   }
 
+  const [formData, setFormData] = useState({})
+  const handleInputChange = (e)=>{
+    const {name,value} = e.target
+    setFormData({...FormData,...{[name]:value}})
+  }
+
+  const handleFetchData = async (e)=>{
+    const url = formData.url;
+    const headers = formData.headers; // Changed from `const header = formData.headers` to `const headers = formData.headers`
+    const body = formData.body;
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: headers, // Changed from `headers: header` to `headers: headers`
+        body: body
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json(); // Assuming the response is JSON, use response.json() to parse it
+
+      setUploadedData(data);
+      setShowUploadDataWindow(true);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      alert("Unable to fetch data. Please review information provided.");
+    }
+  }
+
   const modalStyle={
     position: "fixed", 
     top: '50%',
@@ -161,13 +193,13 @@ const GenAIAnalyzeSpend = () => {
          </div>
 
          <div className="d-flex justify-content-end m-3">
-           <button className="btn btn-success">Submit</button>
+           <button className="btn btn-primary" onClick={(e)=>handleFetchData(e)}>Submit</button>
          </div>
 
          <div className="d-flex bg-light flex-column p-3 w-100 h-100">
-            <MultiInput type="input" label="Enter the url" placeholder="Enter the url"/>
-            <MultiInput type="textarea" label="Enter header parameters" placeholder="Enter header information"/>
-            <MultiInput type="textarea" label="Enter body parameters" placeholder="Enter body parameters"/>
+            <MultiInput type="input" name="url" onChange={(e)=>handleInputChange(e)} label="Enter the url" placeholder="Enter the url"/>
+            <MultiInput type="textarea" name= "header" onChange={(e)=>handleInputChange(e)} label="Enter header parameters" placeholder="Enter header information"/>
+            <MultiInput type="textarea" name="body" onChange={(e)=>handleInputChange(e)} label="Enter body parameters" placeholder="Enter body parameters"/>
          </div>
        </div>
       }

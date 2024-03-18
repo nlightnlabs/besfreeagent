@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { generateImage } from './apis/axios'
+import { generateImage } from './apis/nlightn'
 import Draggable from 'react-draggable'
 import Spinner from './Spinner'
 

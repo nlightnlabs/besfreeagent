@@ -41,6 +41,7 @@ export const getData = async (appName) => {
         return response
     }else{
         response = await nlightnApi.getTable(appName)
+        // console.log(response)
         return response.data
     }
 };

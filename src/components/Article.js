@@ -1,5 +1,5 @@
 
-import { getRecord } from './apis/axios.js'
+import { getRecord } from './apis/nlightn.js'
 import React, {useState, useContext, useEffect, useRef} from 'react'
 import {Context} from "./Context.js"
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -91,7 +91,7 @@ const Article = () => {
         
         <div className="d-flex justify-content-center">
             <div className="d-flex flex-column w-75 w-sm-100">
-                <img src={article.image_url} style={imageStyle}></img>
+                <img src={article.cover_image} style={imageStyle}></img>
                 <div className="mb-5">
                     <div style={headlineStyle}>{article.headline}</div>
                     <div style={authorStyle}>Posted by: <span style={{color: "#5B9BD5", fontWeight: "bold"}}>{article.author}, {author.job_title}</span></div>

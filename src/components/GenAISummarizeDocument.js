@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { askGPT } from './apis/axios'
-import axios from 'axios'
+import { askGPT } from './apis/nlightn'
 import Spinner from './Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
@@ -32,8 +31,8 @@ const GenAISummarizeDocument = () => {
     const prompt = `please summarize this text in less than 300 characters: ${documentText}`
     
     try{
-      const response = await axios.post(`http://localhost:3001/gpt`,{prompt})
-      const result = await response.data
+      const response = await askGPT.post({prompt})
+      const result = await response
       console.log(result)
       setSummary(result)
     }catch(error){
@@ -85,8 +84,8 @@ const handleSummarize = async(e)=>{
     let prompt = `Summarize the following text from a document in less than ${characterLimit} characters: ${pdfText}`
     try{
         const result = await askGPT(prompt)
-        console.log(result.data)
-        setSummary(result.data)
+        console.log(result)
+        setSummary(result)
         setWaiting(false)
     }catch(error){
         console.log(error)
@@ -144,8 +143,8 @@ const handlePageChange = (e)=>{
 
              {/* Character Limit */}
              <div className="mb-3 row align-items-center">
-              <label htmlFor="character_limit" className="ms-1 col-sm-2 col-form-label">Character limit:</label>
-              <div className="col-sm-2">
+              <label htmlFor="character_limit" className="ms-1 col-sm-3 col-form-label">Character limit:</label>
+              <div className="col-sm-3">
                 <input
                   id="character_limit"
                   name="character_limit"
@@ -161,7 +160,7 @@ const handlePageChange = (e)=>{
             {/* Initate summary */}
             <div className="d-flex justify-content-center mt-1" style={{width: "100%"}}>
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button id="askButton" className="btn btn-primary" onClick={handleSummarize}>Summarize</button>
+                    <button id="askButton" className="btn btn-primary" onClick={(e)=>handleSummarize(e)}>Summarize</button>
                 </div>
             </div>
           </form>
@@ -191,7 +190,7 @@ const handlePageChange = (e)=>{
        {/* Summary */}
        {file && summary.length>0 && (
         <div className="d-flex flex-column p-3 w-50 animate__animated animate__fadeIn aniamte__duration-0.5s">
-            <div className="d-flex flex-column p-3 border rounded rounded-3" 
+            <div className="d-flex flex-column p-3 bg-light border rounded rounded-3 shadow" 
             style={{maxHeight: "500px", backgroundColor: "rgba(255,255,255,0.75"}}>
                 <h5>Summary: </h5>
                 <textarea rows={20} className = "form-control"  readonly>{summary}</textarea>

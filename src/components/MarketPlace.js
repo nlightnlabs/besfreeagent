@@ -17,34 +17,64 @@ function MarketPlace() {
     setUser,
     users,
     setUsers,
+    userLoggedIn,
+    setUserLoggedIn,
     appIcons,
     setAppIcons,
+    apps,
+    setApps,
+    selectedApp,
+    setSelectedApp,
+    page,
+    setPage,
+    pages,
+    setPages,
     pageName,
     setPageName,
-    apps,
-    setApps
+    requestType,
+    setRequestType,
+    appData,
+    setAppData,
+    attachments,
+    setAttachments,
+    pageList,
+    setPageList,
+    requestTypes,
+    setRequestTypes,
+    initialFormData,
+    setInitialFormData,
+    tableName,
+    setTableName,
+    tables,
+    setTables,
+    currency,
+    setCurrency,
+    language,
+    setLanguage,
+    currencySymbol,
+    setCurrencySymbol
   } = useContext(Context)
 
-  const [appData, setAppData] = useState({
-    user:user,
-    users:{},
-    employees:{},
-    icons: appIcons,
-    facilities:{},
-    businessUnits:{},
-    countries:{},
-    businesses:{},
-    filterCriteria:[],
-    filteredItems: [],
-    totalAmount:0,
-    totalItems:0,
-    appHomePage:"",
-    cart:[],
-    catalogItems:[],
-    items:[],
-    currencySymbol: "$",
-    iconButtonStyle: {height: "30px", width: "30px", cursor: "pointer"}
-  });
+  // const [appData, setAppData] = useState({
+  //   user:user,
+  //   users:{},
+  //   employees:{},
+  //   icons: appIcons,
+  //   facilities:{},
+  //   businessUnits:{},
+  //   countries:{},
+  //   businesses:{},
+  //   filterCriteria:[],
+  //   filteredItems: [],
+  //   totalAmount:0,
+  //   totalItems:0,
+  //   appHomePage:"",
+  //   cart:[],
+  //   catalogItems:[],
+  //   items:[],
+  //   currencySymbol: "$",
+  //   iconButtonStyle: {height: "30px", width: "30px", cursor: "pointer"}
+  // });
 
   // Set up local states for this app
   const windowSize = useState({width: window.innerWidth, height: window.innerHeight});
@@ -56,46 +86,136 @@ function MarketPlace() {
   const [loading,setLoading] = useState(false)
   const [filteredItems, setFilteredItems] = useState([])
 
-
-  const getEmployeeData = async () => { 
-    const environment = window.environment
-    let appName = ""
-    if(environment =="freeagent"){
-      appName = "custom_app_35"
-    }else{
-      appName = "users" 
-    }
-    const data = await crud.getData(appName)
+//   const getEmployeeData = async () => { 
+//     const environment = window.environment
+//     let appName = ""
+//     if(environment =="freeagent"){
+//       appName = "custom_app_35"
+//     }else{
+//       appName = "users" 
+//     }
+//     const data = await crud.getData(appName)
   
-    let fieldSet = new Set()
-    data.map(item=>{
-      fieldSet.add(item.full_name)
-    })
-    let fieldList = Array.from(fieldSet).sort();
-    let result = { data: data, list: fieldList};
+//     let fieldSet = new Set()
+//     data.map(item=>{
+//       fieldSet.add(item.full_name)
+//     })
+//     let fieldList = Array.from(fieldSet).sort();
+//     let result = { data: data, list: fieldList};
   
-    setAppData(prevAppData => ({
-      ...prevAppData,
-      employees: result
-    }));
-  };
+//     setAppData(prevAppData => ({
+//       ...prevAppData,
+//       employees: result
+//     }));
+//   };
 
 
-  const getUserData = async () => {
+//   const getUserData = async () => {
 
-    let fieldSet = new Set()
-    users.map(item=>{
-      fieldSet.add(item.full_name)
-    })
-    let fieldList = Array.from(fieldSet).sort();
-    let result = { data: users, list: fieldList};
+//     let fieldSet = new Set()
+//     users.map(item=>{
+//       fieldSet.add(item.full_name)
+//     })
+//     let fieldList = Array.from(fieldSet).sort();
+//     let result = { data: users, list: fieldList};
  
-    setAppData(prevAppData => ({
-      ...prevAppData,
-      user: user,
-      users: result
-    }));
-};
+//     setAppData(prevAppData => ({
+//       ...prevAppData,
+//       user: user,
+//       users: result
+//     }));
+// };
+
+// const getCurrencies = async ()=>{
+//   const environment = window.environment
+
+//   let appName = ""
+//   if(environment =="freeagent"){
+//     appName = "custom_app_10"
+//   }else{
+//     appName = "countries" 
+//   }
+//   const data = await crud.getData(appName)
+
+//   setAppData(prevAppData => ({
+//     ...prevAppData,
+//     countries: data
+//   }));
+// }
+
+// const getBusinessUnits = async ()=>{
+
+//   const environment = window.environment
+
+//   let appName = ""
+//   if(environment =="freeagent"){
+//     appName = "business_unit"
+//   }else{
+//     appName = "business_units" 
+//   }
+//   const data = await crud.getData(appName)
+
+//   let fieldSet = new Set()
+//   data.map(item=>{
+//     fieldSet.add(item.name)
+//   })
+//   let fieldList = Array.from(fieldSet).sort();
+//   let result = { data: data, list: fieldList};
+
+//   setAppData(prevAppData => ({
+//     ...prevAppData,
+//     businessUnits: result
+//   }));
+
+// }
+    
+// const getFacilities = async ()=>{
+//   const environment = window.environment
+
+//   let appName = ""
+//   if(environment =="freeagent"){
+//     appName = "custom_app_51"
+//   }else{
+//     appName = "facilities" 
+//   }
+//   const data = await crud.getData(appName)
+
+//   let fieldSet = new Set()
+//   data.map(item=>{
+//     fieldSet.add(item.name)
+//   })
+//   let fieldList = Array.from(fieldSet).sort();
+//   let result = { data: data, list: fieldList};
+
+//   setAppData(prevAppData => ({
+//     ...prevAppData,
+//     facilities: result
+//   }));
+// }
+
+// const getBusinesses = async ()=>{
+//   const environment = window.environment
+
+//   let appName = ""
+//   if(environment =="freeagent"){
+//     appName = "custom_app_44"
+//   }else{
+//     appName = "businesses" 
+//   }
+//   const data = await crud.getData(appName)
+
+//   let fieldSet = new Set()
+//   data.map(item=>{
+//     fieldSet.add(item.company_name)
+//   })
+//   let fieldList = Array.from(fieldSet).sort();
+//   let result = { data: data, list: fieldList};
+
+//   setAppData(prevAppData => ({
+//     ...prevAppData,
+//     businesses: result
+//   }));
+// }
 
 
 
@@ -128,96 +248,6 @@ const setupFilters = async (data)=>{
   }));
 }
 
-const getCurrencies = async ()=>{
-  const environment = window.environment
-
-  let appName = ""
-  if(environment =="freeagent"){
-    appName = "custom_app_10"
-  }else{
-    appName = "countries" 
-  }
-  const data = await crud.getData(appName)
-
-  setAppData(prevAppData => ({
-    ...prevAppData,
-    countries: data
-  }));
-}
-
-const getBusinessUnits = async ()=>{
-
-  const environment = window.environment
-
-  let appName = ""
-  if(environment =="freeagent"){
-    appName = "business_unit"
-  }else{
-    appName = "business_units" 
-  }
-  const data = await crud.getData(appName)
-
-  let fieldSet = new Set()
-  data.map(item=>{
-    fieldSet.add(item.name)
-  })
-  let fieldList = Array.from(fieldSet).sort();
-  let result = { data: data, list: fieldList};
-
-  setAppData(prevAppData => ({
-    ...prevAppData,
-    businessUnits: result
-  }));
-
-}
-    
-const getFacilities = async ()=>{
-  const environment = window.environment
-
-  let appName = ""
-  if(environment =="freeagent"){
-    appName = "custom_app_51"
-  }else{
-    appName = "facilities" 
-  }
-  const data = await crud.getData(appName)
-
-  let fieldSet = new Set()
-  data.map(item=>{
-    fieldSet.add(item.name)
-  })
-  let fieldList = Array.from(fieldSet).sort();
-  let result = { data: data, list: fieldList};
-
-  setAppData(prevAppData => ({
-    ...prevAppData,
-    facilities: result
-  }));
-}
-
-const getBusinesses = async ()=>{
-  const environment = window.environment
-
-  let appName = ""
-  if(environment =="freeagent"){
-    appName = "custom_app_44"
-  }else{
-    appName = "businesses" 
-  }
-  const data = await crud.getData(appName)
-
-  let fieldSet = new Set()
-  data.map(item=>{
-    fieldSet.add(item.company_name)
-  })
-  let fieldList = Array.from(fieldSet).sort();
-  let result = { data: data, list: fieldList};
-
-  setAppData(prevAppData => ({
-    ...prevAppData,
-    businesses: result
-  }));
-}
 
 const getCatalogItems = async ()=>{
 
@@ -253,13 +283,13 @@ const getCatalogItems = async ()=>{
 
     const loadData = async () => {
       try {
-        await getEmployeeData();
-        await getUserData();
-        await getCurrencies();
-        await getBusinessUnits();
-        await getFacilities();
         await getCatalogItems();
-        await getBusinesses();
+        // await getEmployeeData();
+        // await getUserData();
+        // await getCurrencies();
+        // await getBusinessUnits();
+        // await getFacilities();
+        // await getBusinesses();
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {

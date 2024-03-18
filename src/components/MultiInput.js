@@ -99,7 +99,7 @@ const MultiInput = forwardRef((props, ref) => {
   const inputStyle ={
     fontSize: valueSize || 14,
     fontWeight: valueWeight || "normal",
-    color: valueColor || "#5B9BD5",
+    color: valueColor || "rgb(0,100,225)",
     backgroundColor: valueFill || "white",
     outline: "none",
     width: width || "100%",

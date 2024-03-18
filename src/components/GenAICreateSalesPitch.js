@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {Context} from "./Context.js"
-import { askGPT } from './apis/axios.js'
+import { askGPT,getList } from './apis/nlightn.js'
 import {toProperCase} from './functions/formatValue.js'
-import axios,{getList} from './apis/axios.js'
 import Spinner from './Spinner.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
@@ -134,8 +133,8 @@ const prepareFormData = async ()=>{
     
     try{
         const result = await askGPT(prompt)
-        console.log(result.data)
-        setResponse(result.data)
+        console.log(result)
+        setResponse(result)
         setWaiting(false)
     }catch(error){
       console.log(error)
@@ -214,7 +213,7 @@ const handleInputChange = (e)=>{
        {/* Summary */}
        {response.length>0 && (
         <div className="d-flex flex-column p-3 animate__animated animate__fadeIn aniamte__duration-0.5s" style={{width: "60%", minWidth:400, overflowY:"auto"}}>
-            <div className="d-flex flex-column p-3 border rounded rounded-3" 
+            <div className="d-flex flex-column p-3 border rounded rounded-3 bg-light shadow" 
             style={{height: "90%", backgroundColor: "rgba(255,255,255,0.75"}}>
                 <h5>Result: </h5>
                 <textarea style={{fontSize:"16px", fontFamily:"verdana"}} rows={40} className = "form-control"  readonly>{response}</textarea>

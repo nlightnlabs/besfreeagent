@@ -243,7 +243,7 @@ export const scanInvoice = async (documentText, record)=>{
   const prompt = `The following is an invoice received from a supplier: ${documentText}. Fill in the values in this javascript object: ${JSON.stringify(record)} based on the information in the invoice. Leave a value blank if it can not be determined based on the invoice document received. Return response as javascript object. Be sure to return a properly structured json object with closed brackets and array sub elements if needed.`
 
   try{
-    const result = await dbUrl.post("/openai/gpt",{prompt})
+    const result = await dbUrl.post("/openai/gpt/ask",{prompt})
     return (JSON.parse(result.data))
   }catch(error){
     // console.log(error)
