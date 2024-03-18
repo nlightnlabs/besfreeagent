@@ -93,9 +93,9 @@ const prepareFormData = async ()=>{
         {id: 9, section: "prospect_info", name: "potential_customers_company_name", label: "Prospect's company name", list: business_names, value:"",  type:"text"},
         {id: 10, section: "prospect_info", name: "contact_name_of_potential_customer", label: "Name of contact at the prospect", list: null, value:"", type:"text"},
         {id: 11, section: "prospect_info", name: "job_title_of_potential_customer", label: "Job title of the contact at the prospect", list: null, value:"", type:"text"},
-        {id: 12, section: "my_company_info", name: "my_company_name", label: "Your company's name", list: null, value: users.company_name,  type:"text"},
-        {id: 13, section: "my_company_info", name: "my_name", label: "Your name", list: null, value:users.full_name, type:"text"},
-        {id: 14, section: "my_company_info", name: "my_job_title", label: "Your job title", list: null, value:users.job_title, type:"text"},
+        {id: 12, section: "my_company_info", name: "my_company_name", label: "Your company's name", list: null, value: user.company_name,  type:"text"},
+        {id: 13, section: "my_company_info", name: "my_name", label: "Your name", list: null, value:user.full_name, type:"text"},
+        {id: 14, section: "my_company_info", name: "my_job_title", label: "Your job title", list: null, value:user.job_title, type:"text"},
       ]
       setFormData(form_data)
 

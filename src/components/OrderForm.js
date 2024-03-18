@@ -26,7 +26,7 @@ const OrderForm = (props)=>{
 
     const [formElements, setFormElements] = useState([
       {id: "order_name", name:"order_name", label: "Provide a subject or name for the order", placeholder:"Provide a subject or name for the order", type:"input", value: `Purchase Order for ${user.full_name} on ${UTCToLocalDate(new Date())}`, list: null},
-      {id: "business_consumer", name:"business_consumer", label: "Primary business consumer for this order", placeholder:"Primary business consumer for this order", type:"input", value: users.list[0], list: users.list},
+      {id: "business_consumer", name:"business_consumer", label: "Primary business consumer for this order", placeholder:"Primary business consumer for this order", type:"input", value: user.full_name, list: users.list},
       {id: "business_unit", name:"business_unit", label: "Primary business unit for this order", placeholder:"Primary business unit for this order", type:"input", value: businessUnits.list[0], list: businessUnits.list},
       {id: "ship_to_location", name:"ship_to_location", label: "Ship to location", placeholder:"Ship to location",type:"input", value: facilities.list[0],  list: facilities.list},
       {id: "ship_to_address", name:"ship_to_address", label: "Ship to address", placeholder:"Ship to address",type:"input", value: facilities.data[0].address, list: null},
@@ -94,7 +94,7 @@ const OrderForm = (props)=>{
           order_date: formatDateInput(new Date()),
           total_amount: finalFormData.total_amount,
           number_of_items: finalFormData.number_of_items,
-          business_consumer: employees.data.find(record=>record.name_1===finalFormData.business_consumer).id, 
+          business_consumer: user.id, 
           business_units: businessUnits.data.find(record=>record.name===finalFormData.business_unit).id, 
           ship_to_location: facilities.data.find(record=>record.name===finalFormData.ship_to_location).id, 
           need_by: formatDateInput(finalFormData.need_by),

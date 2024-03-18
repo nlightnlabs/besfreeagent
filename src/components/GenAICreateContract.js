@@ -13,7 +13,14 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 const GenAICreateContract = (props) => {
 
     const {user, users, appData} = useContext(Context)
+
+  
+    useEffect(()=>{
+        console.log("appData",appData)
+        console.log("user", user)
+      },[])
     
+
     const [prompt, setPrompt] = useState("")
     const [response, setResponse] = useState("")
     const [waiting, setWaiting] = useState(false)
@@ -62,9 +69,9 @@ const prepareFormData = async ()=>{
         {id: 5, section: "counter_party_info", name: "counter_party_company_name", label: "Company name to be on contract", list: business_names, value:"",  type:"text"},
         {id: 6, section: "counter_party_info", name: "counter_party_representative_name", label: "Name of contract owner at the counter party", list: null, value:"", type:"text"},
         {id: 7, section: "counter_party_info", name: "counter_party_representative_title", label: "Title of contract at the counter party", list: null, value:"", type:"text"},
-        {id: 8, section: "my_company_info", name: "my_company_name", label: "Company name to be on contract", list: null, value: users.company_name,  type:"text"},
-        {id: 9, section: "my_company_info", name: "my_company_representative_name", label: "Name of contract owner", list: null, value:users.full_name, type:"text"},
-        {id: 10, section: "my_company_info", name: "my_company_representative_title", label: "Title of the contract owner", list: null, value:users.job_title, type:"text"},
+        {id: 8, section: "my_company_info", name: "my_company_name", label: "Company name to be on contract", list: null, value: user.company_name,  type:"text"},
+        {id: 9, section: "my_company_info", name: "my_company_representative_name", label: "Name of contract owner", list: null, value:user.full_name, type:"text"},
+        {id: 10, section: "my_company_info", name: "my_company_representative_title", label: "Title of the contract owner", list: null, value:user.job_title, type:"text"},
       ]
       setFormData(form_data)
 
@@ -147,7 +154,7 @@ const handleInputChange = (e)=>{
                             id={item.name}
                             name={item.label}
                             label={item.label}
-                            value={item.value}
+                            value={item.value? item.value : ""}
                             list = {item.list ? item.list : []}
                             type={item.type}
                             onChange={(e)=>handleInputChange(e)}
