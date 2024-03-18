@@ -100,7 +100,7 @@ export const getFAUser = async ()=>{
 
         const data = response.data.agents;
         console.log(data);
-        
+
         return data;
     } catch (error) {
         throw new Error("Error fetching data: " + error);
@@ -150,7 +150,7 @@ export const getFAAAppRecords = async (appName) => {
 
         return result;
     } catch (error) {
-        throw new Error("Error fetching data: " + error);
+        throw new Error(`Error fetching data for ${appName}: ` + error);
     }
    
 };
