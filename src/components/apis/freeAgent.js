@@ -91,13 +91,16 @@ export const getFAUsers = async ()=>{
 //Get Free Agent User 
 export const getFAUser = async ()=>{
 
-    const query = {query: "query{getUserInfo(){id, email}}"}
-    
+    // const query = {query: "query{getUserInfo(){id, email}}"}
+    const query = {query: "query{agents($id: String) {profiles(id: $id, limit: \"1\")}}"}
+      
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
-       
-        const data = response.data.getUserInfo;
+        console.log(console.log(data));
+
+        const data = response.data.agents;
         console.log(data);
+        
         return data;
     } catch (error) {
         throw new Error("Error fetching data: " + error);
