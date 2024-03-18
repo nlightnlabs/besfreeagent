@@ -91,7 +91,7 @@ export const getFAUsers = async ()=>{
 //Get Free Agent User 
 export const getFAUser = async ()=>{
 
-    const query = {query: "query{getUserInfo()}"}
+    const query = {query: "query{getUserInfo(){id, email}}"}
     
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
