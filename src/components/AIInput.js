@@ -44,7 +44,7 @@ const AIInput = (props) => {
   return (
     <div className="d-flex flex-column w-75 align-items-center">
         
-        <h3 className="mt-5">What do you need?</h3>
+        <h3 className="mt-5">Summarize your need:</h3>
 
         <div className="d-flex w-100 flex-column align-items-center">
             
@@ -52,8 +52,9 @@ const AIInput = (props) => {
                 onChange={(e)=>handleChange(e)} 
                 value={prompt} 
                 className="form-control m-1 w-100 mb-3"
-                style={{color: "rgb(0,150,225)", fontSize: "24px", height:"200px", border:"3px solid rgba(200,225,255,0.5)"}}
+                style={{color: "rgb(0,100,225)", fontSize: "20px", height:"200px"}}
                 resize ="none"
+                placeholder= "Type what you need here"
             >    
             </textarea>
 
