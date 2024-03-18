@@ -9,7 +9,7 @@ export const dbUrl = axios.create({
 //General Query
 export const getData = async (query, res)=>{
   try{
-    const result = await dbUrl.post("/db/query",{query})
+    const result = await dbUrl.post("/nlightn/db/query",{query})
     //console.log(result)
     const data = await result.data
     return (data)
@@ -22,7 +22,7 @@ export const getData = async (query, res)=>{
 //Get Table
 export const getTable = async (tableName, res)=>{
     try{
-      const result = await dbUrl.get(`/db/table/${tableName}`)
+      const result = await dbUrl.get(`/nlightn/db/table/${tableName}`)
       // console.log(result.data)
       const {data,dataTypes} = await result.data
       return ({data,dataTypes})
@@ -35,7 +35,7 @@ export const getTable = async (tableName, res)=>{
   export const getList = async (tableName,fieldName)=>{
 
     try{
-      const result = await dbUrl.get(`/db/list/${tableName}/${fieldName}`)
+      const result = await dbUrl.get(`/nlightn/db/list/${tableName}/${fieldName}`)
       const data = await result.data
       return (data)
     }catch(error){
@@ -48,7 +48,7 @@ export const getTable = async (tableName, res)=>{
   export const getConditionalList = async (tableName,fieldName,conditionalField, condition)=>{
    
     try{
-      const result = await dbUrl.get(`/db/subList/${tableName}/${fieldName}/${conditionalField}/${condition}`)
+      const result = await dbUrl.get(`/nlightn/db/subList/${tableName}/${fieldName}/${conditionalField}/${condition}`)
       const data = await result.data
       return (data)
     }catch(error){
@@ -66,7 +66,7 @@ export const getRecord = async (req)=>{
   }
 
   try{
-    const result = await dbUrl.post("/db/getRecord",{params})
+    const result = await dbUrl.post("/nlightn/db/getRecord",{params})
     // console.log(result)
     const data = await result.data
     return (data)
@@ -84,7 +84,7 @@ export const getRecords = async (req, res)=>{
   }
 
   try{
-    const result = await dbUrl.post("/db/getRecords",{params})
+    const result = await dbUrl.post("/nlightn/db/getRecords",{params})
     //console.log(result)
     const data = await result.data
     return (data)
@@ -97,7 +97,7 @@ export const getRecords = async (req, res)=>{
 export const getValue = async (tableName,lookupField, conditionalField,conditionalValue)=>{
   
   try{
-    const result = await dbUrl.get(`/db/value/${tableName}/${lookupField}/${conditionalField}/${conditionalValue}`)
+    const result = await dbUrl.get(`/nlightn/db/value/${tableName}/${lookupField}/${conditionalField}/${conditionalValue}`)
     //console.log(result)
     const data = await result.data
     return (data)
@@ -111,7 +111,7 @@ export const getValue = async (tableName,lookupField, conditionalField,condition
 export const addRecord = async (tableName, formData)=>{
   if(tableName.length > 0 && Object.entries(formData).length>0){
     try{
-      const result = await dbUrl.post("/db/addRecord",{tableName, formData})
+      const result = await dbUrl.post("/nlightn/db/addRecord",{tableName, formData})
       console.log(result)
       const data = await result.data
       return (data)
@@ -127,7 +127,7 @@ export const addRecord = async (tableName, formData)=>{
 export const updateRecord = async (tableName,idField,recordId,formData)=>{
   
     try{
-      const result = await dbUrl.post("/db/updateRecord",{tableName,idField,recordId,formData})
+      const result = await dbUrl.post("/nlightn/db/updateRecord",{tableName,idField,recordId,formData})
       //console.log(result)
       const data = await result.data
       return (data)
@@ -145,7 +145,7 @@ export const deleteRecord = async (tableName,idField,recordId)=>{
     recordId
 }
   try{
-    const result = await dbUrl.post("/db/deleteRecord",{params})
+    const result = await dbUrl.post("/nlightn/db/deleteRecord",{params})
     //console.log(result)
     const data = await result.data
     return (data)
@@ -166,7 +166,7 @@ export const resetPassword = async (req)=>{
   }
 
   try{
-    const result = await dbUrl.post("/db/updateRecord",{params})
+    const result = await dbUrl.post("/nlightn/db/updateRecord",{params})
     //console.log(result)
     const data = await result.data
     return (data)
@@ -188,7 +188,7 @@ export const sendEmail = async (req, res)=>{
 
   //console.log(params)
   try{
-    const result = await dbUrl.post("/sendEmail",{params})
+    const result = await dbUrl.post("/nlightn/sendEmail",{params})
     // console.log(result)
     const data = await result.data
     return (data)
@@ -207,7 +207,7 @@ export const askGPT = async (prompt)=>{
   }
 
   try{
-    const response = await dbUrl.post("/gpt/ask",{params})
+    const response = await dbUrl.post("/openai/gpt/ask",{params})
     return (response.data)
   }catch(error){
     // console.log(error)
@@ -215,14 +215,14 @@ export const askGPT = async (prompt)=>{
 }
 
 
-//GPT classify
+//openai/gpt/ classify
 export const gptClassify = async (text, list)=>{
 
   console.log("text",text)
   console.log("list",list)
 
   try{
-    const response = await dbUrl.post("/gpt/classify",{text, list})
+    const response = await dbUrl.post("/openai/gpt/classify",{text, list})
     return (response.data)
   }catch(error){
     // console.log(error)
@@ -237,7 +237,7 @@ export const generateImage = async (req)=>{
   }
 
   try{
-    const result = await dbUrl.post("/gptImage",{params})
+    const result = await dbUrl.post("/openai/dalle/image",{params})
     // console.log(result)
     return (result.data[0].url)
   }catch(error){
@@ -257,7 +257,7 @@ export const scanInvoice = async ({args})=>{
   }
 
   try{
-    const result = await dbUrl.post("/gpt",{params})
+    const result = await dbUrl.post("/openai/gpt",{params})
     return (JSON.parse(result.data))
   }catch(error){
     // console.log(error)
@@ -270,7 +270,7 @@ export const runPython = async (pythonAppName,args)=>{
     args
   }
   try{
-    const result = await dbUrl.post("/runPython",{params})
+    const result = await dbUrl.post("/nlightn/runPython",{params})
     console.log(JSON.parse(result.data))
     return (JSON.parse(result.data))
 
@@ -283,7 +283,7 @@ export const runPython = async (pythonAppName,args)=>{
 export const getAllTables = async()=>{
   const query= `SELECT table_name FROM information_schema.tables where table_schema = 'public';`
   try{
-    const result = await dbUrl.post("/query",{query})
+    const result = await dbUrl.post("/nlightn/query",{query})
     console.log(JSON.parse(result.data))
     return (JSON.parse(result.data))
   }catch(error){
@@ -297,7 +297,7 @@ export const getColumnData = async(tableName)=>{
 
   const query= `SELECT column_name as name, data_type FROM information_schema.COLUMNS where TABLE_NAME = N'${tableName}';`
   try{
-    const result = await dbUrl.post("/db/query",{query})
+    const result = await dbUrl.post("/nlightn/db/query",{query})
     const data = result.data
 
     let fieldList = [] 
@@ -322,7 +322,7 @@ export const updateActivityLog = async(app, recordId, userEmail, description)=>{
   const tableName = "activities"
 
   try{
-    const result = await dbUrl.post("/db/addRecord",{tableName, formData})
+    const result = await dbUrl.post("/nlightn/db/addRecord",{tableName, formData})
     // console.log(result)
     const data = await result.data
     return (data)
@@ -342,7 +342,7 @@ const formData = new FormData();
 formData.append('file', audioBlob, 'audio.wav');
 
   try {
-    const response = await dbUrl.post('/openAIWhisper', formData)
+    const response = await dbUrl.post('/openai/whisper', formData)
     return response.data.text
   } catch (error) {
     console.error('Error sending data to backend:', error);
