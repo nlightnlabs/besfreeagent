@@ -198,15 +198,32 @@ export const sendEmail = async (req, res)=>{
 }
 
 //Ask GPT
-export const askGPT = async (req)=>{
+export const askGPT = async (prompt)=>{
+
+  console.log(prompt)
 
   const params = {
-    prompt: req
+    prompt: prompt
   }
 
   try{
-    const result = await dbUrl.post("/gpt",{params})
-    return (result)
+    const response = await dbUrl.post("/gpt/ask",{params})
+    return (response.data)
+  }catch(error){
+    // console.log(error)
+  }
+}
+
+
+//GPT classify
+export const gptClassify = async (text, list)=>{
+
+  console.log("text",text)
+  console.log("list",list)
+
+  try{
+    const response = await dbUrl.post("/gpt/classify",{text, list})
+    return (response.data)
   }catch(error){
     // console.log(error)
   }

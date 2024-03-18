@@ -6,16 +6,18 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import VoiceRecorder from './VoiceRecorder.js'
 import VoiceRecord from './VoiceRecord.js'
 
-const AIInput = () => {
+const AIInput = (props) => {
 
     const [prompt, setPrompt] = useState("")
     const [microphoneIcon, setMicrophoneIcon] = useState("")
     const [showVoiceRecorder, setShowVoiceRecorder] = useState(false)
-    const [transcription, setTranscription] =useState("")
+    const transcription = props.transcription
+    const setTranscription = props.setTranscription
 
     const handleChange = async (e)=>{
         const {name, value} = e.target
         setPrompt(value)
+        setTranscription(value)
     }
 
     useEffect(()=>{
