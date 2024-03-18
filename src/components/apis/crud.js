@@ -90,7 +90,7 @@ export const getUserData = async () => {
     if(environment==="freeagent"){
         // user = await freeAgentApi.getCurrentFAUserData();
         users = await freeAgentApi.getFAUsers();
-        console.log(users)
+        // console.log(users)
         user = await users.find(i=>i.full_name==="Amy Williams")
         
         // let currentUser = await freeAgentApi.getFAUser()
