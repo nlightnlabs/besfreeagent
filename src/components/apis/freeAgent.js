@@ -90,7 +90,7 @@ export const getFAUsers = async ()=>{
 //Get Free Agent User 
 export const getFAUser = async ()=>{
 
-    const query = {query: "query{getUserInfo(){id}}"}
+    const query = {query: "query{getUserInfo()}"}
     
     try {
         const response = await dbUrl.post("/freeAgent/query",query);
