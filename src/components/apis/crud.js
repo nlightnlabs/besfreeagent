@@ -92,6 +92,10 @@ export const getUserData = async () => {
         users = await freeAgentApi.getFAUsers();
         console.log(users)
         user = await users.find(i=>i.full_name==="Amy Williams")
+        
+        let currentUser = await freeAgentApi.getFAUser()
+        console.log(currentUser)
+        
     }else{
         let response = await nlightnApi.getTable("users")
         // console.log(response)
