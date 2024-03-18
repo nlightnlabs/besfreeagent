@@ -37,11 +37,7 @@ const CatalogItem = (props)=>{
     }
 
     const handleItemClick = (item)=>{
-      if(FAClient !=null && FAClient !=""){
-        FAClient.navigateTo(appHomePage)
-      }else{
         setShowItemPage(true)
-      }
     }
 
  

@@ -189,13 +189,22 @@ function App() {
 
   const getUserData = async () => {
 
+    const response = await crud.getUserData()
+    const users = response.users
+    
+    const user = response.user
+    setUser(user)
+
+    console.log(user)
+    console.log(users)
+
     let fieldSet = new Set()
     users.map(item=>{
       fieldSet.add(item.full_name)
     })
     let fieldList = Array.from(fieldSet).sort();
     let result = { data: users, list: fieldList};
- 
+
     setAppData(prevAppData => ({
       ...prevAppData,
       user: user,

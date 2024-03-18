@@ -5,7 +5,6 @@ const Filter = (props)=>{
     
     const appData = props.appData;
     const icons = appData.icons
-    const iconButtonStyle = appData.iconButtonStyle
     const [filterCriteria, setFilterCriteria] = useState([])
     const setFilteredItems = props.setFilteredItems
     const items = appData.items
@@ -13,6 +12,12 @@ const Filter = (props)=>{
     useEffect(()=>{
       setFilterCriteria(appData.filterCriteria)
     },[props])
+
+    const iconButtonStyle = {
+      height: "30px",
+      width: "30px",
+      cursor: "pointer"
+    }
 
 
     const handleUpdateFilter = (e) => {
