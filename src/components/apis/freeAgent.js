@@ -155,11 +155,54 @@ export const getFAAAppRecords = async (appName) => {
    
 };
 
+//Standard function to get specific records from a FreeAgent App
+export const getFAAppRecord = async (appName, conditionalField, condition)=>{
+
+    console.log("appName",appName)
+    console.log("conditionalField",conditionalField)
+    console.log("condition",condition)
+
+    const filters = [
+        {
+            field_name : `\"${conditionalField}\"`,
+            operator : "equals",
+            values : `\"${condition}\"`
+        }
+    ]
+
+    const query = {query: `query{listEntityValues(entity: \"${appName}\", filters: \"${filters}\", limit: \"1\"}){ entity_values {id, field_values} } }`}
+
+    try {
+        const response = await dbUrl.post("/freeAgent/query", query);
+
+        const data = response.data.listEntityValues.entity_values;
+
+        const result = data.map(record => {
+            let rowData = { id: record.id };
+            Object.entries(record.field_values).forEach(([key, value]) => {
+                let val = value.value;
+                if(value.type==="reference" || value.type==="reference_join"){
+                    val = value.display_value
+                }
+                if (typeof val === "object") {
+                    val = JSON.stringify(val);
+                }
+                rowData = { ...rowData, [key]: val };
+            });
+            return rowData;
+        });
+
+        return result;
+    } catch (error) {
+        throw new Error("Error fetching data: " + error);
+    }
+}
+
 
 //Standard function to get specific records from a FreeAgent App
-export const getFAAAppRecordsSubset = async (appName, fields, filters, order, limit, offset, pattern)=>{
+export const getFAAppRecordsSubset = async (appName, fields, filters, order, limit, offset, pattern)=>{
 
-    const query = {query: `query{listEntityValues(entity: \"${appName}\", filters: \"${fields}\", filters: \"${filters}\", order: \"${order}\", limit: \"${limit}\", offset: \"${offset}\", offset: \"${pattern}\"}){ entity_values {id, field_values} } }`}
+    const query = {query: `query{listEntityValues(entity: \"${appName}\", fields: \"${fields}\", filters: \"${filters}\", order: \"${order}\", limit: \"${limit}\", offset: \"${offset}\", pattern: \"${pattern}\"}){ entity_values {id, field_values} } }`}
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);

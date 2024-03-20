@@ -1,5 +1,6 @@
 
 import { getRecord } from './apis/nlightn.js'
+import * as crud from "./apis/crud.js"
 import React, {useState, useContext, useEffect, useRef} from 'react'
 import {Context} from "./Context.js"
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -7,37 +8,41 @@ import 'animate.css';
 import {UTCToLocalDate} from "./functions/formatValue.js"
 
 const Article = () => {
+
     const {
         appData,
       } = useContext(Context)
 
     
+    const users = appData.users
+    const [author, setAuthor] = useState({})
     const [article, setArticle] = useState({})
+    
     const getArticle = async ()=>{
+        
         const articleId = appData.selected_article_id
-        const params={
-            tableName: 'news',
-            recordId : articleId,
-            idField: 'id'
+        console.log("articleId",articleId)
+
+        const environment = window.environment;
+        let appName = "announcements"
+        if(environment =="freeagent"){
+            appName = "announcement"
         }
-        const response = await getRecord(params)
+
+        const conditionalField = "id"
+        const condition = articleId
+ 
+        const response = await crud.getRecord(appName, conditionalField, condition)
+        console.log("article data",response)
         setArticle(response)
         
-        const authorUserId = await response.author_user_id
-        getUserData(authorUserId)
+        const authorUserId = await response.author_user_id.toString()
+        console.log("authorUserId",authorUserId)
+        console.log("users",users)
+        console.log("author data",users.data.find(u=>(u.id).toString()===authorUserId))
+        setAuthor(users.data.find(u=>u.id.toString()===authorUserId))
     }
 
-    const [author, setAuthor] = useState({})
-    const getUserData = async (authorUserId)=>{
-        
-        const params={
-            tableName: 'users',
-            recordId : authorUserId,
-            idField: 'id'
-        }
-        const response = await getRecord(params)
-        setAuthor(response)
-    }
 
     useEffect(()=>{
         getArticle()
