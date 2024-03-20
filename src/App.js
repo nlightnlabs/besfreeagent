@@ -25,20 +25,25 @@ function App() {
     window.environment = environment
 
     const useExternalScript = (src) => {
-        useEffect(() => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.async = true;
-            document.body.appendChild(script);
+      useEffect(() => {
+        if(environment =="freeagent"){
+              const script = document.createElement('script');
+              script.src = src;
+              script.async = true;
+              document.body.appendChild(script);
 
-            setTimeout(()=>{
-              initializeFreeAgentConnection()
-          },500)
-                
-            return () => {
-                document.body.removeChild(script);
-            };
-        }, [src]);
+              setTimeout(()=>{
+                initializeFreeAgentConnection()
+            },500)
+                  
+              return () => {
+                  document.body.removeChild(script);
+              };
+        }
+          else{
+            return 
+          }
+        },[src]);
     };
     //script to itnegrate FreeAgent library
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
