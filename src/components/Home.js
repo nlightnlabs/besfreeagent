@@ -63,7 +63,7 @@ const Home = (props) => {
   const [highlightedAnnouncement, setHlightedAnnouncement] = useState({});
   const [loading, setLoading] = useState(true)
   
-  const getAnnouncements = async (req, res)=>{
+  const getAnnouncements = async ()=>{
     const environment = window.environment
     let appName = ""
     if(environment ==="freeagent"){
@@ -103,8 +103,6 @@ const Home = (props) => {
 
   useEffect(()=>{
 
-    const environment = window.environment 
-
     const loadData = async () => {
       try {
         await getAnnouncements();
@@ -115,15 +113,8 @@ const Home = (props) => {
         setLoading(false);
       }
     }
+    loadData();
 
-    setLoading(true);
-    if(environment !="freeagent"){
-      loadData()
-    }else{
-      setTimeout(()=>{
-        loadData()
-      },100)
-    }
 },[])
 
   const handleSelectedApp =(e,app)=>{
@@ -156,7 +147,13 @@ const Home = (props) => {
   }
 
   const handleSelectedArticle =(articleId)=>{
-    if (articleId>0){
+    console.log(articleId)
+    const nextPage = "Article"
+    console.log("page",pages.find(x=>x.name===nextPage))
+    setPageList([...pageList,nextPage])
+    setPageName(nextPage)
+
+    if (articleId !=null && articleId !=""){
       setAppData({...appData,...{["selected_article_id"]:articleId}})
       const nextPage = "Article"
       setPage(pages.find(x=>x.name===nextPage))
@@ -316,13 +313,6 @@ return(
           </div>
           </div>
         }
-
-      {loading && 
-        <FloatingPanel>
-          <Spinner/>
-        </FloatingPanel>
-
-      }
     </div>
 )
 }

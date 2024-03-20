@@ -3,7 +3,6 @@ import React, {useState, useEffect, useRef, createRef} from 'react'
 import { toProperCase } from './functions/formatValue.js';
 import MultiInput from './MultiInput.js';
 import {generalIcons} from './apis/icons.js'
-import axios,{updateRecord, getRecord, getRecords, getValue, getList, updateActivityLog} from './apis/axios.js'
 import Attachments from './Attachments.js';
 import TableInput from './TableInput.js';
 import * as fileServer from './apis/fileServer.js'
@@ -42,19 +41,20 @@ const DataEntryForm = (props) => {
     
 
     useEffect(()=>{
+     
       getFormFields();
     },[])
 
     const getFormFields = async () => {
-      const params = {
-        tableName: "forms",
-        conditionalField: "ui_form_name",
-        condition: formName,
-      };
+      
+        const tableName= "forms"
+        const conditionalField= "ui_form_name"
+        const condition= formName
     
       try {
-        const formFields = await getRecords(params);
-        
+  
+        const formFields = await nlightnApi.getRecords(tableName, conditionalField, condition);
+        console.log("formFields",formFields)
         // Saving the state. This is always consistent.
         setFormElements(formFields);
         createRefs(formFields)
@@ -69,7 +69,7 @@ const DataEntryForm = (props) => {
     // Function to dynamically create refs based on the names or IDs
     const refs = useRef({});
     const createRefs = async (formFields) => {
-    console.log(formFields)
+    console.log("formFields",formFields)
     const refList = {};
       formFields.forEach(item => {
         refList[item.ui_name] = createRef();
@@ -88,7 +88,7 @@ const DataEntryForm = (props) => {
           idField: "id",
         };
  
-        const formData = await getRecord(params);
+        const formData = await nlightnApi.getRecord(params);
         setFormData(formData);
         calculateForm(updatedFormFields, formData);
       } catch (error) {
@@ -113,7 +113,7 @@ const DataEntryForm = (props) => {
             const fieldName = item.ui_reference_data_field;
             const conditionalField = item.ui_reference_data_conditional_field;
             const conditionalValue = eval(item.ui_reference_data_conditional_value);
-            value = await getValue(tableName, fieldName, conditionalField, conditionalValue);
+            value = await nlightnApi.getValue(tableName, fieldName, conditionalField, conditionalValue);
           }
     
           updatedFormData = { ...updatedFormData, ...{ [item.ui_id]: value } };
@@ -343,7 +343,7 @@ const DataEntryForm = (props) => {
               getFormData(formElements)
 
               // Update activity log
-              updateActivityLog(tableName, recordId, user.email, JSON.stringify(updatesToSendToDb))
+              nlightnApi.updateActivityLog(tableName, recordId, user.email, JSON.stringify(updatesToSendToDb))
 
                 //Refresh UI in Parent object
                 updateParentStates.forEach(func=>{

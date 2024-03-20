@@ -8,8 +8,9 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import MultiInput from './MultiInput';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-const GenAISummarizeDocument = () => {
+const GenAISummarizeDocument = (props) => {
 
+  const prompt = props.prompt
   const [formData, setFormData] = useState({})
   const [waiting, setWaiting] = useState(false)
 
@@ -28,7 +29,9 @@ const GenAISummarizeDocument = () => {
 
   const summarize = async(documentText)=>{
 
-    const prompt = `please summarize this text in less than 300 characters: ${documentText}`
+    if(prompt =="" && prompt ==null){
+      prompt = `please summarize this text in less than 300 characters: ${documentText}`
+    }
     
     try{
       const response = await askGPT.post({prompt})
@@ -157,7 +160,7 @@ const handlePageChange = (e)=>{
               </div>
             </div>
 
-            {/* Initate summary */}
+            {/* Initiate summary */}
             <div className="d-flex justify-content-center mt-1" style={{width: "100%"}}>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <button id="askButton" className="btn btn-primary" onClick={(e)=>handleSummarize(e)}>Summarize</button>

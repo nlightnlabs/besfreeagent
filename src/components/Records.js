@@ -133,9 +133,6 @@ const handleAddRecord = async ()=>{
   setShowNewRecordForm(true)
 }
 
-const FormDataPanel = {
-
-}
 
 const [pageClass, setPageClass] = useState("flex-container flex-column animate__animated animate__fadeIn animate__duration-0.5s")
 
@@ -186,6 +183,7 @@ const [pageClass, setPageClass] = useState("flex-container flex-column animate__
                   <div className="ms-1">Add Record</div>
                 </div>
               </div>
+
               <Table 
                 user={user}
                 tableName={tableName}

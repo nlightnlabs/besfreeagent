@@ -51,19 +51,6 @@ const Table = (props) => {
       setSelectedRecordId(e.data.id)
       setShowRecordDetails(true)
     }
-
-    const recordDetailsModalStyle={
-      position: "fixed", 
-      top: '50%',
-      left: '50%',
-      height: "80vh", 
-      width: "80vw", 
-      translate: "-50% -50%",
-      zIndex: 999,
-      cursor: "grab",
-       overflowY:"auto", 
-       overflowX: "hidden"
-    }
   
   return (
       <div className="ag-theme-quartz animate__animated animate__fadeIn animate__duration-0.5s" style={{fontSize:"12px", height: "100%", width: "100%" }}>

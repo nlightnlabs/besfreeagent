@@ -76,15 +76,12 @@ export const getRecord = async (req)=>{
 }
 
 //Get Records
-export const getRecords = async (req, res)=>{
-  const params = {
-      tableName: req.tableName,
-      recordId: req.recordId,
-      idField: req.idField
-  }
+
+export const getRecords = async (tableName, conditionalField, condition)=>{
+
 
   try{
-    const result = await dbUrl.post("/nlightn/db/getRecords",{params})
+    const result = await dbUrl.post("/nlightn/db/getRecords",{tableName,conditionalField, condition})
     //console.log(result)
     const data = await result.data
     return (data)

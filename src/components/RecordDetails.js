@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import DataEntryFrom from './DataEntryForm.js'
 import Activities from './Activities.js'
-import { generalIcons } from './apis/icons.js'
 import * as nlightnAPI from "./apis/nlightn.js"
-import {deleteRecord, getRecord, getRecords, getData, getTable, updateRecord} from './apis/axios.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 
 
@@ -42,12 +40,6 @@ const RecordDetails = (props) => {
         setFields(Object.keys(returnedData))
       }
 
-
-      const iconButtonStyle={
-        maxHeight: 30,
-        maxWidth: 30,
-        cursor: "pointer"
-      }
 
       const ActivitiesPanel = {
         resize: "horizontal",

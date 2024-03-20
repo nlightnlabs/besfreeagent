@@ -8,6 +8,7 @@ import 'animate.css';
 
 import { Document, Page, pdfjs } from 'react-pdf';
 import MultiInput from './MultiInput.js';
+import GenAISummarizeDocument from './GenAISummarizeDocument.js';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const GenAICreateSalesPitch = (props) => {
@@ -22,9 +23,15 @@ const GenAICreateSalesPitch = (props) => {
     const [characterLimit, setCharacterLimit] = useState(300)
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
+    const [file, setFile] = useState(null)
+    const [pdfText, setPdfText] = useState('');
+    const [fileType, setFileType] = useState(null);
+
 
     const[businesses, setBusinesses] = useState([])
     const [pitchParams, setPitchParams] = useState({})
+
+    const [documentText, setDocumentText] = useState("")
 
 
 const getBusinesses = async ()=>{
@@ -108,8 +115,40 @@ const prepareFormData = async ()=>{
 }
 
   useEffect(()=>{
+    console.log(user)
     prepareFormData()
   },[props])
+
+  function handleFileChange(event) {
+    event.preventDefault()
+    
+    const selectedFile = event.target.files[0];
+    setFileType(selectedFile.type)
+
+    if(selectedFile.type == "application/pdf"){
+      setFile(selectedFile);
+      const reader = new FileReader();
+      reader.onload = async function (event) {
+        const typedArray = new Uint8Array(event.target.result);
+        const pdf = await pdfjs.getDocument(typedArray).promise;
+
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const textItems = textContent.items.map((item) => item.str);
+          const pageText = textItems.join(' ');
+          fullText += pageText + '\n';
+        }
+        setPdfText(fullText);
+        setNumPages(pdf.numPages);
+      };
+    reader.readAsArrayBuffer(selectedFile);
+    }else{
+      alert(`Can not read ${fileType} file type. Please upload a PDF file only.`)
+      setFile(null)
+    }
+  }
 
 
   const createPitch = async(e)=>{
@@ -128,7 +167,13 @@ const prepareFormData = async ()=>{
     })
     console.log(conditionList)
 
-    const prompt = `please generate a sales pitch based on the following conditions: ${conditionList}`
+    let prompt = ""
+    if (pdfText !=="" && pdfText !=null){
+      prompt = `Generate a sales pitch based on the following conditions: ${conditionList} and the following information: ${pdfText}`
+    }else{
+      prompt = `Generate a sales pitch based on the following conditions: ${conditionList}`
+    }
+    
     console.log(prompt)
     
     try{
@@ -167,6 +212,7 @@ const handleInputChange = (e)=>{
     setPitchParams({...pitchParams,...{[name]:value}})
 }
 
+
   return (
     <div className="d-flex justify-content-center w-100">
       {/* File Config and Preview */}
@@ -197,7 +243,69 @@ const handleInputChange = (e)=>{
                     </div>
                 ))
             }
+                 {/* File Config and Preview */}
+          <div className="d-flex flex-column p-3" style={{minWidth: "50%"}}>
+    
+          <form>
+            {/* File Input */}
+            <div className="row align-items-center">
+              <div className="form-group">
+                <div className="col-sm-12">
+                  <input 
+                    id="file"
+                    name="file"
+                    className="form-control" 
+                    type="file" 
+                    style={{ color: "rgb(0,100,255)" }} 
+                    onChange={handleFileChange} 
+                    />
+                </div>
+                <p className="ms-1" style={{fontSize:"14px", color: "red"}}><span style={{fontWeight: "bold", color: "black"}}>Note: </span>Must be a PDF (Non Image Scan) File</p>
+              </div>
             </div>
+
+             {/* Character Limit */}
+             <div className="mb-3 row align-items-center">
+              <label htmlFor="character_limit" className="ms-1 col-sm-3 col-form-label">Character limit:</label>
+              <div className="col-sm-3">
+                <input
+                  id="character_limit"
+                  name="character_limit"
+                  className="form-control"
+                  type="number"
+                  value={characterLimit}
+                  onChange={(e) => setCharacterLimit(e.target.value)}
+                  style={{ color: "rgb(0,100,255)" }}
+                />
+              </div>
+            </div>
+          </form>
+         
+            </div>
+
+
+        
+
+          {file &&
+              <div className="d-flex flex-column p-3 rounded-3 shadow mt-3" style={{maxHeight:"400px", overflowY:"auto", backgroundColor: "rgba(255,255,255,0.75"}}>
+                <div className="d-flex justify-content-between">
+                  <h5>Preview: </h5>
+                  <p>
+                    Page {pageNumber} of {numPages}
+                  </p>
+                  <form>
+                    <div className="btn-group">
+                      {pageNumber>1 && <button name="backButton" className="btn text-secondary" onClick={handlePageChange}>{"Back"}</button>}
+                      {pageNumber<numPages && <button name="nextButton" className="btn text-secondary" onClick={handlePageChange}>{"Next"}</button>}
+                    </div>
+                  </form>
+                </div>
+                <Document file={file}>
+                    <Page pageNumber={pageNumber} />
+                </Document>
+              </div>
+            }
+        </div>
 
 
             {/* create pitch */}

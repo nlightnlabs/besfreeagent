@@ -194,7 +194,7 @@ function App() {
 
     let currentUserFullname = "Amy Williams"
     
-    const user = users.find(i=>i.full_name==="Amy Williams")
+    const user = users.find(i=>i.full_name===currentUserFullname)
     setUser(user)
 
     console.log(user)
@@ -336,7 +336,7 @@ useEffect(()=>{
   return (
     <div style={pageStyle}>
         {displayPage && window.environment !=="freeagent" && <Header/>}
-        {displayPage && pageData.find(item=>item.name===pageName).component}
+        {displayPage && pages.find(item=>item.name===pageName).component}
     </div>
   );
 }
