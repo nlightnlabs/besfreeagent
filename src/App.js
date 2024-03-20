@@ -336,7 +336,7 @@ useEffect(()=>{
   return (
     <div style={pageStyle}>
         {displayPage && window.environment !=="freeagent" && <Header/>}
-        {displayPage && pages.find(item=>item.name===pageName).component}
+        {displayPage && pageData.find(item=>item.name===pageName).component}
     </div>
   );
 }
