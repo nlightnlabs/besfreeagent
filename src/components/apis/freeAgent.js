@@ -171,10 +171,12 @@ export const getFAAppRecord = async (appName, conditionalField, condition)=>{
     ]
 
     const query = {query: `query{listEntityValues(entity: \"${appName}\", filters: \"${filters}\", limit: \"1\"}){ entity_values {id, field_values} } }`}
+    console.log("query",query)
 
     try {
         const response = await dbUrl.post("/freeAgent/query", query);
-
+        console.log(response)
+    
         const data = response.data.listEntityValues.entity_values;
 
         const result = data.map(record => {
@@ -191,7 +193,7 @@ export const getFAAppRecord = async (appName, conditionalField, condition)=>{
             });
             return rowData;
         });
-
+        console.log("result",result )
         return result;
     } catch (error) {
         throw new Error("Error fetching data: " + error);

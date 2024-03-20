@@ -74,7 +74,7 @@ export const getList = async (tableName,fieldName)=>{
   export const getRecord = async (appName, conditionalField, condition)=>{
     const environment  = window.environment 
     
-    let results = []
+    let results = null
     if(environment==="freeagent"){
         let response = await freeAgentApi.getFAAppRecord(appName,conditionalField, condition)
         results = response
@@ -84,8 +84,6 @@ export const getList = async (tableName,fieldName)=>{
     }
     return results
   }
-
-
 
 
 export const updateRecord = async (appName, selectedRecordId, formData) => {
