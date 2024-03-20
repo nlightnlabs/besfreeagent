@@ -164,9 +164,9 @@ export const getFAAppRecord = async (appName, conditionalField, condition)=>{
 
     const filters = [
         {
-            field_name : `"${conditionalField}"`,
+            field_name : conditionalField,
             operator : "equals",
-            values : `"${condition}"`
+            values : condition
         }
     ]
 
@@ -196,7 +196,7 @@ export const getFAAppRecord = async (appName, conditionalField, condition)=>{
         console.log("result",result )
         return result;
     } catch (error) {
-        throw new Error("Error fetching data: " + error);
+        console.log(error)
     }
 }
 
