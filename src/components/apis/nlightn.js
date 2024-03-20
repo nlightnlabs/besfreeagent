@@ -76,9 +76,7 @@ export const getRecord = async (req)=>{
 }
 
 //Get Records
-
 export const getRecords = async (tableName, conditionalField, condition)=>{
-
 
   try{
     const result = await dbUrl.post("/nlightn/db/getRecords",{tableName,conditionalField, condition})

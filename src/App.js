@@ -205,8 +205,8 @@ function App() {
     const user = users.find(i=>i.full_name===currentUserFullname)
     setUser(user)
 
-    console.log(user)
-    console.log(users)
+    // console.log(user)
+    // console.log(users)
 
     let fieldSet = new Set()
     users.map(item=>{
