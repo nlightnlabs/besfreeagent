@@ -45,9 +45,12 @@ function App() {
           }
         },[src]);
     };
+
     //script to itnegrate FreeAgent library
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
      
+
+     //script to enable iFrame
     const initializeFreeAgentConnection = ()=>{
       const FAAppletClient = window.FAAppletClient;
       let faClient = new FAAppletClient({
