@@ -155,7 +155,7 @@ export const getFAAAppRecords = async (appName) => {
    
 };
 
-//Standard function to get specific records from a FreeAgent App
+//Standard function to get a single record from a FreeAgent App
 export const getFAAppRecord = async (appName, conditionalField, condition)=>{
 
     console.log("appName",appName)

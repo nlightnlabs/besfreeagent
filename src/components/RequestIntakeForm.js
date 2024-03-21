@@ -152,11 +152,18 @@ const RequestIntakeForm = (props) => {
 				formFields.find((item) => item.ui_form_name == formName).name
 			);
 			setPageSubTitle(
-				formFields.find((item) => item.ui_form_name == formName).ui_form_description
+				formFields.find((item) => item.ui_form_name == formName)
+					.ui_form_description
 			);
-			console.log("last page?",formFields.find((item) => item.ui_form_name == formName).ui_last_input_page)
-			setLastPage(formFields.find((item) => item.ui_form_name == formName).ui_last_input_page);
-
+			console.log(
+				"last page?",
+				formFields.find((item) => item.ui_form_name == formName)
+					.ui_last_input_page
+			);
+			setLastPage(
+				formFields.find((item) => item.ui_form_name == formName)
+					.ui_last_input_page
+			);
 
 			// Saving the state.  This is always consistent.
 			setFormElements(formFields);
@@ -169,7 +176,9 @@ const RequestIntakeForm = (props) => {
 
 			// Update the current request section (page) every time a form is loaded
 			setCurrentRequestSection(
-				formFields.find((item) => item.ui_form_name === formName).ui_form_description);
+				formFields.find((item) => item.ui_form_name === formName)
+					.ui_form_description
+			);
 
 			//Create refs for the form
 			createRefs(formFields);
@@ -315,7 +324,7 @@ const RequestIntakeForm = (props) => {
 	const setUpFormData = async (formFields, dropdownLists) => {
 		let tempFormData = formData;
 		let formInputElements = [];
-	
+
 		if (formFields && formFields.length > 0) {
 			await Promise.all(
 				formFields.map((item) => {
@@ -328,36 +337,39 @@ const RequestIntakeForm = (props) => {
 				})
 			);
 			setFormInputElements(formInputElements);
-	
-			await Promise.all(formInputElements.map(async (item) => {
-				let value = item.ui_default_value;
-				try {
-					if (item.ui_input_type == "table") {
-						value = JSON.parse(value);
-					} 
-					else if (item.ai_prompt != null && item.ai_prompt != "") {
-						let api = nlightnApi;
-						let textString = item.ai_prompt
-						console.log(textString)
-						value = await eval(textString); 
-						console.log(value);
-					} else {
-						value = eval(value);
+
+			await Promise.all(
+				formInputElements.map(async (item) => {
+					let value = item.ui_default_value;
+					try {
+						if (item.ui_input_type == "table") {
+							value = JSON.parse(value);
+						} else if (item.ai_prompt != null && item.ai_prompt != "") {
+							let api = nlightnApi;
+							let textString = item.ai_prompt;
+							console.log(textString);
+							value = await eval(textString);
+							console.log("Value after eval:", value); // Add this line to check the value after eval
+						} else {
+							value = eval(value);
+						}
+
+						console.log("Final value:", value); // Add this line to check the final value assigned
+					} catch (error) {
+						console.error("Error during evaluation:", error); // Add this line to log any errors
+						value = item.ui_default_value;
 					}
-				} catch (error) {
-					value = item.ui_default_value;
-				}
-				tempFormData = {
-					...tempFormData,
-					...{ [item.ui_name]: value },
-				};
-			}));
+					tempFormData = {
+						...tempFormData,
+						...{ [item.ui_name]: value },
+					};
+				})
+			);
 		}
-	
+
 		setFormData(tempFormData);
 		calculateForm(formFields, formInputElements, tempFormData);
 	};
-
 
 	const calculateForm = async (formFields, formInputElements, formData) => {
 		let updatedFormData = formData;
@@ -491,13 +503,13 @@ const RequestIntakeForm = (props) => {
 	const handleSave = async () => {
 		if (JSON.stringify(initialData) !== JSON.stringify(formData)) {
 			let finalFormData = formData;
-			console.log("finalFormData",finalFormData)
+			console.log("finalFormData", finalFormData);
 
 			//Get urls for any attachments and upload attachments to the file server
 			if (attachments.length > 0) {
 				finalFormData = await getAttachments();
 			}
-			console.log("finalFormData with attachments",finalFormData)
+			console.log("finalFormData with attachments", finalFormData);
 
 			let recordToSendToDb = finalFormData;
 
@@ -526,9 +538,9 @@ const RequestIntakeForm = (props) => {
 			recordToSendToDb["requester"] = user.full_name;
 			recordToSendToDb["status"] = "Open";
 			recordToSendToDb["stage"] = "Reviewing";
-			delete recordToSendToDb.transcription
+			delete recordToSendToDb.transcription;
 
-			console.log("recordToSendToDb",recordToSendToDb)
+			console.log("recordToSendToDb", recordToSendToDb);
 
 			//update database table with updated record data
 			let appName = "";
@@ -544,7 +556,9 @@ const RequestIntakeForm = (props) => {
 					recordToSendToDb.subcategory != ""
 				) {
 					try {
-						recordToSendToDb.subcategory = spendCategories.find((i) => i.subcategory === recordToSendToDb.subcategory).id;
+						recordToSendToDb.subcategory = spendCategories.find(
+							(i) => i.subcategory === recordToSendToDb.subcategory
+						).id;
 					} catch (e) {
 						delete recordToSendToDb.subcategory;
 					}
@@ -556,7 +570,9 @@ const RequestIntakeForm = (props) => {
 					recordToSendToDb.supplier != ""
 				) {
 					try {
-						recordToSendToDb.supplier = businesses.find((i) => i.registered_name === recordToSendToDb.supplier).id;
+						recordToSendToDb.supplier = businesses.find(
+							(i) => i.registered_name === recordToSendToDb.supplier
+						).id;
 					} catch (e) {
 						delete recordToSendToDb.supplier;
 					}
@@ -568,7 +584,9 @@ const RequestIntakeForm = (props) => {
 					recordToSendToDb.subcategory != ""
 				) {
 					try {
-						recordToSendToDb.business_unit = businessUnits.find((i) => i.name === recordToSendToDb.business_unit).id;
+						recordToSendToDb.business_unit = businessUnits.find(
+							(i) => i.name === recordToSendToDb.business_unit
+						).id;
 					} catch (e) {
 						delete recordToSendToDb.business_unit;
 					}
@@ -580,7 +598,9 @@ const RequestIntakeForm = (props) => {
 					recordToSendToDb.product != ""
 				) {
 					try {
-						recordToSendToDb.product = products.find((i) => i.item_name === recordToSendToDb.product).id;
+						recordToSendToDb.product = products.find(
+							(i) => i.item_name === recordToSendToDb.product
+						).id;
 					} catch (e) {
 						delete recordToSendToDb.product;
 					}
@@ -590,9 +610,9 @@ const RequestIntakeForm = (props) => {
 			}
 
 			console.log(appName);
-			console.log("recordToSendToDb",recordToSendToDb)
+			console.log("recordToSendToDb", recordToSendToDb);
 			const newRecordInDb = await crud.addRecord(appName, recordToSendToDb);
-			console.log("newRecordInDb",newRecordInDb)
+			console.log("newRecordInDb", newRecordInDb);
 
 			let successfullyAdded = false;
 			if (newRecordInDb.id !== null && newRecordInDb.id !== "") {
@@ -609,7 +629,7 @@ const RequestIntakeForm = (props) => {
 						user.email,
 						"Request submitted"
 					);
-					console.log(activityUpdateResponse)
+					console.log(activityUpdateResponse);
 				}
 			} else {
 				alert("Unable to update record. Please check inputs.");
@@ -621,12 +641,12 @@ const RequestIntakeForm = (props) => {
 
 	// Saves form data and navigates to next page, prior page, or final page
 	const handleSubmit = async (e, nextPage) => {
-		console.log(formData, formData)
-		console.log("nextPage:", nextPage)
+		console.log(formData, formData);
+		console.log("nextPage:", nextPage);
 		e.preventDefault();
 
 		if (lastPage) {
-			console.log("lastpage is true")
+			console.log("lastpage is true");
 			await handleSave();
 			setFormName(nextPage);
 		} else {

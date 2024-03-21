@@ -20,7 +20,7 @@ export const getData = async (query, res)=>{
 
 
 //Get Table
-export const getTable = async (tableName, res)=>{
+export const getTable = async (tableName)=>{
     try{
       const result = await dbUrl.get(`/nlightn/db/table/${tableName}`)
       // console.log(result.data)
@@ -209,6 +209,7 @@ export const gptClassify = async (text, list)=>{
 
   try{
     const response = await dbUrl.post("/openai/gpt/classify",{text, list})
+    console.log(response.data)
     return (response.data)
   }catch(error){
     // console.log(error)
