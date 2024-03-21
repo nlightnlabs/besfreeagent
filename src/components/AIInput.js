@@ -42,11 +42,11 @@ const AIInput = (props) => {
 
 
   return (
-    <div className="d-flex flex-column w-75 align-items-center">
+    <div className="d-flex flex-column align-items-center w-100">
         
         <h3 className="mt-5">Summarize your need:</h3>
 
-        <div className="d-flex w-100 flex-column align-items-center">
+        <div className="d-flex flex-column align-items-center w-100">
             
             <textarea name="prompt" 
                 onChange={(e)=>handleChange(e)} 

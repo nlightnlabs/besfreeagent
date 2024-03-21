@@ -169,9 +169,9 @@ export const getFAAppRecord = async (appName, conditionalField, condition)=>{
         const response = await dbUrl.post("/freeAgent/query", query);
         console.log(response)
     
-        const data = response.data.listEntityValues.entity_values;
+        const record = response.data.listEntityValues.entity_values[0];
+        console.log(record)
 
-        const result = data.map(record => {
             let rowData = { id: record.id };
             Object.entries(record.field_values).forEach(([key, value]) => {
                 let val = value.value;
@@ -183,10 +183,9 @@ export const getFAAppRecord = async (appName, conditionalField, condition)=>{
                 }
                 rowData = { ...rowData, [key]: val };
             });
+            console.log("result",rowData )
             return rowData;
-        });
-        console.log("result",result )
-        return result;
+    
     } catch (error) {
         console.log(error)
     }
