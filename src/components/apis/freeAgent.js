@@ -162,7 +162,7 @@ export const getFAAppRecord = async (appName, conditionalField, condition)=>{
     console.log("conditionalField",conditionalField)
     console.log("condition",condition)
 
-    const query =  {query: `query{listEntityValues(entity: \"${appName}\", filters: [{field_name: \"${conditionalField}\", operator: \"equals\", values:[\"${condition}\"]}], limit: \"1\"){ entity_values {field_values} } }`}
+    const query =  {query: `query{listEntityValues(entity: \"${appName}\", filters: [{field_name: \"${conditionalField}\", operator: \"equals\", values:[\"${condition}\"]}], limit: 1){ entity_values {field_values} } }`}
     console.log("query",query)
 
     try {
