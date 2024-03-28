@@ -52,11 +52,11 @@ const GenAIWorkbench = (props) => {
                 style={{width: 250, height: "100%", backgroundColor: "rgba(255,255,255,0.5)"}}
             >
                 <button id="askButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Ask Question")}>Ask Question</button>
-                <button id="summarizeDocumentButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Summarize Document")}>Summarize Document</button>
                 <button id="generateImageButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Generate Image")}>Generate Image</button>
-                <button id="scanInvoiceButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Scan Invoice")}>Scan Invoice</button>
-                <button id="generateImageButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Contract")}>Create Contract</button>
+                <button id="createContract" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Contract")}>Create Contract</button>
                 <button id="createSalesPitchButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Sales Pitch")}>Create Sales Pitch</button>
+                <button id="scanInvoiceButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Scan Invoice")}>Scan Invoice</button>
+                <button id="summarizeDocumentButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Summarize Document")}>Summarize Document</button>
                 <button id="analyzeSpendButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Analyze Spend")}>Analyze Spend</button>
                 <button id="prepareBudgetButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Budget")}>Prepare Budget</button>
                 <button id="prepareSourcingEventButton" className="btn btn-outline-primary mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Sourcing Event")}>Prepare Sourcing Event</button>
