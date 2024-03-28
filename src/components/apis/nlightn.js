@@ -329,3 +329,19 @@ formData.append('file', audioBlob, 'audio.wav');
 
 
 
+// python api
+export const pythonUrl = process.env.NODE_ENV==="production" ? "https://nlightnlabs.net/python" : "http://127.0.0.1:5000"
+
+export const python = axios.create({
+  pythonUrl
+})
+
+export const pythonApp = async (appName) =>{
+  console.log(appName)
+  const response = await axios.post('http://127.0.0.1:5000/apps/getData', { appName })
+  console.log(JSON.parse(response.data))
+  return JSON.parse(response.data)
+}
+
+
+

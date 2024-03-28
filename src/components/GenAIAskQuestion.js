@@ -14,17 +14,32 @@ const GenAIAskQuestion = () => {
     setResponse("")
     setWaiting(true)
 
-    try{
-        const result = await askGPT(prompt)
-        console.log(result)
-        setResponse(result)
-        let dialogue = {prompt:prompt,response:result.data}
-        setThread([...thread,dialogue])
-        setWaiting(false)
-    }catch(error){
-        console.log(error)
-        setWaiting(false)
+    let dialogue = {prompt:prompt,response:null}
+
+    //Manual override for demo
+    if (prompt == "What is our sales forecast for next quarter?"){
+        setTimeout(()=>{
+            let answer = "Our sales is estimated to be $300M next quarter (10% QoQ increase)"
+            setResponse("Our sales is estimated to be $300M next quarter (10% QoQ increase)")
+            dialogue = {prompt:prompt,response:answer}
+            setThread([...thread,dialogue])
+            setWaiting(false)
+        },[1000])
+    }else{
+        try{
+            const result = await askGPT(prompt)
+            console.log(result)
+            setResponse(result)
+            let dialogue = {prompt:prompt,response:result.data}
+            setThread([...thread,dialogue])
+            setWaiting(false)
+        }catch(error){
+            console.log(error)
+            setWaiting(false)
+        }
     }
+
+  
 }
 
 const handleRefresh=()=>{
@@ -71,7 +86,7 @@ const buttonIconStyle={
 
   return (
     <div className="d-flex w-100 justify-content-center animate__animated animate__fadeIn animate__duration-0.5s">
-        <div className="d-flex flex-column m-3" style={{ maxHeight: "90%", overflowY:"auto", width: "30%", minWidth: "300px"}}>
+        <div className="d-flex flex-column m-3" style={{ maxHeight: "90%", overflowY:"auto", width: "50%", minWidth: "300px"}}>
             <div className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow">
                 <textarea
                     id='prompt'
@@ -79,7 +94,7 @@ const buttonIconStyle={
                     value={prompt}
                     placeholder="Please enter a detailed question"
                     onChange={(e)=>setPrompt(e.target.value)}
-                    style={{fontSize: "16px", color: "rgb(100,150,255", outline: "none", width: "100%", minHeight:"200px"}}
+                    style={{fontSize: "16px", color: "rgb(100,150,255", outline: "none", width: "100%", minHeight:"100px"}}
                     className="border rounded-3 p-3"
                 >
                 </textarea>
