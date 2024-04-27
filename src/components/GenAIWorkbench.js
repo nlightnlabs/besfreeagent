@@ -42,7 +42,7 @@ const GenAIWorkbench = (props) => {
     <div className={pageClass} style={pageStyle}>
 
         <div className="d-flex p-3 bg-white">
-            <img src={`${appIcons}/genAI_icon.png`} style={{height: "50px", width: "50px"}} alt="Gen AI Icon"></img>
+            <img src={`${appIcons}/gen_ai_workbench_icon.png`} style={{height: "50px", width: "50px"}} alt="Gen AI Icon"></img>
             <div style={titleStyle}>GenAI Workbench</div>
         </div>
         

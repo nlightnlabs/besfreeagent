@@ -104,7 +104,7 @@ const CatalogItem = (props)=>{
             {cardDetails.map((obj,index)=>(
               obj.type==="image" && obj.value !="" && obj.value !=null?
                 <div key={index} className="d-flex w-100">
-                  <img src={environment === "freeagent"? obj.value : JSON.parse(obj.value)[0].url} style={itemImageStyle}></img>
+                  <img src={environment === "freeagent"? obj.value : obj.value} style={itemImageStyle}></img>
                 </div>
               :
                 <div key={index} >
