@@ -273,8 +273,8 @@ return(
     } */}
 
     {/* Content section */}
-    {!loading && 
-    <div className="d-flex justify-content-center" style={{height: "80%"}}>
+    {/* {!loading && 
+      <div className="d-flex justify-content-center" style={{height: "80%"}}>
     
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:"90%", minHeight:"300px"}}>
 
@@ -310,8 +310,8 @@ return(
               </div>
           </div>
           </div>
-          </div>
-        }
+      </div>
+    } */}
     </div>
 )
 }
