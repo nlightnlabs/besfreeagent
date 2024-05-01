@@ -252,66 +252,7 @@ const Home = (props) => {
  
 return(
     <div className={pageClass} style={{height:"100vh", width: "100vw", backgroundColor: "white"}}>
-      
-    {/* News Banner */}
     
-    {/* {!loading && 
-      <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
-      <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
-      style={{ height: "auto", width: "100%", overflow: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
-          {announcements.length > 0 && (
-              <img
-                  src={highlightedAnnouncement.cover_image}
-                  alt={highlightedAnnouncement.headline}
-                  className={imageClass}
-                  style={{ width: "100%", height: "100%", margin: "auto"}}
-                  onClick={(e)=>handleSelectedArticle(highlightedAnnouncement.id)}
-              />
-          )}
-      </div>
-      </div>
-    } */}
-
-    {/* Content section */}
-    {/* {!loading && 
-      <div className="d-flex justify-content-center" style={{height: "80%"}}>
-    
-      <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:"90%", minHeight:"300px"}}>
-
-        
-         {/* Request Something Panel*/}
-          <div className="d-flex flex-column justify-content-around border border-1 rounded-3 bg-white shadow m-2" 
-          style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
-            <div className="p-2" style={sectionTitleStyle}>Request Something</div>
-            <div className="p-3" style={{overflowY: "auto"}}>
-              <RequestIntakeHome
-                appData = {appData}
-                setSelectedApp = {setSelectedApp}
-                setTableName = {setTableName}
-                setPage = {setPage}
-                pageList = {pageList}
-                setPageList = {setPageList}
-                pages = {pages}
-                apps = {apps}
-                pageName={pageName}
-                setPageName={setPageName}
-              />
-            </div>
-          </div>
-
-            {/* Work on Something Panel */}
-          <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "70%",minWidth:"300px", overflow: "hidden"}}>
-            <div className="p-2" style={sectionTitleStyle}>Work on Something</div>
-            <div className="d-flex flex-column p-3" style={{width: "100%", height:"90%", overflowY:"auto"}}>
-              <Apps 
-                apps = {apps}
-                handleSelectedApp = {handleSelectedApp}
-              />
-              </div>
-          </div>
-          </div>
-      </div>
-    } */}
     </div>
 )
 }
