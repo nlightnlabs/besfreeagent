@@ -255,7 +255,7 @@ return(
       
     {/* News Banner */}
     
-    {!loading && 
+    {/* {!loading && 
       <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
       <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
       style={{ height: "auto", width: "100%", overflow: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
@@ -269,8 +269,8 @@ return(
               />
           )}
       </div>
-    </div>
-    }
+      </div>
+    } */}
 
     {/* Content section */}
     {!loading && 
@@ -280,7 +280,7 @@ return(
 
         
          {/* Request Something Panel*/}
-          {/* <div className="d-flex flex-column justify-content-around border border-1 rounded-3 bg-white shadow m-2" 
+          <div className="d-flex flex-column justify-content-around border border-1 rounded-3 bg-white shadow m-2" 
           style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
             <div className="p-2" style={sectionTitleStyle}>Request Something</div>
             <div className="p-3" style={{overflowY: "auto"}}>
@@ -297,10 +297,10 @@ return(
                 setPageName={setPageName}
               />
             </div>
-          </div> */}
+          </div>
 
             {/* Work on Something Panel */}
-          {/* <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "70%",minWidth:"300px", overflow: "hidden"}}>
+          <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "70%",minWidth:"300px", overflow: "hidden"}}>
             <div className="p-2" style={sectionTitleStyle}>Work on Something</div>
             <div className="d-flex flex-column p-3" style={{width: "100%", height:"90%", overflowY:"auto"}}>
               <Apps 
@@ -308,7 +308,7 @@ return(
                 handleSelectedApp = {handleSelectedApp}
               />
               </div>
-          </div> */}
+          </div>
           </div>
           </div>
         }
