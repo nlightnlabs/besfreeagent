@@ -280,7 +280,7 @@ return(
 
         
          {/* Request Something Panel*/}
-          <div className="d-flex flex-column justify-content-around border border-1 rounded-3 bg-white shadow m-2" 
+          {/* <div className="d-flex flex-column justify-content-around border border-1 rounded-3 bg-white shadow m-2" 
           style={{height: "95%", width: "33%", minWidth:"300px", overflowY: "auto"}}>
             <div className="p-2" style={sectionTitleStyle}>Request Something</div>
             <div className="p-3" style={{overflowY: "auto"}}>
@@ -297,7 +297,7 @@ return(
                 setPageName={setPageName}
               />
             </div>
-          </div>
+          </div> */}
 
             {/* Work on Something Panel */}
           {/* <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "70%",minWidth:"300px", overflow: "hidden"}}>
