@@ -60,7 +60,7 @@ const Home = (props) => {
 
  
 return(
-    <div className={pageClass} style={{height:"100vh", width: "100vw", backgroundColor: "white"}}>
+    <div style={{height:"100vh", width: "100vw", backgroundColor: "white"}}>
       <h1>test</h1>
     </div>
 )
