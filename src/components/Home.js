@@ -300,7 +300,7 @@ return(
           </div>
 
             {/* Work on Something Panel */}
-          <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "70%",minWidth:"300px", overflow: "hidden"}}>
+          {/* <div className="d-flex flex-column border border-1 rounded-3 bg-white shadow m-2" style={{height: "95%", width: "70%",minWidth:"300px", overflow: "hidden"}}>
             <div className="p-2" style={sectionTitleStyle}>Work on Something</div>
             <div className="d-flex flex-column p-3" style={{width: "100%", height:"90%", overflowY:"auto"}}>
               <Apps 
@@ -308,7 +308,7 @@ return(
                 handleSelectedApp = {handleSelectedApp}
               />
               </div>
-          </div>
+          </div> */}
           </div>
           </div>
         }
