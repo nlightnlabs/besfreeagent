@@ -255,7 +255,7 @@ return(
       
     {/* News Banner */}
     
-    {/* {!loading && 
+    {!loading && 
       <div className="d-flex justify-content-center p-0" style={{ margin: "0", padding: "0" }}>
       <div ref={bannerRef} className="carousel p-0 border border-1 rounded-3 bg-white shadow ms-2 me-2 mb-3 justify-content-center" 
       style={{ height: "auto", width: "100%", overflow: "hidden", margin: "auto", padding: "0", cursor: "pointer"}}>
@@ -269,12 +269,12 @@ return(
               />
           )}
       </div>
-      </div>
-    } */}
+    </div>
+    }
 
     {/* Content section */}
-    {/* {!loading && 
-      <div className="d-flex justify-content-center" style={{height: "80%"}}>
+    {!loading && 
+    <div className="d-flex justify-content-center" style={{height: "80%"}}>
     
       <div ref={contentContainerRef} className="d-flex justify-content-between" style={{width: "100%", height:"90%", minHeight:"300px"}}>
 
@@ -310,8 +310,8 @@ return(
               </div>
           </div>
           </div>
-      </div>
-    } */}
+          </div>
+        }
     </div>
 )
 }
